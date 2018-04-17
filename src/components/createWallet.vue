@@ -15,6 +15,7 @@
             v-model="formRulesCreate.pwd"
             placeholder="请输入大于8位同时包含数字和字母的密码"
             auto-complete="off"
+            clearable
           ></el-input>
         </el-form-item>
       </el-form>
