@@ -1,19 +1,19 @@
 <template>
-  <div v-show="!toggle">
+  <div v-show="!formGroupToggle">
       <el-form
         label-width="100px"
         status-icon
         @submit.native.prevent>
 
         <el-form-item label="登录方式">
-         <el-radio-group v-model="form.checkType">
+         <el-radio-group v-model="form.loginType">
            <el-radio label="1" border>私钥</el-radio>
-           <el-radio label="2" border>Keystore / JSON File</el-radio>
-           <el-radio label="3" border>Mnemonic Phrase</el-radio>
+           <el-radio label="2" border>钱包文件</el-radio>
+           <el-radio label="3" border>助记词</el-radio>
          </el-radio-group>
         </el-form-item>
 
-        <div v-show="form.checkType==='1'?true:false">
+        <div v-show="form.loginType==='1'?true:false">
           <el-form-item label="私钥">
             <el-input
               type="password"
@@ -24,18 +24,18 @@
           </el-form-item>
         </div>
 
-        <div v-show="form.checkType==='2'?true:false">
-          <el-form-item>
+        <div v-show="form.loginType==='2'?true:false">
+          <el-form-item label="选择文件">
             <el-upload
               action="http://localhost"
               :limit="1"
               :file-list="fileList">
-              <el-button :type="uploadFileBtnType">选择钱包文件</el-button>
+              <el-button :type="uploadFileBtnType">选择钱包文件...</el-button>
               <span slot="tip" class="fileUploadTip">请选择正确的钱包文件，且不超过2Mb</span>
             </el-upload>
           </el-form-item>
 
-          <el-form-item>
+          <el-form-item label="密码">
             <el-input
               v-if="jsonFileChecked"
               type="password"
@@ -46,7 +46,7 @@
           </el-form-item>
         </div>
 
-        <div v-show="form.checkType==='3'?true:false">
+        <div v-show="form.loginType==='3'?true:false">
           <el-form-item label="助记词">
             <el-input
               type="textarea"
@@ -55,7 +55,7 @@
             ></el-input>
           </el-form-item>
 
-          <el-form-item label="密码（可选）">
+          <el-form-item label="密码(可选)">
             <el-input
               v-if="jsonFileChecked"
               type="password"
@@ -76,16 +76,16 @@
 <script>
   export default {
     name: "userLogin",
-    props:['toggle'],
+    props:['formGroupToggle'],    //创建或者登录面板
     data(){
 
       return {
-        jsonFileChecked:true,
+        jsonFileChecked:true,   //JSON文件验证状态
         form:{
-          checkType:'2'
+          loginType:'2'   //登录方式
         },
-        uploadFileBtnType:'default',
-        fileList:[]
+        uploadFileBtnType:'default',    //上传文件按钮颜色，上传后变为success
+        fileList:[]   //上传文件列表
       }
     },
     methods:{
