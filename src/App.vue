@@ -12,8 +12,10 @@
           ></el-option>
         </el-select>
       </el-header>
+      <el-main>
+        <router-view name="default"/>
+      </el-main>
     </el-container>
-    <router-view/>
   </div>
 </template>
 
@@ -33,6 +35,9 @@ export default {
 </script>
 
 <style>
+  html,body,#app,.el-container,.el-main{
+    height:100%;
+  }
   body{
     margin:0;
   }

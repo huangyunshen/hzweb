@@ -1,6 +1,6 @@
 <template>
   <el-row>
-    <el-col :xs="{span:24,offset:0}" :sm="{span:20,offset:2}" :md="{span:16,offset:4}" :lg="{span:12,offset:6}" :xl="{span:10,offset:7}">
+    <el-col :xs="24" :sm="{span:20,offset:2}" :md="{span:16,offset:4}" :lg="{span:12,offset:6}" :xl="{span:10,offset:7}">
       <el-form
         label-width="100px"
         status-icon
@@ -24,7 +24,7 @@
 
       <el-form label-width="100px" @submit.native.prevent>
         <el-form-item>
-          <el-button type="primary">{{mainBtnText}}</el-button>
+          <el-button type="primary" @click="createOrLogin">{{mainBtnText}}</el-button>
           <el-button type="text" size="mini" @click="formGroupToggleFun">{{lastBtnText}}</el-button>
         </el-form-item>
       </el-form>
@@ -77,6 +77,11 @@
           this.lastBtnText = '转到登录';
         }
         this.formGroupToggle = !this.formGroupToggle;
+      },
+      createOrLogin(e){     //点击创建钱包或者登录
+
+
+        this.$router.replace({path:'/listContent'});    //登录成功后跳转到功能列表
       }
     }
   }
