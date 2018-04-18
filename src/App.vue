@@ -35,8 +35,12 @@ export default {
 </script>
 
 <style>
-  html,body,#app,.el-container,.el-main{
+  html,body,#app,.el-container{
     height:100%;
+  }
+  .el-main{
+    height:calc(100% - 100px);
+    min-height:calc(100% - 100px);
   }
   body{
     margin:0;
@@ -58,4 +62,5 @@ export default {
     float: right;
     margin-top: 30px;
   }
+
 </style>

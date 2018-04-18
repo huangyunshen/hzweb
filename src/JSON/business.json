@@ -1,0 +1,34 @@
+{
+  "businessList":[
+    {
+      "imgUrl":"./static/img/balance.jpg",
+      "contentText":"有料没料，一看便知",
+      "footerText":"账户余额",
+      "name":"balance"
+    },
+    {
+      "imgUrl":"./static/img/record.jpg",
+      "contentText":"查看我的交易记录，账单一目了然，心里有个底",
+      "footerText":"交易记录",
+      "name":"record"
+    },
+    {
+      "imgUrl":"./static/img/transfer.jpeg",
+      "contentText":"在线 / 离线转账，便捷安心",
+      "footerText":"对外转账",
+      "name":"transfer"
+    },
+    {
+      "imgUrl":"./static/img/market.jpg",
+      "contentText":"智能合约，给你想要的公平，玩的更放心",
+      "footerText":"应用市场",
+      "name":"market"
+    },
+    {
+      "imgUrl":"./static/img/create.jpg",
+      "contentText":"规则我来定，好玩嗨不停",
+      "footerText":"创建应用",
+      "name":"create"
+    }
+  ]
+}
