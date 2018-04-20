@@ -4,14 +4,15 @@ import Vue from 'vue'
 // import VueI18n from 'vue-i18n'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-// import '../static/css/resetUI.css'
 import App from './App'
 import router from './router'
+import globalConfig from './globalConfig'
 
 // Vue.use(VueI18n);
 Vue.use(ElementUI);
+Vue.use(globalConfig);
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 new Vue({
   el: '#app',
@@ -19,3 +20,4 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+

@@ -35,25 +35,12 @@
 
 <script>
   import userLogin from './userLogin';
-
   export default {
     name: "createWallet",
     components:{
       userLogin
     },
     data(){
-      //验证创建钱包的密码强度
-      var validatePwd = (rule, value, callback) => {
-        var reg=/^(?![0-9]+$)(?![a-zA-Z]+$)\w{8,}$/g;
-        if(value){
-          if(!reg.test(value)){
-            return callback(new Error('密码应大于8位同时包含数字和字母'));
-          } else {
-            return callback();
-          }
-        }
-      };
-
       return {
         formGroupToggle:true,    //创建或者登录面板
         mainBtnText:'创建钱包',
@@ -63,12 +50,22 @@
         },
         rulesCreate:{         //创建钱包的校验对象
           pwd:[
-            {validator:validatePwd,trigger:'blur'}
+            {validator:this.validatePwd,trigger:'blur'}
           ]
         }
       }
     },
     methods:{
+      validatePwd(rule, value, callback){     //验证创建钱包的密码强度
+        var reg=/^(?![0-9]+$)(?![a-zA-Z]+$)\w{8,}$/g;
+        if(value){
+          if(!reg.test(value)){
+            return callback(new Error('密码应大于8位同时包含数字和字母'));
+          } else {
+            return callback();
+          }
+        }
+      },
       formGroupToggleFun(){     //切换创建和登录
         if(this.formGroupToggle){
           this.mainBtnText = '登录钱包';
@@ -80,10 +77,33 @@
         this.formGroupToggle = !this.formGroupToggle;
       },
       createOrLogin(e){     //点击创建钱包或者登录
+        if(this.formGroupToggle===true){
+          if(this.formRulesCreate.pwd && this.validatePwd(null,this.formRulesCreate.pwd,()=>{return true;})){
+            var key = this.web3.personal.newAccount(this.formRulesCreate.pwd);
+            console.log(key);
+          } else {
+            this.$message({
+              type:'error',
+              showClose:true,
+              message:'密码应大于8位同时包含数字和字母'
+            })
+          }
+        }
 
-
-        this.$router.replace({path:'/listContent'});    //登录成功后跳转到功能列表
+        // this.$router.replace({path:'/listContent'});    //创建/登录成功后跳转到功能列表
       }
+    },
+    beforeCreate(){
+
+    },
+    created(){
+
+    },
+    beforeMount(){
+
+    },
+    mounted(){
+
     }
   }
 </script>
