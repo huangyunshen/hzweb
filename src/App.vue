@@ -20,45 +20,51 @@
 </template>
 
 <script>
-export default {
-  name: 'App',
-  data () {
-    return {
-      value:'ch',
-      options:[
-        {title:'中文',label:'ch'},
-        {title:'English',label:'en'}
-      ]
+  export default {
+    name: 'App',
+    data() {
+      return {
+        value: 'ch',
+        options: [
+          {title: '中文', label: 'ch'},
+          {title: 'English', label: 'en'}
+        ]
+      }
     }
   }
-}
 </script>
 
 <style>
-  html,body,#app,.el-container{
-    height:100%;
+  html, body, #app, .el-container {
+    height: 100%;
   }
-  .el-main{
-    height:calc(100% - 100px);
-    min-height:calc(100% - 100px);
+
+  .el-main {
+    height: calc(100% - 100px);
+    min-height: calc(100% - 100px);
   }
-  body{
-    margin:0;
+
+  body {
+    margin: 0;
   }
+
   #app {
-    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
     font-size: 16px;
   }
-  .el-header{
+
+  .el-header {
     background-color: #4DAD95;
   }
-  .header-title{
+
+  .header-title {
     font-family: '华文新魏';
     font-size: 70px;
     line-height: 100px;
     color: #034D3B;
   }
-  .el-select{
+
+  .el-select {
     float: right;
     margin-top: 30px;
   }

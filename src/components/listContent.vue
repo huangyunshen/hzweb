@@ -42,7 +42,7 @@
   }
 </script>
 
-<style scoped>
+<style lang="scss" type="text/scss" scoped>
   .el-col{
     display:flex;
     flex-flow: wrap;
