@@ -9,31 +9,31 @@
 </template>
 
 <script>
-    export default {
-      name: "business-unit",
-      props:['imgUrl','contentText','footerText'],
-      data(){
-        return {
-
-        }
-      }
+  export default {
+    name: "business-unit",
+    props: ['imgUrl', 'contentText', 'footerText'],
+    data() {
+      return {}
     }
+  }
 </script>
 
 <style scoped>
-  .business-panel{
-    height:150px;
-    float:left;
-    min-width:200px;
+  .business-panel {
+    height: 150px;
+    float: left;
+    min-width: 200px;
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 0 20px 3px #999;
-    cursor:pointer;
+    cursor: pointer;
   }
-  .business-panel:hover{
-    animation:panelShadow .3s;
-    animation-fill-mode:forwards;
+
+  .business-panel:hover {
+    animation: panelShadow .3s;
+    animation-fill-mode: forwards;
   }
+
   @keyframes panelShadow {
     from {
       box-shadow: 0 0 20px 3px #999;
@@ -42,49 +42,54 @@
       box-shadow: 0 0 3px 0 #666;
     }
   }
-  .panel-header{
-    height:100px;
+
+  .panel-header {
+    height: 100px;
     overflow: hidden;
     position: relative;
   }
-  .panel-img{
-    width:100%;
+
+  .panel-img {
+    width: 100%;
   }
-  .panel-content-text{
-    display:flex;
+
+  .panel-content-text {
+    display: flex;
     align-items: center;
     justify-content: center;
-    background:rgba(8,129,100,0.6);
+    background: rgba(8, 129, 100, 0.6);
     text-align: center;
-    height:0;
+    height: 0;
     color: #fff;
-    width:100%;
-    padding:0 20px;
-    box-sizing:border-box;
+    width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
     position: absolute;
     bottom: 0;
     overflow: hidden;
   }
-  .panel-footer{
-    padding:0 10px;
-    color:#666;
-    font-size:18px;
+
+  .panel-footer {
+    padding: 0 10px;
+    color: #666;
+    font-size: 18px;
     text-align: center;
-    height:50px;
-    line-height:50px;
+    height: 50px;
+    line-height: 50px;
     overflow: hidden;
   }
 
-  .panel-header:hover .panel-content-text{
-    animation:showContent .5s;
-    animation-fill-mode:forwards;
+  .panel-header:hover .panel-content-text {
+    animation: showContent .5s;
+    animation-fill-mode: forwards;
   }
+
   @keyframes showContent {
     from {
-      height:0;
+      height: 0;
     }
     to {
-      height:100%;
+      height: 100%;
     }
   }
 </style>

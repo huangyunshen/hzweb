@@ -34,39 +34,6 @@
   }
 </script>
 
-<style>
-  html, body, #app, .el-container {
-    height: 100%;
-  }
-
-  .el-main {
-    height: calc(100% - 100px);
-    min-height: calc(100% - 100px);
-  }
-
-  body {
-    margin: 0;
-  }
-
-  #app {
-    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
-    font-size: 16px;
-  }
-
-  .el-header {
-    background-color: #4DAD95;
-  }
-
-  .header-title {
-    font-family: '华文新魏';
-    font-size: 70px;
-    line-height: 100px;
-    color: #034D3B;
-  }
-
-  .el-select {
-    float: right;
-    margin-top: 30px;
-  }
-
+<style lang="scss" type="text/scss">
+  @import "assets/css/global";
 </style>
