@@ -5,6 +5,7 @@ import Vue from 'vue'
 import ElementUI from 'element-ui'
 import '../theme/index.css'
 import App from './App'
+
 import router from './router'
 import globalConfig from './globalConfig'
 
