@@ -83,7 +83,7 @@
           if (this.formRulesCreate.pwd && this.validatePwd(null, this.formRulesCreate.pwd, () => {
               return true;
             })) {
-            let key = this.web3.personal.newAccount(this.formRulesCreate.pwd);
+            let key = this.$web3.personal.newAccount(this.formRulesCreate.pwd);
             console.log(key);
             this.$router.replace({path: '/listContent'});    //创建/登录成功后跳转到功能列表
           } else {
