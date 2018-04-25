@@ -7,11 +7,11 @@ import '../theme/index.css'
 import App from './App'
 
 import router from './router'
-import globalConfig from './globalConfig'
+import global from './global'
 
 // Vue.use(VueI18n);
 Vue.use(ElementUI);
-Vue.use(globalConfig);
+Vue.use(global);
 
 Vue.config.productionTip = false;
 
