@@ -2,7 +2,7 @@
 
 @import "color";
 
-$FontSize: 0.14rem;
+$FontSize: 14px;
 
 // mixins
 @mixin dz($time:0.25s) {
@@ -102,23 +102,23 @@ body, button, input, select, textarea {
 }
 
 h1 {
-    font-size: $FontSize + 0.1;
+    font-size: $FontSize + 10;
 }
 
 h2 {
-    font-size: $FontSize + 0.08;
+    font-size: $FontSize + 8;
 }
 
 h3 {
-    font-size: $FontSize + 0.06;
+    font-size: $FontSize + 6;
 }
 
 h4 {
-    font-size: $FontSize + 0.04;
+    font-size: $FontSize + 4;
 }
 
 h5 {
-    font-size: $FontSize + 0.02;
+    font-size: $FontSize + 2;
 }
 
 h6 {
