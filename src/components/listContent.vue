@@ -25,7 +25,9 @@
         <el-tab-pane label="应用市场" name="market">
             <app-list></app-list>
         </el-tab-pane>
-        <el-tab-pane label="创建应用" name="create">创建应用</el-tab-pane>
+        <el-tab-pane label="创建应用" name="create">
+            <create-app></create-app>
+        </el-tab-pane>
     </el-tabs>
 </template>
 
@@ -34,6 +36,7 @@
     import appList from './applications/appList'
     import tradeRecord from './tradeRecord/tradeRecord'
     import transaction from './transaction/transaction'
+    import createApp from './createApp/createApp'
 
     export default {
         name: "list-content",
@@ -52,7 +55,8 @@
             businessUnit,
             appList,
             tradeRecord,
-            transaction
+            transaction,
+            createApp
         }
     }
 </script>
