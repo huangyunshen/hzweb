@@ -119,7 +119,6 @@
             })
           }
         } else {
-          // this.$emit('unlock');
           this.$refs.unlock.unlockAccount()
         }
       },

@@ -15,7 +15,9 @@
                 </el-col>
             </el-row>
         </el-tab-pane>
-        <el-tab-pane label="账户余额" name="balance">账户余额</el-tab-pane>
+        <el-tab-pane label="账户余额" name="balance">
+            <get-balance></get-balance>
+        </el-tab-pane>
         <el-tab-pane label="交易记录" name="record">
             <trade-record></trade-record>
         </el-tab-pane>
@@ -33,6 +35,7 @@
 
 <script>
     import businessUnit from './businessUnit'
+    import getBalance from './balance/balance'
     import appList from './applications/appList'
     import tradeRecord from './tradeRecord/tradeRecord'
     import transaction from './transaction/transaction'
@@ -53,6 +56,7 @@
         },
         components: {
             businessUnit,
+            getBalance,
             appList,
             tradeRecord,
             transaction,
