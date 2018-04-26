@@ -1,47 +1,93 @@
 <template>
     <div>
-        <el-form label-position="right" label-width="100px" >
+        <el-form label-position="right" label-width="150px">
             <el-form-item label="账户余额">
                 <el-input v-model="balanceCom" readonly>
-                    <i class="el-icon-question" slot="prefix"></i>
+                    <template slot="append">ETH</template>
                 </el-input>
             </el-form-item>
             <el-form-item label="账户地址">
                 <el-input v-model="address" readonly></el-input>
             </el-form-item>
-
+            <el-form-item label="私钥（未加密）">
+                <el-input :type="privateType" v-model="privateKey" readonly>
+                    <el-button slot="append" @click="privateTypeFun" icon="el-icon-view">查看</el-button>
+                </el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary">打印纸钱包</el-button>
+            </el-form-item>
+            <div class="qr-content">
+                <p class="qr-title">账户地址</p>
+                <div class="qr-body">
+                    <vue-qr :text="address"></vue-qr>
+                </div>
+            </div>
+            <div class="qr-content">
+                <p class="qr-title">私钥（未加密）</p>
+                <div class="qr-body">
+                    <vue-qr :text="privateKeyCom"></vue-qr>
+                </div>
+            </div>
         </el-form>
+
     </div>
 </template>
 
 <script>
+    import VueQr from 'vue-qr'
+
     export default {
         name: "balance",
-        data(){
+        data() {
             return {
-                balance:0,
-                address:''
+                balance: 0,
+                address: '',
+                privateKey: '1af554427f0752c8ac5f1fc3546d5565b628b49e3fc760380e624db99881ff75',
+                privateType:'password'
             }
         },
-        computed:{
-            balanceCom(){
-                let b = this.$web3.fromWei(this.balance,'ether')
-                return b + ' ' + 'ETH'
+        methods:{
+            privateTypeFun(){
+                this.privateType = this.privateType==='password'?'text':'password'
             }
         },
-        beforeMount(){
+        computed: {
+            balanceCom() {
+                return this.$web3.fromWei(this.balance, 'ether')
+            },
+            privateKeyCom(){
+                if(this.privateType==='text'){
+                    return this.privateKey
+                } else {
+                    return '不可看'
+                }
+            }
+        },
+        beforeMount() {
             this.address = sessionStorage.getItem('publicKey')
-            this.balance = this.$web3.eth.getBalance(this.address)
-            console.log(this.balance);
+            this.balance = this.$web3.eth.getBalance(this.address).toNumber()
+        },
+        components:{
+            VueQr
         }
     }
 </script>
 
 <style lang="scss" type="text/scss" scoped>
-    .el-form{
-        width:60%;
-        margin:2% auto;
-        .el-input i{
+    .el-form {
+        width: 60%;
+        margin: 2% auto;
+        .el-button{
+            width:100%;
+        }
+        .qr-content{
+            width:50%;
+            min-width:200px;
+            margin-top:30px;
+            box-sizing: border-box;
+            float:left;
+            text-align: center;
         }
     }
 </style>

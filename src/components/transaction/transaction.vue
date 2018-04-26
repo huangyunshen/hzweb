@@ -1,37 +1,29 @@
 <template>
     <div class="transaction">
-        <el-row :gutter="20">
-            <el-col :span="16">
-                <el-form ref="form" :model="form">
-                    <el-form-item label="发送至以下地址：">
-                        <el-input v-model="form.to" placeholder="0x06a45bf0cec0f02e6cb8f0ac6d695a700744d2e4"></el-input>
-                    </el-form-item>
-                    <el-form-item label="转账数额：">
-                        <el-input placeholder="数额" v-model="form.value" class="input-with-select">
-                            <el-select v-model="unit" slot="append" placeholder="请选择" style="width: 140px">
-                                <el-option label="ETH" value="ETH"></el-option>
-                            </el-select>
-                        </el-input>
-                    </el-form-item>
-                    <el-form-item label="Gas Limit：">
-                        <el-input v-model="form.gas" value="21000" placeholder="21000"></el-input>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" @click="typePwd">转账</el-button>
-                    </el-form-item>
-                </el-form>
-            </el-col>
-            <el-col :span="8">
-                <el-form>
-                    <el-form-item label="账户地址：">
-                        <el-input :value="address" readonly></el-input>
-                    </el-form-item>
-                    <el-form-item label="账户余额：">
-                        <el-input :value="balance + ' ETH'" readonly></el-input>
-                    </el-form-item>
-                </el-form>
-            </el-col>
-        </el-row>
+        <el-form ref="form" :model="form" label-position="right" label-width="150px">
+            <el-form-item label="本账户地址">
+                <el-input :value="address" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="账户余额">
+                <el-input :value="balance + ' ETH'" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="发送至地址">
+                <el-input v-model="form.to" placeholder="0x27d024958a6105a5c8cbd95a8ecb1ff35ad91016"></el-input>
+            </el-form-item>
+            <el-form-item label="转账数额">
+                <el-input placeholder="数额" v-model="form.value" class="input-with-select">
+                    <el-select v-model="unit" slot="append" style="width: 100px">
+                        <el-option label="ETH" value="ETH"></el-option>
+                    </el-select>
+                </el-input>
+            </el-form-item>
+            <el-form-item label="Gas Limit">
+                <el-input v-model="form.gas" value="21000" placeholder="21000"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="typePwd" style="width:100%;">生成交易</el-button>
+            </el-form-item>
+        </el-form>
         <el-dialog
                 title="请输入密码"
                 center
@@ -102,6 +94,7 @@
         },
         methods: {
             typePwd() {
+                this.password = ''
                 if (this.form.to.trim() === '') {
                     this.$message.error(this.$msg.emptyAddress)
                     return
@@ -197,8 +190,8 @@
 
 <style lang="scss" type="text/scss" scoped>
     .transaction {
-        width: 80%;
-        margin: 0 auto;
+        width: 60%;
+        margin: 2% auto;
         .el-select .el-input {
             width: 130px;
         }
