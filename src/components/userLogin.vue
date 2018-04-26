@@ -113,27 +113,12 @@
         },
         methods: {
             unlockAccount() {
-                try {
-                    let flag = this.$web3.personal.unlockAccount(this.form.publicKey.key, this.form.publicKey.pwd)
-
-                    if (flag === true) {
-                        this.$message({
-                            type: 'success',
-                            showClose: true,
-                            message: this.$msg.unlockSucc
-                        })
-
-                        console.log(this.form.publicKey.key);
-                        sessionStorage.setItem('publicKey', this.form.publicKey.key)
-                        this.$router.replace({path: '/listContent'})
-                    }
-
-                } catch (e) {
-                    this.$message({
-                        type: 'error',
-                        showClose: true,
-                        message: this.$msg.unlockFail
-                    })
+                if (this.$unlock.publicKeyUnlock(this.form.publicKey.key, this.form.publicKey.pwd)) {
+                    this.$message.success(this.$msg.unlockSucc)
+                    this.$router.replace({path: '/listContent'})
+                    sessionStorage.setItem('publicKey', this.form.publicKey.key)
+                } else {
+                    this.$message.error(this.$msg.unlockFail)
                 }
             }
         },

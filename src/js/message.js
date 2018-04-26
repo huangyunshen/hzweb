@@ -4,6 +4,10 @@ export default {
     emptyResult: '无查询结果！',
     emptyAddress: '请先输入目标地址！',
     emptyValue: '请先输入转账数额！',
+    transactionFail: '转账失败！',
+    transactionSucc: '转账成功！',
     unlockSucc:'解锁成功',
     unlockFail:'解锁失败，地址或密码错误',
+    unlockFailByPwd:'解锁失败，密码错误!',
+    invalidGas:'无效gas上限。(Must be integer. Try 21000-4000000.)'
 }
