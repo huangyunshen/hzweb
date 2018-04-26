@@ -7,6 +7,18 @@
         </div>
         <p class="tc">龙虎斗</p>
       </li>
+      <li @click="goPlay">
+        <div class="app-icon">
+          <img src="@/assets/images/game1.jpg" alt="">
+        </div>
+        <p class="tc">龙虎斗</p>
+      </li>
+      <li @click="goPlay">
+        <div class="app-icon">
+          <img src="@/assets/images/game1.jpg" alt="">
+        </div>
+        <p class="tc">龙虎斗</p>
+      </li>
     </ul>
   </div>
 </template>
