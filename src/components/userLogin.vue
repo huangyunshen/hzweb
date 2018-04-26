@@ -123,6 +123,7 @@
                             message: this.$msg.unlockSucc
                         })
 
+                        console.log(this.form.publicKey.key);
                         sessionStorage.setItem('publicKey', this.form.publicKey.key)
                         this.$router.replace({path: '/listContent'})
                     }
