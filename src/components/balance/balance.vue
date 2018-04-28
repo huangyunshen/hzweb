@@ -70,6 +70,7 @@
             }
         },
         beforeMount() {
+            this.keystores.address = sessionStorage.getItem('publicKey')
             this.balance = this.$web3.eth.getBalance(this.keystores.address).toNumber()
         },
         components:{

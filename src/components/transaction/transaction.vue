@@ -43,6 +43,23 @@
             </div>
         </el-dialog>
         <el-dialog
+                title="交易信息"
+                center
+                width="40%"
+                :visible.sync="signVisible">
+            <el-form label-width="100px" :inline="true" class="emitTransaction">
+                <el-form-item label="未生效交易" size="medium">
+                    <el-input type="textarea" readonly :value="transactionData"></el-input>
+                </el-form-item>
+                <el-form-item label="签名交易">
+                    <el-input type="textarea" readonly :value="transactionSign"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer">
+                <el-button type="primary" style='width: 80%' @click="emitTransaction">发送交易</el-button>
+            </div>
+        </el-dialog>
+        <el-dialog
                 title="确认信息"
                 center
                 :visible.sync="confirmVisible">
@@ -55,7 +72,7 @@
                 <span style="color: #f00">你确定这样做吗？</span>
             </div>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">不，离开这里</el-button>
+                <el-button @click="confirmVisible = false">不，离开这里</el-button>
                 <el-button type="primary" @click="confirmTransaction">是的，发送交易</el-button>
             </div>
         </el-dialog>
@@ -86,10 +103,13 @@
                 address: '',
                 balance: 0,
                 dialogVisible: false,
+                signVisible: false,
                 confirmVisible: false,
                 showHashVisible: false,
                 password: '',
-                transactionHash: '' // 交易hash
+                transactionHash: '', // 交易hash
+                transactionData: '',
+                transactionSign: ''
             }
         },
         methods: {
@@ -124,6 +144,14 @@
                     return
                 }
                 this.dialogVisible = false
+                let timer = setTimeout(() => {
+                    clearTimeout(timer)
+                    this.getSignMsg()
+                    this.signVisible = true
+                }, 1000)
+            },
+            emitTransaction() {
+                this.signVisible = false
                 let timer = setTimeout(() => {
                     clearTimeout(timer)
                     this.confirmVisible = true
@@ -163,6 +191,19 @@
                         this.$message.error(err)
                     })
             },
+            getSignMsg() {
+                let data = {
+                    "nonce": "0x00",
+                    "gasPrice": "0x3b9aca00", // 单价  Gwei转十六进制 todo
+                    "gasLimit": this.$web3.toHex(this.form.gas),
+                    "to": this.form.to,
+                    "value": this.$web3.toHex(this.$web3.toWei(this.form.value, 'ether')),
+                    "data": "0x",
+                    "chainId": 1
+                }
+                this.transactionData = JSON.stringify(data)
+                this.transactionSign = this.$web3.eth.sign(this.address, this.$web3.sha3(JSON.stringify(data)))
+            }
         },
         mounted() {
             this.address = sessionStorage.getItem('publicKey')
@@ -194,6 +235,13 @@
         margin: 2% auto;
         .el-select .el-input {
             width: 130px;
+        }
+        .emitTransaction {
+            .el-form-item {
+                &:first-child {
+                    width: 50%;
+                }
+            }
         }
     }
 </style>
