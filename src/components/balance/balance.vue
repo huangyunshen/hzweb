@@ -7,10 +7,10 @@
                 </el-input>
             </el-form-item>
             <el-form-item label="账户地址">
-                <el-input v-model="address" readonly></el-input>
+                <el-input v-model="keystores.address" readonly></el-input>
             </el-form-item>
             <el-form-item label="私钥（未加密）">
-                <el-input :type="privateType" v-model="privateKey" readonly>
+                <el-input :type="privateType" v-model="keystores.privKey" readonly>
                     <el-button slot="append" @click="privateTypeFun" icon="el-icon-view">查看</el-button>
                 </el-input>
             </el-form-item>
@@ -20,7 +20,7 @@
             <div class="qr-content">
                 <p class="qr-title">账户地址</p>
                 <div class="qr-body">
-                    <vue-qr :text="address"></vue-qr>
+                    <vue-qr :text="keystores.address"></vue-qr>
                 </div>
             </div>
             <div class="qr-content">
@@ -39,12 +39,29 @@
 
     export default {
         name: "balance",
+        props:{
+            keys: [String, Object, Array]
+        },
         data() {
             return {
                 balance: 0,
                 address: '',
-                privateKey: '1af554427f0752c8ac5f1fc3546d5565b628b49e3fc760380e624db99881ff75',
                 privateType:'password'
+            }
+        },
+        computed: {
+            balanceCom() {
+                return this.$web3.fromWei(this.balance, 'ether')
+            },
+            privateKeyCom() {
+                if (this.privateType === 'text') {
+                    return this.keystores.privKey
+                } else {
+                    return '不可看'
+                }
+            },
+            keystores() {
+                return this.keys.toJSON();
             }
         },
         methods:{
@@ -52,21 +69,8 @@
                 this.privateType = this.privateType==='password'?'text':'password'
             }
         },
-        computed: {
-            balanceCom() {
-                return this.$web3.fromWei(this.balance, 'ether')
-            },
-            privateKeyCom(){
-                if(this.privateType==='text'){
-                    return this.privateKey
-                } else {
-                    return '不可看'
-                }
-            }
-        },
         beforeMount() {
-            this.address = sessionStorage.getItem('publicKey')
-            this.balance = this.$web3.eth.getBalance(this.address).toNumber()
+            this.balance = this.$web3.eth.getBalance(this.keystores.address).toNumber()
         },
         components:{
             VueQr

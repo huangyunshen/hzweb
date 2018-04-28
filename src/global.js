@@ -1,6 +1,7 @@
 //全局变量和全局方法中间件；
 import Web3 from 'web3'
 import msg from './js/message'
+import wallet from './js/wallet'
 import verify from './js/verify'
 import axios from './js/api'
 
@@ -20,6 +21,19 @@ export default {
             } else {
                 alert('参数不是对象')
             }
+        }
+        Vue.prototype.$wallet = wallet
+        Vue.prototype.$getBlob = function (mime, str) {
+            var str = (typeof str === 'object') ? JSON.stringify(str) : str;
+            if (str == null) return '';
+            var blob = new Blob([str], {
+                type: mime
+            });
+            return window.URL.createObjectURL(blob);
+        }
+        Vue.prototype.$kdf = "scrypt"
+        Vue.prototype.$scrypt = {
+            n: 8192
         }
         Vue.prototype.$unlock = {
             /**

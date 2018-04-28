@@ -16,7 +16,7 @@
             </el-row>
         </el-tab-pane>
         <el-tab-pane label="账户余额" name="balance">
-            <get-balance></get-balance>
+            <get-balance :keys="keys"></get-balance>
         </el-tab-pane>
         <el-tab-pane label="交易记录" name="record">
             <trade-record></trade-record>
@@ -46,7 +46,8 @@
         data() {
             return {
                 activeName: 'all',
-                businessList: require('../JSON/business.json')
+                businessList: require('../JSON/business.json'),
+                keys:null
             }
         },
         methods: {
@@ -61,6 +62,13 @@
             tradeRecord,
             transaction,
             createApp
+        },
+        created(){
+            let params = this.$route.params
+            if(typeof params.privKey === 'object'){
+                this.activeName = 'balance'
+                this.keys = params
+            }
         }
     }
 </script>

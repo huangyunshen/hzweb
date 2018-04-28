@@ -58,6 +58,7 @@
 
                 <el-form-item label="密码(可选)">
                     <el-input
+                            v-if="jsonFileChecked"
                             type="password"
                             placeholder="已验证钱包文件，请输入密码"
                             auto-complete="off"
