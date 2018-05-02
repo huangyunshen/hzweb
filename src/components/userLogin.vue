@@ -10,14 +10,14 @@
                     <el-radio label="1" border>私钥</el-radio>
                     <el-radio label="2" border>钱包文件</el-radio>
                     <el-radio label="3" border>助记词</el-radio>
-                    <el-radio label="4" border>公钥地址（临时）</el-radio>
+                    <!--<el-radio label="4" border>公钥地址（临时）</el-radio>-->
                 </el-radio-group>
             </el-form-item>
 
             <div v-show="form.loginType==='1'?true:false">
                 <el-form-item label="私钥">
                     <el-input
-                            type="password"
+                            v-model="form.privateKey"
                             placeholder="请输入私钥"
                             auto-complete="off"
                             clearable
@@ -50,41 +50,41 @@
             <div v-show="form.loginType==='3'?true:false">
                 <el-form-item label="助记词">
                     <el-input
+                            v-model="form.mnemonic"
                             type="textarea"
                             :autosize="{minRows:5,maxRows:10}"
                             placeholder="请输入助记词"
                     ></el-input>
                 </el-form-item>
 
-                <el-form-item label="密码(可选)">
-                    <el-input
-                            v-if="jsonFileChecked"
-                            type="password"
-                            placeholder="已验证钱包文件，请输入密码"
-                            auto-complete="off"
-                            clearable
-                    ></el-input>
-                </el-form-item>
+                <!--<el-form-item label="密码(可选)">-->
+                    <!--<el-input-->
+                            <!--type="password"-->
+                            <!--placeholder="已验证钱包文件，请输入密码"-->
+                            <!--auto-complete="off"-->
+                            <!--clearable-->
+                    <!--&gt;</el-input>-->
+                <!--</el-form-item>-->
             </div>
 
-            <div v-show="form.loginType==='4'?true:false">
-                <el-form-item label="公钥地址">
-                    <el-input
-                            v-model="form.publicKey.key"
-                            placeholder="请输入公钥地址"
-                    ></el-input>
-                </el-form-item>
+            <!--<div v-show="form.loginType==='4'?true:false">-->
+                <!--<el-form-item label="公钥地址">-->
+                    <!--<el-input-->
+                            <!--v-model="form.publicKey.key"-->
+                            <!--placeholder="请输入公钥地址"-->
+                    <!--&gt;</el-input>-->
+                <!--</el-form-item>-->
 
-                <el-form-item label="密码">
-                    <el-input
-                            v-model="form.publicKey.pwd"
-                            type="password"
-                            placeholder="请输入密码"
-                            auto-complete="off"
-                            clearable
-                    ></el-input>
-                </el-form-item>
-            </div>
+                <!--<el-form-item label="密码">-->
+                    <!--<el-input-->
+                            <!--v-model="form.publicKey.pwd"-->
+                            <!--type="password"-->
+                            <!--placeholder="请输入密码"-->
+                            <!--auto-complete="off"-->
+                            <!--clearable-->
+                    <!--&gt;</el-input>-->
+                <!--</el-form-item>-->
+            <!--</div>-->
 
             <el-form-item>
 
@@ -102,10 +102,10 @@
             return {
                 jsonFileChecked: true,   //JSON文件验证状态
                 form: {
-                    loginType: '4',   //解锁方式,
-                    privateKey: {key: ''},
+                    loginType: '1',   //解锁方式,
+                    privateKey: '',
+                    mnemonic: '',
                     keystore: {},
-                    mnemonicWord: {},
                     publicKey: {key: '', pwd: ''},
                 },
                 uploadFileBtnType: 'default',    //上传文件按钮颜色，上传后变为success
@@ -114,13 +114,29 @@
         },
         methods: {
             unlockAccount() {
-                if (this.$unlock.publicKeyUnlock(this.form.publicKey.key, this.form.publicKey.pwd)) {
-                    this.$message.success(this.$msg.unlockSucc)
-                    this.$router.replace({path: '/listContent'})
-                    sessionStorage.setItem('publicKey', this.form.publicKey.key)
-                } else {
-                    this.$message.error(this.$msg.unlockFail)
+                if(this.form.loginType==='1'){
+                    try{
+                        let wallet = new this.$Wallet('0x' + this.form.privateKey)
+                        this.unlockSucc(wallet)
+                    } catch (err){
+                        console.log(err);
+                        this.$message.error(this.$msg.invalidPrivateKey)
+                    }
+                } else if (this.form.loginType === '3'){
+                    try{
+                        let wallet = this.$Wallet.fromMnemonic(this.form.mnemonic)
+                        this.unlockSucc(wallet)
+                    } catch(err) {
+                        console.log(err);
+                        this.$message.error(this.$msg.invalidMnemonic)
+                    }
                 }
+            },
+            unlockSucc(wallet){
+                sessionStorage.setItem('publicKey', wallet.address)
+                sessionStorage.setItem('privateKey', wallet.privateKey.replace('0x',''))
+                this.$router.replace({path: '/listContent'})
+                this.$message.success(this.$msg.unlockSucc)
             }
         },
         mounted() {

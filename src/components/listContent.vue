@@ -64,11 +64,11 @@
             createApp
         },
         created(){
-            let params = this.$route.params
-            if(typeof params.privKey === 'object'){
-                this.activeName = 'balance'
-                this.keys = params
-            }
+            // let params = this.$route.params
+            // if(typeof params.privKey === 'object'){
+            //     this.activeName = 'balance'
+            //     this.keys = params
+            // }
         }
     }
 </script>

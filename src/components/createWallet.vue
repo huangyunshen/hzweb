@@ -35,31 +35,38 @@
         </el-row>
 
         <el-dialog
-                title="钱包创建成功"
+                title="创建成功"
                 :visible.sync="createDialog"
-                width="4 0%"
+                width="50%"
                 center>
-            <h1>保存你的Keystore或者私钥。不要忘记你的密码。</h1>
 
-            <div>
-                <a class="el-button" :href="blobEnc" :download="encFileName" @click="fileDownloaded=false">下载Keystore文件 （UTC / JSON）</a>
-            </div>
-            <div>
-                <p><span>千万不要弄丢它！ 因为它是无法恢复的。</span></p>
-                <p><span>千万不要上传给别人！ 如果你在一个恶意/钓鱼网站上使用这个文件，你的资金将被窃取。</span></p>
-                <p><span>最好做一个备份！ 确保它像价值数百万的资金一样安全。</span></p>
-            </div>
-
+            <el-form :model="modalForm">
+                <el-form-item label="账户地址" :label-width="modalForm.labelWidth">
+                    <el-input id="publicKey" readonly v-model="wallet.address || ''">
+                        <el-button slot="append" @click="copyPublicKey" icon="el-icon-document">复制</el-button>
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="助记词" :label-width="modalForm.labelWidth">
+                    <el-input id="publicKey" readonly v-model="wallet.mnemonic || ''">
+                        <el-button slot="append" @click="copyPublicKey" icon="el-icon-document">复制</el-button>
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="私钥" :label-width="modalForm.labelWidth">
+                    <el-input id="publicKey" readonly v-model="wallet.privateKey.replace('0x','') || ''">
+                        <el-button slot="append" @click="copyPublicKey" icon="el-icon-document">复制</el-button>
+                    </el-input>
+                </el-form-item>
+            </el-form>
 
             <div slot="footer" class="dialog-footer">
-                <el-button type="danger" @click="unlockNewAccount" :disabled="fileDownloaded">我已保存好Keystore文件及密码，点击解锁</el-button>
+                <el-button type="danger" @click="unlockNewAccount">我已备份好账户信息，点击解锁</el-button>
             </div>
         </el-dialog>
     </div>
 </template>
 
 <script>
-    import userLogin from './userLogin'
+    import userLogin from './userLogin';
 
     export default {
         name: "createWallet",
@@ -72,13 +79,6 @@
                 createDialog: false,  //创建成功后显示模态框
                 mainBtnText: '创建钱包',
                 lastBtnText: '转到解锁',
-                message: this.$msg.createPwd,
-                wallet: null,
-                blob: null,
-                blobEnc: null,
-                encFileName: '',
-                isDone: false,
-                fileDownloaded: true,
                 formRulesCreate: {       //创建钱包的数据绑定对象
                     pwd: ''
                 },
@@ -87,6 +87,16 @@
                         {validator: this.$verify.validatePwd, trigger: 'blur'}
                     ]
                 },
+                modalForm: {
+                    pwd: '',
+                    showType: 'password',
+                    labelWidth: '100px'
+                },
+                wallet: {
+                    address:'',
+                    mnemonic:'',
+                    privateKey:''
+                }
             }
         },
         methods: {
@@ -106,46 +116,31 @@
                             return param || 'true';
                         }) === 'true') {
 
-                        this.wallet = this.blob = this.blobEnc = null;
-                        this.isDone = false;
-                        this.wallet = this.$wallet.generate(false);
-                        this.blob = this.$getBlob("text/json;charset=UTF-8", this.wallet.toJSON());
-                        this.blobEnc = this.$getBlob("text/json;charset=UTF-8", this.wallet.toV3(this.formRulesCreate.pwd, {
-                            kdf: this.$kdf,
-                            n: this.$scrypt.n
-                        }));
-                        this.encFileName = this.wallet.getV3Filename();
+                        this.wallet = this.$Wallet.createRandom()
 
+                        sessionStorage.setItem('publicKey', this.wallet.address)
+                        sessionStorage.setItem('privateKey', this.wallet.privateKey.replace('0x',''))
 
-                        // if (parent != null)
-                        //     parent.postMessage(JSON.stringify({
-                        //         address: this.wallet.getAddressString(),
-                        //         checksumAddress: this.wallet.getChecksumAddressString()
-                        //     }), "*");
-                        this.isDone = true;
-                        this.createDialog = true;
+                        this.createDialog = true
                     } else {
-                        this.$message({
-                            type: 'error',
-                            showClose: true,
-                            message: this.$msg.createPwd
-                        })
+                        this.$message.error(this.$msg.createPwd)
                     }
                 } else {
                     this.$refs.unlock.unlockAccount()
                 }
             },
+            copyPublicKey($event) {
+                let input = $event.target.parentElement.previousElementSibling
+                input.select()
+                document.execCommand('copy')
+            },
             unlockNewAccount() {
-                sessionStorage.setItem('publicKey', this.wallet.toJSON().address)
-                this.$router.replace({name: 'listContent',params: this.wallet})    //创建/解锁成功后跳转到功能列表
-                this.$message({
-                    type: 'success',
-                    showClose: true,
-                    message: this.$msg.unlockSucc
-                })
+                this.$router.replace({path: '/listContent'})    //创建/解锁成功后跳转到功能列表
+                this.$message.success(this.$msg.unlockSucc)
             }
         },
         beforeCreate() {
+
         },
         created() {
 
@@ -159,35 +154,12 @@
     }
 </script>
 
-<style lang="scss" type="text/scss" scoped>
+<style scoped>
     .el-row {
         margin-top: 100px;
     }
 
     .el-form-item:last-child {
         text-align: center;
-    }
-    
-    .el-dialog{
-        h1,div{
-            text-align: center;
-            a{
-                margin-top: 30px;
-                color:#fff;
-                background-color: #67c23a;
-                border-color: #67c23a;
-            }
-            a:hover,a:focus{
-                background: #85ce61;
-                border-color: #85ce61;
-            }
-            p{
-                font-size:16px;
-                line-height: 40px;
-                span{
-                    color:#C12E2E;
-                }
-            }
-        }
     }
 </style>
