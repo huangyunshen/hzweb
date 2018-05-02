@@ -26,7 +26,7 @@
             <div class="qr-content">
                 <p class="qr-title">私钥（未加密）</p>
                 <div class="qr-body">
-                    <vue-qr :text="privateKey"></vue-qr>
+                    <vue-qr :text="privateKeyCom"></vue-qr>
                 </div>
             </div>
         </el-form>
@@ -50,6 +50,13 @@
         computed: {
             balanceCom() {
                 return this.$web3.fromWei(this.balance, 'ether')
+            },
+            privateKeyCom(){
+                if (this.privateType === 'text') {
+                    return this.privateKey
+                } else {
+                    return '不可看'
+                }
             }
         },
         methods:{
