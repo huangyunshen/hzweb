@@ -2,10 +2,10 @@
     <div class="transaction">
         <el-form ref="form" :model="form" label-position="right" label-width="150px">
             <el-form-item label="本账户地址">
-                <el-input :value="address" disabled></el-input>
+                <el-input :value="address" readonly></el-input>
             </el-form-item>
             <el-form-item label="账户余额">
-                <el-input :value="balance + ' ETH'" disabled></el-input>
+                <el-input :value="balance + ' ETH'" readonly></el-input>
             </el-form-item>
             <el-form-item label="发送至地址">
                 <el-input v-model="form.to" placeholder="0x27d024958a6105a5c8cbd95a8ecb1ff35ad91016"></el-input>
@@ -34,7 +34,7 @@
                     <el-input :value="address" readonly></el-input>
                 </el-form-item>
                 <el-form-item label="密码">
-                    <el-input type="password" v-model="password"></el-input>
+                    <el-input type="password" placeholder="请输入密码" v-model="password"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -45,10 +45,10 @@
         <el-dialog
                 title="交易信息"
                 center
-                width="40%"
+                min-width="40%"
                 :visible.sync="signVisible">
             <el-form label-width="100px" :inline="true" class="emitTransaction">
-                <el-form-item label="未生效交易" size="medium">
+                <el-form-item label="未生效交易">
                     <el-input type="textarea" readonly :value="transactionData"></el-input>
                 </el-form-item>
                 <el-form-item label="签名交易">
@@ -63,7 +63,53 @@
                 title="确认信息"
                 center
                 :visible.sync="confirmVisible">
-            <div class="tc" style="font-size: 20px">
+            <ul class="transactionMsg">
+                <li>
+                    <span>To Address:</span>
+                    <b>{{ transactionMsg.to }}</b>
+                </li>
+                <li>
+                    <span>From Address:</span>
+                    <b>{{ transactionMsg.from }}</b>
+                </li>
+                <li>
+                    <span>Amount to Send:</span>
+                    <b>{{ transactionMsg.value }}</b>
+                </li>
+                <li>
+                    <span>Account Balance:</span>
+                    <b>{{ transactionMsg.balance }}</b>
+                </li>
+                <li>
+                    <span>Coin:</span>
+                    <b>{{ transactionMsg.coin }}</b>
+                </li>
+                <!--<li>-->
+                <!--<span>Network:</span>-->
+                <!--<b>{{ transactionMsg.network }}</b>-->
+                <!--</li>-->
+                <li>
+                    <span>Gas Limit:</span>
+                    <b>{{ transactionMsg.gasLimit }}</b>
+                </li>
+                <li>
+                    <span>Gas Price:</span>
+                    <b>{{ transactionMsg.gasPrice }}</b>
+                </li>
+                <li>
+                    <span>Max TX Fee:</span>
+                    <b>{{ transactionMsg.to }}</b>
+                </li>
+                <li>
+                    <span> Nonce:</span>
+                    <b>{{ transactionMsg.nonce }}</b>
+                </li>
+                <li>
+                    <span>Data:</span>
+                    <b>{{ transactionMsg.data }}</b>
+                </li>
+            </ul>
+            <div class="tc" style="font-size: 20px;line-height: 30px">
                 你将发送
                 <span style="font-weight: bold">{{ form.value }} ETH</span>
                 到地址
@@ -77,7 +123,7 @@
             </div>
         </el-dialog>
         <el-dialog
-                title="交易成功！"
+                title="交易结果"
                 center
                 :visible.sync="showHashVisible">
             <el-form label-width="100px">
@@ -109,10 +155,14 @@
                 password: '',
                 transactionHash: '', // 交易hash
                 transactionData: '',
-                transactionSign: ''
+                transactionSign: '',
+                transactionMsg: {}
             }
         },
         methods: {
+            /**
+             * 点击 生成交易
+             */
             typePwd() {
                 this.password = ''
                 if (this.form.to.trim() === '') {
@@ -139,6 +189,9 @@
                     return false
                 }
             },
+            /**
+             * 点击 输入密码弹窗
+             */
             onSubmit() {
                 if (!this.unlock()) {
                     return
@@ -150,13 +203,32 @@
                     this.signVisible = true
                 }, 1000)
             },
+            /**
+             * 点击 发送交易
+             */
             emitTransaction() {
                 this.signVisible = false
                 let timer = setTimeout(() => {
                     clearTimeout(timer)
                     this.confirmVisible = true
+                    this.transactionMsg = {
+                        from: this.address,
+                        to: this.form.to,
+                        value: this.form.value + ' ETH',
+                        balance: this.balance,
+                        coin: this.unit,
+                        network: '',
+                        gasLimit: this.form.gas,
+                        gasPrice: this.$store.state.gasPrice,
+                        caxTXFee: this.gasLimit * this.gasPrice + ' Gwei',
+                        nonce: '0',
+                        data: ''
+                    }
                 }, 1000)
             },
+            /**
+             * 点击 确认发送交易
+             */
             confirmTransaction() {
                 this.form.gas = this.form.gas === '' ? 21000 : this.form.gas
                 let param = {
@@ -169,32 +241,37 @@
                     }],
                     id: '1'
                 }
-                this.$axios(param)
-                    .then((res) => {
-                        if (res.data.result) {
-                            this.$message.success(this.$msg.transactionSucc)
-                            this.transactionHash = res.data.result
-                            this.confirmVisible = false
-                            let timer = setTimeout(() => {
-                                clearTimeout(timer)
-                                this.showHashVisible = true
-                            }, 1000)
-                        } else {
-                            this.$message.error(this.$msg.transactionFail + res.data.error.message)
-                            let timer = setTimeout(() => {
-                                clearTimeout(timer)
-                                this.confirmVisible = false
-                            }, 1000)
-                        }
-                    })
-                    .catch((err) => {
-                        this.$message.error(err)
-                    })
+                console.log(this.transactionSign)
+                this.$web3.eth.sendRawTransaction(this.transactionSign,(err,hash)=>{
+                    console.log('err: ' + err)
+                    console.log('hash: ' + hash)
+                })
+                // this.$axios(param)
+                //     .then((res) => {
+                //         if (res.data.result) {
+                //             this.$message.success(this.$msg.transactionSucc)
+                //             this.transactionHash = res.data.result
+                //             this.confirmVisible = false
+                //             let timer = setTimeout(() => {
+                //                 clearTimeout(timer)
+                //                 this.showHashVisible = true
+                //             }, 1000)
+                //         } else {
+                //             this.$message.error(this.$msg.transactionFail + res.data.error.message)
+                //             let timer = setTimeout(() => {
+                //                 clearTimeout(timer)
+                //                 this.confirmVisible = false
+                //             }, 1000)
+                //         }
+                //     })
+                //     .catch((err) => {
+                //         this.$message.error(err)
+                //     })
             },
             getSignMsg() {
                 let data = {
                     "nonce": "0x00",
-                    "gasPrice": "0x3b9aca00", // 单价  Gwei转十六进制 todo
+                    "gasPrice": this.$web3.toHex(this.$store.state.gasPrice * (Math.pow(10, 9))),
                     "gasLimit": this.$web3.toHex(this.form.gas),
                     "to": this.form.to,
                     "value": this.$web3.toHex(this.$web3.toWei(this.form.value, 'ether')),
@@ -238,8 +315,21 @@
         }
         .emitTransaction {
             .el-form-item {
-                &:first-child {
-                    width: 50%;
+                width: 50%;
+            }
+        }
+        .transactionMsg {
+            margin: 20px auto;
+            width: 80%;
+            li {
+                white-space: nowrap;
+                height: 30px;
+                line-height: 30px;
+                font-size: 18px;
+                span {
+                    display: inline-block;
+                    width: 150px;
+                    text-align: right;
                 }
             }
         }
