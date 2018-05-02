@@ -1,14 +1,15 @@
 //全局变量和全局方法中间件；
 import Web3 from 'web3'
 import msg from './js/message'
-import wallet from './js/wallet'
 import verify from './js/verify'
 import axios from './js/api'
+import {Wallet} from 'ethers'
 
 const WEB3OBJ = new Web3(new Web3.providers.HttpProvider('http://39.104.81.103:8101'))
 export default {
     install(Vue, options) {
         Vue.prototype.$web3 = WEB3OBJ
+        Vue.prototype.$Wallet = Wallet
         Vue.prototype.$verify = verify
         Vue.prototype.$msg = msg
         Vue.prototype.$axios = (data) => {
@@ -20,55 +21,6 @@ export default {
                 })
             } else {
                 alert('参数不是对象')
-            }
-        }
-        Vue.prototype.$wallet = wallet
-        Vue.prototype.$getBlob = function (mime, str) {
-            var str = (typeof str === 'object') ? JSON.stringify(str) : str;
-            if (str == null) return '';
-            var blob = new Blob([str], {
-                type: mime
-            });
-            return window.URL.createObjectURL(blob);
-        }
-        Vue.prototype.$kdf = "scrypt"
-        Vue.prototype.$scrypt = {
-            n: 8192
-        }
-        Vue.prototype.$unlock = {
-            /**
-             * 私钥解锁
-             */
-            privateKeyUnlock() {
-
-            },
-            /**
-             * 钱包文件解锁
-             */
-            keyStoreUnlock() {
-
-            },
-            /**
-             * 助记词解锁
-             */
-            mnemonicUnlock() {
-
-            },
-            /**
-             * 公钥地址解锁
-             */
-            publicKeyUnlock(address, pwd) {
-                try {
-                    let key = WEB3OBJ.personal.unlockAccount(address, pwd)
-                    if (key === true) {
-                        sessionStorage.setItem('publicKey', address)
-                        return true
-                    } else {
-                        return false
-                    }
-                } catch (e) {
-                    return false
-                }
             }
         }
     }
