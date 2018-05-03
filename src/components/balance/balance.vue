@@ -64,10 +64,12 @@
                 this.privateType = this.privateType==='password'?'text':'password'
             }
         },
-        beforeMount() {
-            this.address = sessionStorage.getItem('publicKey')
-            this.privateKey = sessionStorage.getItem('privateKey')
-            this.balance = this.$web3.eth.getBalance(this.address).toJSON()
+        mounted() {
+            this.address = this.$store.state.publicKey
+            this.privateKey = this.$store.state.privateKey
+            if(this.address !== ''){
+                this.balance = this.$web3.eth.getBalance(this.address).toJSON()
+            }
         },
         components:{
             VueQr

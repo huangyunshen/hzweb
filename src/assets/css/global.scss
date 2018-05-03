@@ -243,3 +243,28 @@ hr {
         white-space: nowrap;
     }
 }
+
+.transaction {
+    .emitTransaction {
+        .el-form-item {
+            .el-form-item__content {
+                width: 60%;
+            }
+            .el-textarea {
+                textarea {
+                    height: 180px;
+                    width: 100%;
+                }
+            }
+        }
+    }
+    .el-form {
+        white-space: nowrap;
+    }
+}
+
+.el-slider {
+    .el-slider__bar {
+        background-color: #e4e7ed;
+    }
+}

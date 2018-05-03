@@ -39,7 +39,6 @@
                 :visible.sync="createDialog"
                 width="50%"
                 center>
-
             <el-form :model="modalForm">
                 <el-form-item label="账户地址" :label-width="modalForm.labelWidth">
                     <el-input id="publicKey" readonly v-model="wallet.address || ''">
@@ -118,8 +117,11 @@
 
                         this.wallet = this.$Wallet.createRandom()
 
-                        sessionStorage.setItem('publicKey', this.wallet.address)
-                        sessionStorage.setItem('privateKey', this.wallet.privateKey.replace('0x',''))
+                        // sessionStorage.setItem('publicKey', this.wallet.address)
+                        // sessionStorage.setItem('privateKey', this.wallet.privateKey.replace('0x',''))
+
+                        this.$store.commit('setPublicKey', this.wallet.address)
+                        this.$store.commit('setPrivateKey', this.wallet.privateKey.replace('0x',''))
 
                         this.createDialog = true
                     } else {

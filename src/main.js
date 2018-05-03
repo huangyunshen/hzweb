@@ -5,20 +5,21 @@ import Vue from 'vue'
 import ElementUI from 'element-ui'
 import '../theme/index.css'
 import App from './App'
-
+import store from './js/store'
 import router from './router'
 import global from './global'
 
 // Vue.use(VueI18n);
-Vue.use(ElementUI);
-Vue.use(global);
+Vue.use(ElementUI)
+Vue.use(global)
 
-Vue.config.productionTip = false;
+Vue.config.productionTip = false
 
 new Vue({
-  el: '#app',
-  router,
-  components: { App },
-  template: '<App/>'
+    el: '#app',
+    router,
+    store,
+    components: {App},
+    template: '<App/>'
 })
 

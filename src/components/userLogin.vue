@@ -14,7 +14,7 @@
                 </el-radio-group>
             </el-form-item>
 
-            <div v-show="form.loginType==='1'?true:false">
+            <div v-show="form.loginType==='1'">
                 <el-form-item label="私钥">
                     <el-input
                             v-model="form.privateKey"
@@ -25,7 +25,7 @@
                 </el-form-item>
             </div>
 
-            <div v-show="form.loginType==='2'?true:false">
+            <div v-show="form.loginType==='2'">
                 <el-form-item label="选择文件">
                     <el-upload
                             action="http://localhost"
@@ -47,7 +47,7 @@
                 </el-form-item>
             </div>
 
-            <div v-show="form.loginType==='3'?true:false">
+            <div v-show="form.loginType==='3'">
                 <el-form-item label="助记词">
                     <el-input
                             v-model="form.mnemonic"
@@ -66,26 +66,6 @@
                     <!--&gt;</el-input>-->
                 <!--</el-form-item>-->
             </div>
-
-            <!--<div v-show="form.loginType==='4'?true:false">-->
-                <!--<el-form-item label="公钥地址">-->
-                    <!--<el-input-->
-                            <!--v-model="form.publicKey.key"-->
-                            <!--placeholder="请输入公钥地址"-->
-                    <!--&gt;</el-input>-->
-                <!--</el-form-item>-->
-
-                <!--<el-form-item label="密码">-->
-                    <!--<el-input-->
-                            <!--v-model="form.publicKey.pwd"-->
-                            <!--type="password"-->
-                            <!--placeholder="请输入密码"-->
-                            <!--auto-complete="off"-->
-                            <!--clearable-->
-                    <!--&gt;</el-input>-->
-                <!--</el-form-item>-->
-            <!--</div>-->
-
             <el-form-item>
 
             </el-form-item>
@@ -118,6 +98,7 @@
                     try{
                         let wallet = new this.$Wallet('0x' + this.form.privateKey)
                         this.unlockSucc(wallet)
+                        return true
                     } catch (err){
                         console.log(err);
                         this.$message.error(this.$msg.invalidPrivateKey)
@@ -126,6 +107,7 @@
                     try{
                         let wallet = this.$Wallet.fromMnemonic(this.form.mnemonic)
                         this.unlockSucc(wallet)
+                        return true
                     } catch(err) {
                         console.log(err);
                         this.$message.error(this.$msg.invalidMnemonic)
@@ -133,8 +115,10 @@
                 }
             },
             unlockSucc(wallet){
-                sessionStorage.setItem('publicKey', wallet.address)
-                sessionStorage.setItem('privateKey', wallet.privateKey.replace('0x',''))
+                this.$store.commit('setPublicKey', wallet.address.toLowerCase())
+                this.$store.commit('setPrivateKey', wallet.privateKey.replace('0x',''))
+                // sessionStorage.setItem('publicKey', wallet.address.toLowerCase())
+                // sessionStorage.setItem('privateKey', wallet.privateKey.replace('0x',''))
                 this.$router.replace({path: '/listContent'})
                 this.$message.success(this.$msg.unlockSucc)
             }
