@@ -12,12 +12,14 @@
   "dependencies": {
     "axios": "^0.18.0",
     "element-ui": "^2.3.4",
+    "ethereumjs-tx": "^1.3.4",
     "ethers": "^3.0.15",
     "vue": "^2.5.2",
     "vue-i18n": "^7.6.0",
     "vue-qr": "^1.2.8",
     "vue-router": "^3.0.1",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "web3": "https://github.com/ethereum/web3.js.git"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

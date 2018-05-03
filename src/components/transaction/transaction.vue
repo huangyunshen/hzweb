@@ -25,18 +25,11 @@
             </el-form-item>
         </el-form>
         <el-dialog
-                title="请输入密码"
+                title="请解锁"
                 center
                 :visible.sync="dialogVisible"
-                width="30%">
-            <el-form label-width="80px">
-                <el-form-item label="账户地址">
-                    <el-input :value="address" readonly></el-input>
-                </el-form-item>
-                <el-form-item label="密码">
-                    <el-input type="password" placeholder="请输入密码" v-model="password"></el-input>
-                </el-form-item>
-            </el-form>
+                width="40%">
+            <user-login ref="unlock" :formGroupToggle="false"></user-login>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="onSubmit">确 定</el-button>
@@ -98,10 +91,10 @@
                 </li>
                 <li>
                     <span>Max TX Fee:</span>
-                    <b>{{ transactionMsg.to }}</b>
+                    <b>{{ transactionMsg.maxTXFee }}</b>
                 </li>
                 <li>
-                    <span> Nonce:</span>
+                    <span>Nonce:</span>
                     <b>{{ transactionMsg.nonce }}</b>
                 </li>
                 <li>
@@ -136,13 +129,18 @@
 </template>
 
 <script>
+    import userLogin from '../userLogin'
+
     export default {
         name: "transaction",
+        components: {
+            userLogin
+        },
         data() {
             return {
                 form: {
-                    to: '',
-                    value: '',
+                    to: '0x63c15e9e4d67421ed2099c33689d367eb228893b',
+                    value: '0.0005',
                     gas: '21000',
                 },
                 unit: 'ETH',
@@ -180,28 +178,18 @@
                 }
                 this.dialogVisible = true
             },
-            unlock() {
-                if (this.$unlock.publicKeyUnlock(this.address, this.password)) {
-                    this.$message.success(this.$msg.unlockSucc)
-                    return true
-                } else {
-                    this.$message.error(this.$msg.unlockFailByPwd)
-                    return false
-                }
-            },
             /**
              * 点击 输入密码弹窗
              */
             onSubmit() {
-                if (!this.unlock()) {
-                    return
+                if (this.$refs.unlock.unlockAccount()) {
+                    this.dialogVisible = false
+                    let timer = setTimeout(() => {
+                        clearTimeout(timer)
+                        this.getSignMsg()
+                        this.signVisible = true
+                    }, 1000)
                 }
-                this.dialogVisible = false
-                let timer = setTimeout(() => {
-                    clearTimeout(timer)
-                    this.getSignMsg()
-                    this.signVisible = true
-                }, 1000)
             },
             /**
              * 点击 发送交易
@@ -219,8 +207,8 @@
                         coin: this.unit,
                         network: '',
                         gasLimit: this.form.gas,
-                        gasPrice: this.$store.state.gasPrice,
-                        caxTXFee: this.gasLimit * this.gasPrice + ' Gwei',
+                        gasPrice: this.$store.state.gasPrice + ' Gwei',
+                        maxTXFee: this.form.gas * this.$store.state.gasPrice + ' Gwei',
                         nonce: '0',
                         data: ''
                     }
@@ -230,22 +218,34 @@
              * 点击 确认发送交易
              */
             confirmTransaction() {
-                this.form.gas = this.form.gas === '' ? 21000 : this.form.gas
-                let param = {
-                    method: 'eth_sendTransaction',
-                    params: [{
-                        "from": this.address,
-                        "to": this.form.to,
-                        "gas": this.$web3.toHex(this.form.gas),
-                        "value": this.$web3.toHex(this.$web3.toWei(this.form.value, 'ether')),
-                    }],
-                    id: '1'
-                }
-                console.log(this.transactionSign)
-                this.$web3.eth.sendRawTransaction(this.transactionSign,(err,hash)=>{
-                    console.log('err: ' + err)
-                    console.log('hash: ' + hash)
+                this.$web3.eth.sendRawTransaction(this.transactionSign, (err, hash) => {
+                    if (err) {
+                        this.$message.error(err)
+                        let timer = setTimeout(() => {
+                            clearTimeout(timer)
+                            this.confirmVisible = false
+                        }, 1000)
+                    } else {
+                        this.$message.success(this.$msg.transactionSucc)
+                        this.transactionHash = hash
+                        this.confirmVisible = false
+                        let timer = setTimeout(() => {
+                            clearTimeout(timer)
+                            this.showHashVisible = true
+                        }, 1000)
+                    }
                 })
+                // this.form.gas = this.form.gas === '' ? 21000 : this.form.gas
+                // let param = {
+                //     method: 'eth_sendTransaction',
+                //     params: [{
+                //         "from": this.address,
+                //         "to": this.form.to,
+                //         "gas": this.$web3.toHex(this.form.gas),
+                //         "value": this.$web3.toHex(this.$web3.toWei(this.form.value, 'ether')),
+                //     }],
+                //     id: '1'
+                // }
                 // this.$axios(param)
                 //     .then((res) => {
                 //         if (res.data.result) {
@@ -269,21 +269,26 @@
                 //     })
             },
             getSignMsg() {
-                let data = {
-                    "nonce": "0x00",
-                    "gasPrice": this.$web3.toHex(this.$store.state.gasPrice * (Math.pow(10, 9))),
-                    "gasLimit": this.$web3.toHex(this.form.gas),
-                    "to": this.form.to,
-                    "value": this.$web3.toHex(this.$web3.toWei(this.form.value, 'ether')),
-                    "data": "0x",
-                    "chainId": 1
+                let Tx = require('ethereumjs-tx')
+                let privateKey = new Buffer(this.$store.state.privateKey, 'hex')
+                let nonce = this.$web3.eth.getTransactionCount(this.address)
+                let rawTx = {
+                    nonce: this.$web3.toHex(nonce),
+                    gasPrice: this.$web3.toHex(this.$store.state.gasPrice * (Math.pow(10, 9))),
+                    gasLimit: this.$web3.toHex(this.form.gas),
+                    to: this.form.to,
+                    value: this.$web3.toHex(this.$web3.toWei(this.form.value, 'ether')),
+                    data: "0x"
                 }
-                this.transactionData = JSON.stringify(data)
-                this.transactionSign = this.$web3.eth.sign(this.address, this.$web3.sha3(JSON.stringify(data)))
+                let tx = new Tx(rawTx)
+                tx.sign(privateKey)
+                let serializedTx = tx.serialize()
+                this.transactionSign = '0x' + serializedTx.toString('hex')
+                this.transactionData = JSON.stringify(rawTx)
             }
         },
         mounted() {
-            this.address = sessionStorage.getItem('publicKey')
+            this.address = this.$store.state.publicKey
             if (this.address) {
                 let params = {
                     method: 'eth_getBalance',

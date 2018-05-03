@@ -16,7 +16,7 @@
             </el-row>
         </el-tab-pane>
         <el-tab-pane label="账户余额" name="balance">
-            <!--<get-balance :keys="keys"></get-balance>-->
+            <get-balance :keys="keys"></get-balance>
         </el-tab-pane>
         <el-tab-pane label="交易记录" name="record">
             <trade-record></trade-record>

@@ -45,6 +45,11 @@
         methods: {
             gasPriceChange(val) {
                 this.$store.commit('setGasPrice', val)
+            },
+        },
+        beforeMount() {
+            if (this.$store.state.publicKey === '' || this.$store.state.privateKey === '') {
+                this.$router.replace('/')
             }
         }
     }
