@@ -182,14 +182,16 @@
              * 点击 输入密码弹窗
              */
             onSubmit() {
-                if (this.$refs.unlock.unlockAccount()) {
+                this.$refs.unlock.unlockAccount().then(val => {
                     this.dialogVisible = false
                     let timer = setTimeout(() => {
                         clearTimeout(timer)
                         this.getSignMsg()
                         this.signVisible = true
                     }, 1000)
-                }
+                }, (err) => {
+                    console.log(err)
+                })
             },
             /**
              * 点击 发送交易
