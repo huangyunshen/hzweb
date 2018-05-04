@@ -11,5 +11,6 @@ export default {
     unlockFailByPwd:'解锁失败，密码错误!',
     invalidGas:'无效gas上限。(Must be integer. Try 21000-4000000.)',
     invalidPrivateKey:'无效的私钥',
+    invalidJsonOrPwd:'无效的keystore文件或密码错误',
     invalidMnemonic:'无效的助记词'
 }

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-loading="createPercent" element-loading-text="正在加密钱包" element-loading-spinner="el-icon-loading">
         <el-row>
             <el-col :xs="24" :sm="{span:20,offset:2}" :md="{span:16,offset:4}" :lg="{span:12,offset:6}"
                     :xl="{span:10,offset:7}">
@@ -39,9 +39,10 @@
                 :visible.sync="createDialog"
                 width="50%"
                 center>
+            <h2>保存你的Keystore文件和助记词！不要忘记你的密码！</h2>
             <el-form :model="modalForm">
                 <el-form-item label="账户地址" :label-width="modalForm.labelWidth">
-                    <el-input id="publicKey" readonly v-model="wallet.address || ''">
+                    <el-input id="publicKey" readonly v-model="wallet.address.toLowerCase() || ''">
                         <el-button slot="append" @click="copyPublicKey" icon="el-icon-document">复制</el-button>
                     </el-input>
                 </el-form-item>
@@ -57,8 +58,19 @@
                 </el-form-item>
             </el-form>
 
+            <div>
+                <a class="el-button" :href="walletInfo.blobEnc" :download="walletInfo.fileName" @click="walletInfo.fileDownloaded=false">下载Keystore文件
+                    （UTC / JSON）</a>
+            </div>
+            <div>
+                <p><span>千万不要弄丢它！ 因为它是无法恢复的。</span></p>
+                <p><span>千万不要上传给别人！ 如果你在一个恶意/钓鱼网站上使用这个文件，你的资金将被窃取。</span></p>
+                <p><span>最好做一个备份！ 确保它像价值数百万的资金一样安全。</span></p>
+            </div>
+
+
             <div slot="footer" class="dialog-footer">
-                <el-button type="danger" @click="unlockNewAccount">我已备份好账户信息，点击解锁</el-button>
+                <el-button type="danger" @click="unlockNewAccount" :disabled="walletInfo.fileDownloaded">我已备份好账户信息，点击解锁</el-button>
             </div>
         </el-dialog>
     </div>
@@ -76,6 +88,7 @@
             return {
                 formGroupToggle: true,    //创建或者解锁面板
                 createDialog: false,  //创建成功后显示模态框
+                createPercent: false,
                 mainBtnText: '创建钱包',
                 lastBtnText: '转到解锁',
                 formRulesCreate: {       //创建钱包的数据绑定对象
@@ -95,6 +108,11 @@
                     address:'',
                     mnemonic:'',
                     privateKey:''
+                },
+                walletInfo:{
+                    fileName: '',
+                    blobEnc: '',
+                    fileDownloaded:true
                 }
             }
         },
@@ -109,25 +127,35 @@
                 }
                 this.formGroupToggle = !this.formGroupToggle;
             },
-            createOrLogin(e) {     //点击创建钱包或者解锁
-                if (this.formGroupToggle === true) {
+            createOrLogin(e) {
+                if (this.formGroupToggle === true) {      //创建钱包
                     if (this.formRulesCreate.pwd && this.$verify.validatePwd(null, this.formRulesCreate.pwd, (param) => {
                             return param || 'true';
                         }) === 'true') {
 
                         this.wallet = this.$Wallet.createRandom()
 
-                        // sessionStorage.setItem('publicKey', this.wallet.address)
-                        // sessionStorage.setItem('privateKey', this.wallet.privateKey.replace('0x',''))
+                        let encryptPromise = this.wallet.encrypt(this.formRulesCreate.pwd);
+                        this.createPercent = true
 
-                        this.$store.commit('setPublicKey', this.wallet.address)
-                        this.$store.commit('setPrivateKey', this.wallet.privateKey.replace('0x',''))
+                        let address = this.wallet.getAddress()
+                        this.walletInfo.fileName = this.getV3Filename(address)
 
-                        this.createDialog = true
+                        encryptPromise.then((json) => {
+
+                            this.walletInfo.blobEnc = this.getBlob("text/json;charset=UTF-8", json)
+
+                            this.$store.commit('setPublicKey', this.wallet.address.toLowerCase())
+                            this.$store.commit('setMnemonic', this.wallet.mnemonic)
+                            this.$store.commit('setPrivateKey', this.wallet.privateKey.replace('0x', ''))
+
+                            this.createPercent = false
+                            this.createDialog = true
+                        });
                     } else {
                         this.$message.error(this.$msg.createPwd)
                     }
-                } else {
+                } else {        //解锁钱包
                     this.$refs.unlock.unlockAccount()
                 }
             },
@@ -139,6 +167,18 @@
             unlockNewAccount() {
                 this.$router.replace({path: '/listContent'})    //创建/解锁成功后跳转到功能列表
                 this.$message.success(this.$msg.unlockSucc)
+            },
+            getBlob (mime, str) {
+                str = (typeof str === 'object') ? JSON.stringify(str) : str;
+                if (str == null) return '';
+                var blob = new Blob([str], {
+                    type: mime
+                });
+                return window.URL.createObjectURL(blob);
+            },
+            getV3Filename (address) {
+                var ts = new Date()
+                return ['UTC--', ts.toJSON().replace(/:/g, '-'), '--', address.toString('hex')].join('')
             }
         },
         beforeCreate() {
@@ -156,12 +196,38 @@
     }
 </script>
 
-<style scoped>
+<style lang="scss" type="text/scss" scoped>
     .el-row {
         margin-top: 100px;
     }
 
     .el-form-item:last-child {
         text-align: center;
+    }
+
+    .el-dialog {
+        h2{
+            margin-bottom: 20px;
+        }
+        h2, div {
+            text-align: center;
+            a {
+                color: #fff;
+                background-color: #4DAD95;
+                border-color: #4DAD95;
+            }
+            a:hover, a:focus {
+                background: #5AC9AF;
+                border-color: #5AC9AF;
+            }
+            p {
+                font-size: 16px;
+                line-height: 40px;
+                span {
+                    color: #C12E2E;
+                }
+            }
+        }
+
     }
 </style>

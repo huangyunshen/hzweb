@@ -9,6 +9,9 @@
             <el-form-item label="账户地址">
                 <el-input v-model="address" readonly></el-input>
             </el-form-item>
+            <el-form-item label="助记词">
+                <el-input v-model="mnemonic" readonly></el-input>
+            </el-form-item>
             <el-form-item label="私钥（未加密）">
                 <el-input :type="privateType" v-model="privateKey" readonly>
                     <el-button slot="append" @click="privateTypeFun" icon="el-icon-view">查看</el-button>
@@ -44,6 +47,7 @@
                 balance: 0,
                 address: '',
                 privateKey:'',
+                mnemonic:'',
                 privateType:'password'
             }
         },
@@ -67,6 +71,7 @@
         mounted() {
             this.address = this.$store.state.publicKey
             this.privateKey = this.$store.state.privateKey
+            this.mnemonic = this.$store.state.mnemonic
             if(this.address !== ''){
                 this.balance = this.$web3.eth.getBalance(this.address).toJSON()
             }

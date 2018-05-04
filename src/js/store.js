@@ -8,6 +8,7 @@ const store = new Vuex.Store({
         gasPrice: 41, // 保存gasPrice
         publicKey: '', // 保存公钥
         privateKey: '', // 保存私钥
+        mnemonic:'' // 保存助记词
     },
     mutations: {
         setGasPrice(state, data) {
@@ -19,6 +20,9 @@ const store = new Vuex.Store({
         setPrivateKey(state, data) {
             state.privateKey = data
         },
+        setMnemonic(state, data){
+            state.mnemonic = data
+        }
     }
 })
 

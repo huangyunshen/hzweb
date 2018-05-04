@@ -1,5 +1,6 @@
 <template>
-    <div v-show="!formGroupToggle">
+    <div v-show="!formGroupToggle" v-loading="unlockPercent" element-loading-text="正在解锁钱包"
+         element-loading-spinner="el-icon-loading">
         <el-form
                 label-width="100px"
                 status-icon
@@ -10,7 +11,6 @@
                     <el-radio label="1" border>私钥</el-radio>
                     <el-radio label="2" border>钱包文件</el-radio>
                     <el-radio label="3" border>助记词</el-radio>
-                    <!--<el-radio label="4" border>公钥地址（临时）</el-radio>-->
                 </el-radio-group>
             </el-form-item>
 
@@ -27,18 +27,14 @@
 
             <div v-show="form.loginType==='2'">
                 <el-form-item label="选择文件">
-                    <el-upload
-                            action="http://localhost"
-                            :limit="1"
-                            :file-list="fileList">
-                        <el-button :type="uploadFileBtnType">选择钱包文件...</el-button>
-                        <span slot="tip" class="fileUploadTip">请选择正确的钱包文件，且不超过2Mb</span>
-                    </el-upload>
+                    <input id="fileUpload" type="file" style="display:none" @change="uploadFile">
+                    <el-button @click="selectFile" type="primary">选择钱包文件...</el-button>
+                    <p class="fileUploadTip">{{form.fileName}}</p>
                 </el-form-item>
 
                 <el-form-item label="密码">
                     <el-input
-                            v-if="jsonFileChecked"
+                            v-model="form.pwd"
                             type="password"
                             placeholder="已验证钱包文件，请输入密码"
                             auto-complete="off"
@@ -63,12 +59,9 @@
                             <!--placeholder="已验证钱包文件，请输入密码"-->
                             <!--auto-complete="off"-->
                             <!--clearable-->
-                    <!--&gt;</el-input>-->
+                    <!--&gt</el-input>-->
                 <!--</el-form-item>-->
             </div>
-            <el-form-item>
-
-            </el-form-item>
         </el-form>
     </div>
 </template>
@@ -80,16 +73,16 @@
         data() {
 
             return {
-                jsonFileChecked: true,   //JSON文件验证状态
+                unlockPercent:false,
                 form: {
                     loginType: '1',   //解锁方式,
                     privateKey: '',
                     mnemonic: '',
+                    pwd:'',
                     keystore: {},
-                    publicKey: {key: '', pwd: ''},
-                },
-                uploadFileBtnType: 'default',    //上传文件按钮颜色，上传后变为success
-                fileList: []   //上传文件列表
+                    fileName:'请选择keystore钱包文件',
+                    fileContent: ''
+                }
             }
         },
         methods: {
@@ -100,8 +93,32 @@
                         this.unlockSucc(wallet)
                         return true
                     } catch (err){
-                        console.log(err);
+                        console.log(err)
                         this.$message.error(this.$msg.invalidPrivateKey)
+                    }
+                } else if (this.form.loginType === '2'){
+                    try{
+                        let promise = this.$Wallet.fromEncryptedWallet(this.form.fileContent, this.form.pwd)
+
+                        this.unlockPercent = true
+
+                        promise.then((wallet) => {
+                            this.unlockSucc(wallet)
+                        }, (err) => {
+                            this.form.pwd = ''
+
+                            this.$message.error(this.$msg.invalidJsonOrPwd)
+                            console.log(err)
+                        })
+                        this.unlockPercent = false
+                    } catch(err) {
+
+                        this.form.fileContent = ''
+                        this.form.fileName = ''
+                        this.form.pwd = ''
+
+                        console.log(err)
+                        this.$message.error(this.$msg.invalidMnemonic)
                     }
                 } else if (this.form.loginType === '3'){
                     try{
@@ -109,18 +126,34 @@
                         this.unlockSucc(wallet)
                         return true
                     } catch(err) {
-                        console.log(err);
+                        console.log(err)
                         this.$message.error(this.$msg.invalidMnemonic)
                     }
                 }
             },
             unlockSucc(wallet){
                 this.$store.commit('setPublicKey', wallet.address.toLowerCase())
+                this.$store.commit('setMnemonic', wallet.mnemonic)
                 this.$store.commit('setPrivateKey', wallet.privateKey.replace('0x',''))
-                // sessionStorage.setItem('publicKey', wallet.address.toLowerCase())
-                // sessionStorage.setItem('privateKey', wallet.privateKey.replace('0x',''))
                 this.$router.replace({path: '/listContent'})
                 this.$message.success(this.$msg.unlockSucc)
+            },
+            selectFile($event){
+                document.getElementById('fileUpload').click()
+            },
+            uploadFile(){
+                let file = document.getElementById('fileUpload').files[0]
+                let reader = new FileReader()
+                this.form.fileContent = ''
+                this.form.fileName = ''
+                this.form.pwd = ''
+
+                reader.readAsText(file)
+                reader.onload = () => {
+                    this.form.fileContent = reader.result
+                }
+
+                this.form.fileName = file.name
             }
         },
         mounted() {
@@ -131,8 +164,6 @@
 
 <style scoped>
     .fileUploadTip {
-        display: inline-block;
-        margin-left: 30px;
-        color: #93D3C4;
+        color: #93D3C4
     }
 </style>
