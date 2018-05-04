@@ -22,7 +22,7 @@
                     </el-col>
                 </el-row>
             </el-header>
-            <el-main>
+            <el-main v-loading="cryptPercent.percent" :element-loading-text="cryptPercent.text" element-loading-spinner="el-icon-loading">
                 <router-view name="default"></router-view>
             </el-main>
         </el-container>
@@ -40,6 +40,8 @@
                     {title: 'English', label: 'en'}
                 ],
                 gasPrice: 41,
+                s:true,
+                cryptPercent:null
             }
         },
         methods: {
@@ -51,6 +53,10 @@
             if (this.$store.state.publicKey === '' || this.$store.state.privateKey === '') {
                 this.$router.replace('/')
             }
+            this.cryptPercent = this.$store.state.cryptPercent
+        },
+        mounted(){
+
         }
     }
 </script>

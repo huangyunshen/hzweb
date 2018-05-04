@@ -1,6 +1,5 @@
 <template>
-    <div v-show="!formGroupToggle" v-loading="unlockPercent" element-loading-text="正在解锁钱包"
-         element-loading-spinner="el-icon-loading">
+    <div v-show="!formGroupToggle">
         <el-form
                 label-width="100px"
                 status-icon
@@ -73,7 +72,6 @@
         data() {
 
             return {
-                unlockPercent:false,
                 form: {
                     loginType: '1',   //解锁方式,
                     privateKey: '',
@@ -87,7 +85,7 @@
         },
         methods: {
             unlockAccount() {
-                if(this.form.loginType==='1'){
+                if(this.form.loginType==='1'){          //私钥解锁
                     try{
                         let wallet = new this.$Wallet('0x' + this.form.privateKey)
                         this.unlockSucc(wallet)
@@ -96,21 +94,20 @@
                         console.log(err)
                         this.$message.error(this.$msg.invalidPrivateKey)
                     }
-                } else if (this.form.loginType === '2'){
+                } else if (this.form.loginType === '2'){          //keystore文件+密码解锁
+
+                    if(!this.form.fileContent){
+                        this.$message.error(this.$msg.selectAnFile)
+                        return
+                    }
+                    if(!this.form.pwd){
+                        this.$message.error(this.$msg.enterPwd)
+                        return
+                    }
+
+                    let promise
                     try{
-                        let promise = this.$Wallet.fromEncryptedWallet(this.form.fileContent, this.form.pwd)
-
-                        this.unlockPercent = true
-
-                        promise.then((wallet) => {
-                            this.unlockSucc(wallet)
-                        }, (err) => {
-                            this.form.pwd = ''
-
-                            this.$message.error(this.$msg.invalidJsonOrPwd)
-                            console.log(err)
-                        })
-                        this.unlockPercent = false
+                        promise = this.$Wallet.fromEncryptedWallet(this.form.fileContent, this.form.pwd)
                     } catch(err) {
 
                         this.form.fileContent = ''
@@ -120,7 +117,34 @@
                         console.log(err)
                         this.$message.error(this.$msg.invalidMnemonic)
                     }
-                } else if (this.form.loginType === '3'){
+
+                    this.$store.commit('setCryptPercent', {
+                            percent: true,
+                            text: '正在解锁账户，请稍等...'
+                        }
+                    )
+
+                    if(promise){
+                        promise.then((wallet) => {
+                            this.unlockSucc(wallet)
+                            this.$store.commit('setCryptPercent', {
+                                    percent: false,
+                                    text: ''
+                                }
+                            )
+                        }, (err) => {
+                            this.form.pwd = ''
+                            this.$message.error(this.$msg.unlockFailByPwd)
+                            console.log(err)
+                            this.$store.commit('setCryptPercent', {
+                                    percent: false,
+                                    text: ''
+                                }
+                            )
+                        })
+                    }
+
+                } else if (this.form.loginType === '3'){          //助记词解锁
                     try{
                         let wallet = this.$Wallet.fromMnemonic(this.form.mnemonic)
                         this.unlockSucc(wallet)
@@ -149,11 +173,26 @@
                 this.form.pwd = ''
 
                 reader.readAsText(file)
+                this.form.fileName = file.name
+
                 reader.onload = () => {
-                    this.form.fileContent = reader.result
+                    let keystore
+                    try {
+                        keystore = JSON.parse(reader.result)
+
+                        if(keystore.Crypto != null || keystore.crypto != null || (keystore.hash != null && keystore.locked)){
+                            this.form.fileContent = reader.result
+                        } else {
+                            this.$message.error(this.$msg.invalidWalletFile)
+                        }
+                    } catch (err){
+                        this.$message.error(this.$msg.invalidFile)
+                    }
                 }
 
-                this.form.fileName = file.name
+                reader.onerror = () => {
+                    this.$message.error(this.$msg.readFileErr)
+                }
             }
         },
         mounted() {

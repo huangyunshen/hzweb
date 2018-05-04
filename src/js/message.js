@@ -6,11 +6,14 @@ export default {
     emptyValue: '请先输入转账数额',
     transactionFail: '转账失败',
     transactionSucc: '转账成功',
+    enterPwd:'请输入密码',
     unlockSucc:'解锁成功',
-    unlockFail:'解锁失败，地址或密码错误',
-    unlockFailByPwd:'解锁失败，密码错误!',
+    unlockFailByPwd:'解锁失败，密码错误',
     invalidGas:'无效gas上限。(Must be integer. Try 21000-4000000.)',
     invalidPrivateKey:'无效的私钥',
-    invalidJsonOrPwd:'无效的keystore文件或密码错误',
-    invalidMnemonic:'无效的助记词'
+    invalidMnemonic:'无效的助记词',
+    selectAnFile:'请选择keystore文件',
+    invalidWalletFile:'不支持的钱包文件',
+    invalidFile:'错误的文件类型',
+    readFileErr:'读取文件失败'
 }

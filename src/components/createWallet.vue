@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="createPercent" element-loading-text="正在加密钱包" element-loading-spinner="el-icon-loading">
+    <div>
         <el-row>
             <el-col :xs="24" :sm="{span:20,offset:2}" :md="{span:16,offset:4}" :lg="{span:12,offset:6}"
                     :xl="{span:10,offset:7}">
@@ -88,7 +88,6 @@
             return {
                 formGroupToggle: true,    //创建或者解锁面板
                 createDialog: false,  //创建成功后显示模态框
-                createPercent: false,
                 mainBtnText: '创建钱包',
                 lastBtnText: '转到解锁',
                 formRulesCreate: {       //创建钱包的数据绑定对象
@@ -136,7 +135,11 @@
                         this.wallet = this.$Wallet.createRandom()
 
                         let encryptPromise = this.wallet.encrypt(this.formRulesCreate.pwd);
-                        this.createPercent = true
+
+                        this.$store.commit('setCryptPercent',{
+                            percent: true,
+                            text: '正在创建并加密账户，请稍等...'}
+                        )
 
                         let address = this.wallet.getAddress()
                         this.walletInfo.fileName = this.getV3Filename(address)
@@ -149,7 +152,11 @@
                             this.$store.commit('setMnemonic', this.wallet.mnemonic)
                             this.$store.commit('setPrivateKey', this.wallet.privateKey.replace('0x', ''))
 
-                            this.createPercent = false
+                            this.$store.commit('setCryptPercent', {
+                                    percent: false,
+                                    text: ''
+                                }
+                            )
                             this.createDialog = true
                         });
                     } else {
