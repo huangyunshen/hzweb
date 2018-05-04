@@ -42,17 +42,17 @@
             <h2>保存你的Keystore文件和助记词！不要忘记你的密码！</h2>
             <el-form :model="modalForm">
                 <el-form-item label="账户地址" :label-width="modalForm.labelWidth">
-                    <el-input id="publicKey" readonly v-model="wallet.address.toLowerCase() || ''">
+                    <el-input readonly v-model="wallet.address.toLowerCase() || ''">
                         <el-button slot="append" @click="copyPublicKey" icon="el-icon-document">复制</el-button>
                     </el-input>
                 </el-form-item>
                 <el-form-item label="助记词" :label-width="modalForm.labelWidth">
-                    <el-input id="publicKey" readonly v-model="wallet.mnemonic || ''">
+                    <el-input readonly v-model="wallet.mnemonic || ''">
                         <el-button slot="append" @click="copyPublicKey" icon="el-icon-document">复制</el-button>
                     </el-input>
                 </el-form-item>
                 <el-form-item label="私钥" :label-width="modalForm.labelWidth">
-                    <el-input id="publicKey" readonly v-model="wallet.privateKey.replace('0x','') || ''">
+                    <el-input readonly v-model="wallet.privateKey.replace('0x','') || ''">
                         <el-button slot="append" @click="copyPublicKey" icon="el-icon-document">复制</el-button>
                     </el-input>
                 </el-form-item>
