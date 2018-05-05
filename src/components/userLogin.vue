@@ -100,11 +100,13 @@
 
                         if (!this.form.fileContent) {
                             this.$message.error(this.$msg.selectAnFile)
-                            reject(false)
+                            reject(this.$msg.selectAnFile)
+                            return
                         }
                         if (!this.form.pwd) {
                             this.$message.error(this.$msg.enterPwd)
-                            reject(false)
+                            reject(this.$msg.enterPwd)
+                            return
                         }
                         try {
                             let promise = this.$Wallet.fromEncryptedWallet(this.form.fileContent, this.form.pwd)

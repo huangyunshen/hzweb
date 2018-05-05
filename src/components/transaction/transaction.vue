@@ -189,8 +189,6 @@
                         this.getSignMsg()
                         this.signVisible = true
                     }, 1000)
-                }, (err) => {
-                    console.log(err)
                 })
             },
             /**

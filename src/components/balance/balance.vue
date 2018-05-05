@@ -9,7 +9,7 @@
             <el-form-item label="账户地址">
                 <el-input v-model="address" readonly></el-input>
             </el-form-item>
-            <el-form-item label="助记词">
+            <el-form-item label="助记词" v-show="mnemonic">
                 <el-input v-model="mnemonic" readonly></el-input>
             </el-form-item>
             <el-form-item label="私钥（未加密）">
