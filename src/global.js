@@ -1,7 +1,7 @@
 //全局变量和全局方法中间件；
 import Web3 from 'web3'
 import msg from './js/message'
-import verify from './js/verify'
+import functions from './js/functions'
 import axios from './js/api'
 import {Wallet} from 'ethers'
 
@@ -10,7 +10,7 @@ export default {
     install(Vue, options) {
         Vue.prototype.$web3 = WEB3OBJ
         Vue.prototype.$Wallet = Wallet
-        Vue.prototype.$verify = verify
+        Vue.prototype.$funs = functions
         Vue.prototype.$msg = msg
         Vue.prototype.$axios = (data) => {
             if (typeof data === "object") {

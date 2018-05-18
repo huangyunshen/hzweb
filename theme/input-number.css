@@ -476,7 +476,7 @@
     background-color: #fff;
     background-image: none;
     border: 1px solid #dcdfe6;
-    border-radius: 4px;
+    border-radius: 3px;
     -webkit-transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
     transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1); }
     .el-textarea__inner::-webkit-input-placeholder {
@@ -491,7 +491,7 @@
       border-color: #c0c4cc; }
     .el-textarea__inner:focus {
       outline: none;
-      border-color: #4DAD95; }
+      border-color: #5837FF; }
   .el-textarea.is-disabled .el-textarea__inner {
     background-color: #f5f7fa;
     border-color: #e4e7ed;
@@ -540,7 +540,7 @@
     -webkit-appearance: none;
     background-color: #fff;
     background-image: none;
-    border-radius: 4px;
+    border-radius: 3px;
     border: 1px solid #dcdfe6;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
@@ -566,7 +566,7 @@
       border-color: #c0c4cc; }
     .el-input__inner:focus {
       outline: none;
-      border-color: #4DAD95; }
+      border-color: #5837FF; }
   .el-input__suffix {
     position: absolute;
     height: 100%;
@@ -605,7 +605,7 @@
     pointer-events: none; }
   .el-input.is-active .el-input__inner {
     outline: none;
-    border-color: #4DAD95; }
+    border-color: #5837FF; }
   .el-input.is-disabled .el-input__inner {
     background-color: #f5f7fa;
     border-color: #e4e7ed;
@@ -662,7 +662,7 @@
     display: table-cell;
     position: relative;
     border: 1px solid #dcdfe6;
-    border-radius: 4px;
+    border-radius: 3px;
     padding: 0 20px;
     width: 1px;
     white-space: nowrap; }
@@ -736,19 +736,19 @@
     cursor: pointer;
     font-size: 13px; }
     .el-input-number__increase:hover, .el-input-number__decrease:hover {
-      color: #4DAD95; }
+      color: #5837FF; }
       .el-input-number__increase:hover:not(.is-disabled) ~ .el-input .el-input__inner:not(.is-disabled), .el-input-number__decrease:hover:not(.is-disabled) ~ .el-input .el-input__inner:not(.is-disabled) {
-        border-color: #4DAD95; }
+        border-color: #5837FF; }
     .el-input-number__increase.is-disabled, .el-input-number__decrease.is-disabled {
       color: #c0c4cc;
       cursor: not-allowed; }
   .el-input-number__increase {
     right: 1px;
-    border-radius: 0 4px 4px 0;
+    border-radius: 0 3px 3px 0;
     border-left: 1px solid #dcdfe6; }
   .el-input-number__decrease {
     left: 1px;
-    border-radius: 4px 0 0 4px;
+    border-radius: 3px 0 0 3px;
     border-right: 1px solid #dcdfe6; }
   .el-input-number.is-disabled .el-input-number__increase, .el-input-number.is-disabled .el-input-number__decrease {
     border-color: #e4e7ed;
@@ -802,7 +802,7 @@
       -webkit-transform: scale(0.8);
       transform: scale(0.8); }
   .el-input-number.is-controls-right .el-input-number__increase {
-    border-radius: 0 4px 0 0;
+    border-radius: 0 3px 0 0;
     border-bottom: 1px solid #dcdfe6; }
   .el-input-number.is-controls-right .el-input-number__decrease {
     right: 1px;
@@ -811,7 +811,7 @@
     left: auto;
     border-right: none;
     border-left: 1px solid #dcdfe6;
-    border-radius: 0 0 4px 0; }
+    border-radius: 0 0 3px 0; }
   .el-input-number.is-controls-right[class*=medium] [class*=increase], .el-input-number.is-controls-right[class*=medium] [class*=decrease] {
     line-height: 17px; }
   .el-input-number.is-controls-right[class*=small] [class*=increase], .el-input-number.is-controls-right[class*=small] [class*=decrease] {

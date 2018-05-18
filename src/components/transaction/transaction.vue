@@ -129,7 +129,7 @@
 </template>
 
 <script>
-    import userLogin from '../userLogin'
+    import userLogin from '../wallet/importWallet'
 
     export default {
         name: "transaction",
@@ -182,7 +182,7 @@
              * 点击 输入密码弹窗
              */
             onSubmit() {
-                this.$refs.unlock.unlockAccount().then(val => {
+                this.$refs.unlock.importAccount().then(val => {
                     this.dialogVisible = false
                     let timer = setTimeout(() => {
                         clearTimeout(timer)
