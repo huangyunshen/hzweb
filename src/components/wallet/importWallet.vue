@@ -6,7 +6,7 @@
                 @submit.native.prevent>
 
             <el-form-item class="el-wallet-style" label="解锁方式">
-                <div class="wallet-decrypt-type">
+                <div class="wallet-decrypt-type no-select-text">
                     <span class="wallet-decrypt-item" :class="{active:form.decryptType==='1'}"
                           @click="selectDecryptType('1')">
                         <i class="wallet-decrypt-type-icon icon1" :class="{'icon1-active':form.decryptType==='1'}"></i>
@@ -156,18 +156,18 @@
                         } catch (err) {
                             console.log(err)
                             this.$message.error(this.$msg.invalidPrivateKey)
-                            reject(false)
+                            // reject(false)
                         }
                     } else if (this.form.decryptType === '2') {          //keystore文件+密码
 
                         if (!this.form.fileContent) {
                             this.$message.error(this.$msg.selectAnFile)
-                            reject(this.$msg.selectAnFile)
+                            // reject(this.$msg.selectAnFile)
                             return
                         }
                         if (!this.form.pwd) {
                             this.$message.error(this.$msg.enterPwd)
-                            reject(this.$msg.enterPwd)
+                            // reject(this.$msg.enterPwd)
                             return
                         }
                         try {
@@ -197,7 +197,7 @@
                                         text: ''
                                     }
                                 )
-                                reject(false)
+                                // reject(false)
                             })
                         } catch (err) {
 
@@ -207,7 +207,7 @@
 
                             console.log(err)
                             this.$message.error(this.$msg.invalidMnemonic)
-                            reject(false)
+                            // reject(false)
                         }
 
                     } else if (this.form.decryptType === '3') {          //助记词
@@ -220,7 +220,7 @@
                         } catch (err) {
                             console.log(err)
                             this.$message.error(this.$msg.invalidMnemonic)
-                            reject(false)
+                            // reject(false)
                         }
                     } else if (this.form.decryptType === '4') {          //账户地址
                         if(this.$web3.isAddress(this.form.address)){
@@ -230,7 +230,7 @@
                             resolve(true)
                         } else {
                             this.$message.error(this.$msg.invalidAddress)
-                            reject(false)
+                            // reject(false)
                         }
                     }
                 })
@@ -251,6 +251,7 @@
                 this.form.fileContent = ''
                 this.form.fileName = ''
                 this.form.pwd = ''
+                if(!reader.result) return
 
                 reader.readAsText(file)
                 this.form.fileName = file.name
@@ -298,10 +299,6 @@
             border: solid 1px #465679;
             padding: 5px 15px;
             margin-right: 8px;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
 
             .wallet-decrypt-type-icon {
                 display: inline-block;

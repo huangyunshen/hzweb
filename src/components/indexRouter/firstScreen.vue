@@ -73,7 +73,6 @@
             position: absolute;
             top: 60px;
             right: 5%;
-            width: 100px;
         }
 
         .wallet-container {

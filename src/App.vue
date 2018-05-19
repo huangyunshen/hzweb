@@ -34,7 +34,7 @@
         },
         beforeMount() {
             if (this.$store.state.publicKey === '' || this.$store.state.privateKey === '') {
-                this.$router.replace('/mainScreen')
+                this.$router.replace('/')
             }
             this.cryptPercent = this.$store.state.cryptPercent
         }
@@ -42,5 +42,5 @@
 </script>
 
 <style lang="scss" type="text/scss">
-    @import "assets/css/global";
+    @import "assets/scss/global";
 </style>

@@ -290,22 +290,26 @@
         mounted() {
             this.address = this.$store.state.publicKey
             if (this.address) {
-                let params = {
-                    method: 'eth_getBalance',
-                    params: [this.address, "latest"],
-                    id: '1'
-                }
-                this.$axios(params)
-                    .then((response) => {
-                        if (response.data.result) {
-                            this.balance = this.$web3.fromWei(this.$web3.toDecimal(response.data.result), 'ether')
-                        } else {
-                            this.$message.error(this.$msg.emptyResult)
-                        }
-                    })
-                    .catch((error) => {
-                        this.$message.error(error)
-                    })
+                let balance = this.$web3.eth.getBalance(this.address);
+                console.log(balance);
+                this.balance = this.$web3.fromWei(this.$web3.toDecimal(response.data.result), 'ether')
+
+                // let params = {
+                //     method: 'eth_getBalance',
+                //     params: [this.address, "latest"],
+                //     id: '1'
+                // }
+                // this.$axios(params)
+                //     .then((response) => {
+                //         if (response.data.result) {
+                //             this.balance = this.$web3.fromWei(this.$web3.toDecimal(response.data.result), 'ether')
+                //         } else {
+                //             this.$message.error(this.$msg.emptyResult)
+                //         }
+                //     })
+                //     .catch((error) => {
+                //         this.$message.error(error)
+                //     })
             }
         }
     }

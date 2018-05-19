@@ -35,18 +35,18 @@
 
 <script>
     import businessUnit from './businessUnit'
-    import getBalance from './balance/balance'
-    import appList from './applications/appList'
-    import tradeRecord from './tradeRecord/tradeRecord'
-    import transaction from './transaction/transaction'
-    import createApp from './createApp/createApp'
+    import getBalance from '../balance/balance'
+    import appList from '../applications/appList'
+    import tradeRecord from '../tradeRecord/tradeRecord'
+    import transaction from '../transaction/transaction'
+    import createApp from '../createApp/createApp'
 
     export default {
         name: "list-content",
         data() {
             return {
                 activeName: 'all',
-                businessList: require('../JSON/business.json'),
+                businessList: require('../../json/business.json'),
                 keys:null
             }
         },

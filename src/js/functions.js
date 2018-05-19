@@ -19,6 +19,6 @@ export default {
         // }
         // params = params ? params : {}
         // $router.replace({path: '/mainScreen'},params)
-        $router.replace({path: '/mainScreen'})
+        $router.replace({path: '/mainScreen/accountInfo'})
     }
 }

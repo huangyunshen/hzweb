@@ -86,23 +86,27 @@
                 let connected = this.$web3.isConnected()
                 if (connected) {
                     if (hash) {
-                        let params = {
-                            method: 'eth_getTransactionByHash',
-                            params: [hash],
-                            id: '1'
-                        }
-                        this.$axios(params)
-                            .then((response) => {
-                                if (response.data.result) {
-                                    this.transactionsData = response.data.result
-                                    this.showSwitch = 'list'
-                                } else {
-                                    this.$message.error(this.$msg.emptyResult)
-                                }
-                            })
-                            .catch((error) => {
-                                this.$message.error(error)
-                            })
+                        let result = this.$web3.eth.getTransactionByHash(hash);
+                        console.log(result);
+                        this.showSwitch = 'list'
+
+                        // let params = {
+                        //     method: 'eth_getTransactionByHash',
+                        //     params: [hash],
+                        //     id: '1'
+                        // }
+                        // this.$axios(params)
+                        //     .then((response) => {
+                        //         if (response.data.result) {
+                        //             this.transactionsData = response.data.result
+                        //             this.showSwitch = 'list'
+                        //         } else {
+                        //             this.$message.error(this.$msg.emptyResult)
+                        //         }
+                        //     })
+                        //     .catch((error) => {
+                        //         this.$message.error(error)
+                        //     })
                     } else {
                         this.showSwitch = 'table'
                     }
