@@ -6,7 +6,11 @@ import createWallet from '@/components/wallet/createWallet'
 import importWallet from '@/components/wallet/importWallet'
 
 import mainScreen from '@/components/indexRouter/mainScreen'
-import accountInfo from '@/components/mainBusiness/accountInfo'
+import accountInfo from '@/components/accountInfo/accountInfo'
+import tradeRecord from '@/components/tradeRecord/tradeRecord'
+import transaction from '@/components/transaction/transaction'
+import applications from '@/components/applications/appList'
+import createApp from '@/components/createApp/createApp'
 
 
 import appDetail from '@/components/applications/appDetail'
@@ -49,7 +53,27 @@ export default new Router({
                     path: 'accountInfo',
                     name: 'accountInfo',
                     component: accountInfo
-                }
+                },
+                {
+                    path: 'tradeRecord',
+                    name: 'tradeRecord',
+                    component: tradeRecord
+                },
+                {
+                    path: 'transaction',
+                    name: 'transaction',
+                    component: transaction
+                },
+                {
+                    path: 'applications',
+                    name: 'applications',
+                    component: applications
+                },
+                {
+                    path: 'createApp',
+                    name: 'createApp',
+                    component: createApp
+                },
             ]
         },
         {

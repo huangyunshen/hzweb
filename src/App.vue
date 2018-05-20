@@ -33,6 +33,12 @@
             // },
         },
         beforeMount() {
+
+            // this.$store.state.publicKey = '0x1d278e1419bd697cabf772f7ed05160731fdb26b'
+            // this.$store.state.privateKey = '8888888888888888888888888888888888888888888888888888888888888888'
+            // this.$router.replace('/mainScreen')
+
+
             if (this.$store.state.publicKey === '' || this.$store.state.privateKey === '') {
                 this.$router.replace('/')
             }

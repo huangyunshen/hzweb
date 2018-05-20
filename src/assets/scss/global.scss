@@ -19,6 +19,9 @@
     }
 }
 
+.trade-record-table th {
+    background-color: #221d44;
+}
 .el-table {
     .cell {
         overflow: hidden;
@@ -27,24 +30,24 @@
     }
 }
 
-.transaction {
-    .emitTransaction {
-        .el-form-item {
-            .el-form-item__content {
-                width: 60%;
-            }
-            .el-textarea {
-                textarea {
-                    height: 180px;
-                    width: 100%;
-                }
-            }
-        }
-    }
-    .el-form {
-        white-space: nowrap;
-    }
-}
+//.transaction {
+//    .emitTransaction {
+//        .el-form-item {
+//            .el-form-item__content {
+//                width: 60%;
+//            }
+//            .el-textarea {
+//                textarea {
+//                    height: 180px;
+//                    width: 100%;
+//                }
+//            }
+//        }
+//    }
+//    .el-form {
+//        white-space: nowrap;
+//    }
+//}
 
 .el-slider {
     .el-slider__bar {
@@ -66,6 +69,9 @@
     font-size: 16px;
     color: #182f4a;
     border: none;
+}
+.transaction .el-wallet-style .el-wallet-input textarea{
+    height: 300px;
 }
 .el-wallet-style .el-wallet-input input:focus,
 .el-wallet-style .el-wallet-input textarea:focus{

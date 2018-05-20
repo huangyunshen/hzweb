@@ -32,11 +32,11 @@
                         </li>
                         <li>
                             <span v-show="mnemonic">{{mnemonic}}</span>
-                            <span v-show="!mnemonic" class="text-disabled no-select-text">无相关信息</span>
+                            <span v-show="!mnemonic" class="text-disabled no-select-text">{{warningInfo}}</span>
                         </li>
                         <li>
                             <span v-show="privateKey">{{privateKey}}</span>
-                            <span v-show="!privateKey" class="text-disabled no-select-text">无相关信息</span>
+                            <span v-show="!privateKey" class="text-disabled no-select-text">{{warningInfo}}</span>
                         </li>
                     </ul>
                 </div>
@@ -45,13 +45,13 @@
                 <div class="qr-item">
                     <p class="qr-title">账户地址</p>
                     <div class="qr-body">
-                        <vue-qr :text="address" margin="8"></vue-qr>
+                        <vue-qr :text="address" :margin="8"></vue-qr>
                     </div>
                 </div>
                 <div class="qr-item">
-                    <p class="qr-title">私钥（未加密）</p>
+                    <p class="qr-title">私钥</p>
                     <div class="qr-body">
-                        <vue-qr :text="privateKey" margin="8"></vue-qr>
+                        <vue-qr :text="privateKeyCom" :margin="8"></vue-qr>
                     </div>
                 </div>
             </div>
@@ -67,22 +67,23 @@
         data() {
             return {
                 balance: 0,
-                address: '0xbbac7526697a187a3ec4201727520fd95be910ea',
-                mnemonic: 'brown injury pelican garbage kidney auction fresh any brain person dove trick',
-                privateKey: 'a93332bb1aeb2cd8d4a5c6b7ce52045c81e63e07c8d4519bfec16931827cd988'
+                address: '',
+                mnemonic: '',
+                privateKey: '',
+                warningInfo:'无相关信息'
             }
         },
         computed: {
             balanceCom() {
                 return this.$web3.fromWei(this.balance, 'ether')
             },
-            // privateKeyCom(){
-            //     if (this.privateType === 'text') {
-            //         return this.privateKey
-            //     } else {
-            //         return '不可看'
-            //     }
-            // }
+            privateKeyCom(){
+                if (this.privateKey) {
+                    return this.privateKey
+                } else {
+                    return this.warningInfo
+                }
+            }
         },
         mounted() {
             this.address = this.$store.state.publicKey
@@ -103,6 +104,7 @@
     $list_height: 100px;
 
     .container {
+        padding:0 70px;
         .list-content {
             display: flex;
             ul {
@@ -160,7 +162,8 @@
 
         .qr-content {
             height: 280px;
-            margin-top: 20px;
+            margin-top: 50px;
+            padding-left: 15px;
 
             .qr-item {
                 width: 250px;
