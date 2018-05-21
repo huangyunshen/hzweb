@@ -91,8 +91,8 @@
 
             if(!this.mnemonic&&!this.privateKey){
                 let params = this.$route.params;
-                this.mnemonic = params.mnemonic
-                this.privateKey = params.privateKey
+                this.mnemonic = params.mnemonic || ''
+                this.privateKey = params.privateKey ? params.privateKey.replace('0x','') : ''
             }
 
             if (this.address !== '') {

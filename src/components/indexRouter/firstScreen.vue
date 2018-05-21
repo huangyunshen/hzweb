@@ -172,14 +172,13 @@
 
             .footer-left {
                 position: relative;
-                width: 525px;
+                width: 30%;
                 img {
                     position: absolute;
                     top:8px;
                 }
                 span {
                     display: inline-block;
-                    width: 433px;
                     font-size: 14px;
                     line-height: 20px;
                     color: #666bb4;

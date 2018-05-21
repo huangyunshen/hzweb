@@ -66,47 +66,27 @@
         <!--</el-form-item>-->
         <!--</el-form>-->
 
-        <el-dialog
+        <el-dialog class="create-wallet-dialog"
                 title="创建成功"
                 :visible.sync="createDialog"
-                width="50%"
+                width="800px"
                 center>
             <h2>保存你的Keystore文件和助记词！不要忘记你的密码！</h2>
-            <el-form :model="modalForm">
-                <el-form-item label="账户地址" :label-width="modalForm.labelWidth">
-                    <el-input readonly v-model="wallet.address.toLowerCase() || ''">
-                        <el-button slot="append" @click="copyPublicKey" icon="el-icon-document">复制</el-button>
-                    </el-input>
-                </el-form-item>
-                <el-form-item label="助记词" :label-width="modalForm.labelWidth">
-                    <el-input readonly v-model="wallet.mnemonic || ''">
-                        <el-button slot="append" @click="copyPublicKey" icon="el-icon-document">复制</el-button>
-                    </el-input>
-                </el-form-item>
-                <el-form-item label="私钥" :label-width="modalForm.labelWidth">
-                    <el-input readonly v-model="wallet.privateKey.replace('0x','') || ''">
-                        <el-button slot="append" @click="copyPublicKey" icon="el-icon-document">复制</el-button>
-                    </el-input>
-                </el-form-item>
-            </el-form>
 
-            <div>
+            <div class="wallet-dialog-body">
                 <a class="el-button" :href="walletInfo.blobEnc" :download="walletInfo.fileName"
-                   @click="walletInfo.fileDownloaded=false">下载Keystore文件
-                    （UTC / JSON）</a>
-            </div>
-            <div>
-                <p><span>千万不要弄丢它！ 因为它是无法恢复的。</span></p>
-                <p><span>千万不要上传给别人！ 如果你在一个恶意/钓鱼网站上使用这个文件，你的资金将被窃取。</span></p>
-                <p><span>最好做一个备份！ 确保它像价值数百万的资金一样安全。</span></p>
-            </div>
+                   @click="walletInfo.fileDownloaded=false">下载Keystore文件(UTC/JSON)</a>
 
-
-            <div slot="footer" class="dialog-footer">
                 <el-button type="danger" @click="unlockNewAccount" :disabled="walletInfo.fileDownloaded">
                     我已备份好账户信息，点击解锁
                 </el-button>
             </div>
+            <div class="wallet-dialog-footer">
+                <p>千万不要弄丢它！因为它是无法恢复的</p>
+                <p>千万不要上传给别人！如果你在一个恶意/钓鱼网站上使用这个文件，你的资金将被窃取</p>
+                <p>最好做一个备份！确保它像价值数百万的资金一样安全</p>
+            </div>
+
         </el-dialog>
     </div>
 </template>
@@ -121,7 +101,6 @@
         },
         data() {
             return {
-                // formGroupToggle: true,    //创建或者解锁面板
                 createDialog: false,  //创建成功后显示模态框
                 mainBtnText: '创建钱包',
                 lastBtnText: '转到解锁',
@@ -129,21 +108,12 @@
                     pwd: '',
                     confirmPwd: ''
                 },
-                rulesCreate: {         //创建钱包的校验对象
-                    pwd: [
-                        {validator: this.$funs.validatePwd, trigger: 'blur'}
-                    ]
-                },
-                modalForm: {
-                    pwd: '',
-                    showType: 'password',
-                    labelWidth: '100px'
-                },
-                wallet: {
-                    address: '',
-                    mnemonic: '',
-                    privateKey: ''
-                },
+                // rulesCreate: {         //创建钱包的校验对象
+                //     pwd: [
+                //         {validator: this.$funs.validatePwd, trigger: 'blur'}
+                //     ]
+                // },
+                wallet: null,
                 walletInfo: {
                     fileName: '',
                     blobEnc: '',
@@ -152,19 +122,9 @@
             }
         },
         methods: {
-            // formGroupToggleFun() {     //切换创建和解锁
-            //     if (this.formGroupToggle) {
-            //         this.mainBtnText = '解锁钱包';
-            //         this.lastBtnText = '转到创建';
-            //     } else {
-            //         this.mainBtnText = '创建钱包';
-            //         this.lastBtnText = '转到解锁';
-            //     }
-            //     this.formGroupToggle = !this.formGroupToggle;
-            // },
             createOrLogin(e) {
-
-                // if (this.formGroupToggle === true) {      //创建钱包
+                this.createDialog=false
+                this.walletInfo.fileDownloaded=true
                 if (!this.formRulesCreate.pwd || !this.formRulesCreate.confirmPwd) {
                     this.$message.error(this.$msg.pwdIsEmpty)
                     return
@@ -194,10 +154,6 @@
 
                         this.walletInfo.blobEnc = this.getBlob("text/json;charset=UTF-8", json)
 
-                        this.$store.commit('setPublicKey', this.wallet.address.toLowerCase())
-                        this.$store.commit('setMnemonic', this.wallet.mnemonic)
-                        this.$store.commit('setPrivateKey', this.wallet.privateKey.replace('0x', ''))
-
                         this.$store.commit('setCryptPercent', {
                                 percent: false,
                                 text: ''
@@ -208,17 +164,10 @@
                 } else {
                     this.$message.error(this.$msg.createPwd)
                 }
-                // } else {        //解锁钱包
-                //     this.$refs.unlock.unlockAccount()
-                // }
-            },
-            copyPublicKey($event) {
-                let input = $event.target.parentElement.previousElementSibling
-                input.select()
-                document.execCommand('copy')
             },
             unlockNewAccount() {
-                this.$funs.linkToMainScreenRep()
+                this.$funs.setLocalAddress(this.wallet)
+                this.$funs.linkToMainScreenRep(this.wallet)
                 this.$message.success(this.$msg.unlockSucc)
             },
             getBlob(mime, str) {
@@ -260,25 +209,46 @@
 
     .el-dialog {
         h2 {
-            margin-bottom: 20px;
+            margin-top: 30px;
+            font-size: 16px;
+            color: #8490c5;
         }
-        h2, div {
-            text-align: center;
+        .wallet-dialog-body {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
             a {
+                height: 64px;
+                line-height: 36px;
+                background-color: #5837ff;
+                -webkit-border-radius: 2px;
+                -moz-border-radius: 2px;
+                border-radius: 2px;
+                font-size: 18px;
+                font-weight: 100;
+                border: none;
                 color: #fff;
-                background-color: #4DAD95;
-                border-color: #4DAD95;
             }
             a:hover, a:focus {
-                background: #5AC9AF;
-                border-color: #5AC9AF;
+                background-color: #6262FF;
+                color: #ffffff;
             }
+            .el-button{
+                height: 64px;
+                -webkit-border-radius: 2px;
+                -moz-border-radius: 2px;
+                border-radius: 2px;
+                font-size: 18px;
+            }
+        }
+        .wallet-dialog-footer{
+            margin-top: 30px;
+            padding: 10px;
+            border: 1px dotted $inner_border_color;
             p {
                 font-size: 16px;
-                line-height: 40px;
-                span {
-                    color: #C12E2E;
-                }
+                line-height: 30px;
+                color: #f39eff;
             }
         }
 

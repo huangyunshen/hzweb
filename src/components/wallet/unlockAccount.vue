@@ -113,7 +113,6 @@
                         try {
                             let wallet = new this.$Wallet('0x' + this.form.privateKey)
                             resolve(wallet)
-                            this.$message.success(this.$msg.unlockSucc)
                         } catch (err) {
                             this.$message.error(this.$msg.invalidPrivateKey)
                             reject(false)
@@ -144,7 +143,6 @@
                                     }
                                 )
                                 resolve(wallet)
-                                this.$message.success(this.$msg.unlockSucc)
                             }, (err) => {
                                 this.form.pwd = ''
                                 this.$message.error(this.$msg.unlockFailByPwd)
@@ -168,7 +166,6 @@
                         try {
                             let wallet = this.$Wallet.fromMnemonic(this.form.mnemonic)
                             resolve(wallet)
-                            this.$message.success(this.$msg.unlockSucc)
                         } catch (err) {
                             this.$message.error(this.$msg.invalidMnemonic)
                             reject(false)
@@ -178,7 +175,6 @@
                             this.form.privateKey = ''
                             this.form.mnemonic = ''
                             resolve({address:this.form.address})
-                            this.$message.success(this.$msg.unlockSucc)
                         } else {
                             this.$message.error(this.$msg.invalidAddress)
                             reject(false)

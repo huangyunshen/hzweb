@@ -9,6 +9,7 @@ export default {
     transactionFail: '转账失败',
     transactionSucc: '转账成功',
     enterPwd: '请输入密码',
+    importSucc:'导入成功',
     unlockSucc: '解锁成功',
     unlockFailByPwd: '解锁失败，密码错误',
     invalidGas: '无效gas上限。(Must be integer. Try 21000-4000000.)',

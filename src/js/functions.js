@@ -21,6 +21,7 @@ export default {
         $router.replace({name: 'accountInfo',params: params})
     },
 
+
     getLocalAddress(){
         let json = localStorage.getItem('userAddress')
         if(json){
@@ -29,7 +30,18 @@ export default {
             return null
         }
     },
-    setLocalAddress(obj){
+    setLocalAddress(wallet){
+        let obj = localStorage.getItem('userAddress')
+        if (obj) {
+            obj = JSON.parse(obj)
+        }
+        let addresses = obj ? obj.addresses : []
+        let index = addresses.indexOf(wallet.address)
+        if (index === -1) {
+            index = obj ? addresses.length : 0
+            addresses.push(wallet.address)
+        }
+        obj = {active: index, addresses: addresses}
         localStorage.setItem('userAddress',JSON.stringify(obj))
     }
 }

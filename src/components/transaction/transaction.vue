@@ -211,31 +211,23 @@
                                 cancelButtonText: '取消',
                                 type: 'warning'
                             }).then(() => {
-
-                                let obj = this.$funs.getLocalAddress()
-                                let addresses = obj ? obj.addresses : []
-                                let index = addresses.indexOf(wallet.address)
-                                if (index === -1) {
-                                    index = obj ? addresses.length : 0
-                                    addresses.push(wallet.address)
-                                }
-                                obj = {active: index, addresses: addresses}
-                                this.$funs.setLocalAddress(obj)
-
+                                this.$funs.setLocalAddress(wallet)
                                 this.address = wallet.address
                                 this.privateKey = wallet.privateKey.replace('0x', '')
-
                                 this.getSignMsg().then(() => {
                                     this.steps = '3'
                                 })
-
                             }).catch(() => {
                                 this.privateKey = wallet.privateKey.replace('0x', '')
-
                                 this.getSignMsg().then(() => {
                                     this.steps = '3'
                                 })
                             });
+                        } else {
+                            this.privateKey = wallet.privateKey.replace('0x', '')
+                            this.getSignMsg().then(() => {
+                                this.steps = '3'
+                            })
                         }
 
                     }

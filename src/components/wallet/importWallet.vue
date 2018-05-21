@@ -25,20 +25,9 @@
             importAccount() {
                 this.$refs.unlock.importAccount().then((wallet) => {
                     if (typeof wallet === 'object') {
-                        let obj = this.$funs.getLocalAddress()
-                        let addresses = obj ? obj.addresses : []
-                        let index = addresses.indexOf(wallet.address)
-                        if(index === -1){
-                            index = obj ? addresses.length : 0
-                            addresses.push(wallet.address)
-                        }
-                        obj={active:index,addresses:addresses}
-                        this.$funs.setLocalAddress(obj)
-
-                        this.$funs.linkToMainScreenRep({
-                            privateKey: wallet.privateKey ? wallet.privateKey.replace('0x', '') : '',
-                            mnemonic: wallet.mnemonic ? wallet.mnemonic : ''
-                        })
+                        this.$funs.setLocalAddress(wallet)
+                        this.$funs.linkToMainScreenRep(wallet)
+                        this.$message.success(this.$msg.importSucc)
                     }
                 }, (err) => {  });
             }
