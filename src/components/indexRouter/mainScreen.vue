@@ -1,29 +1,34 @@
 <template>
     <div class="mainScreen">
-        <nav>
-            <ul class="no-select-text">
-                <router-link tag="li" :to="{name:'accountInfo'}" @click.native="selectAnItem('1')" :class="{active:itemSelected==='1'}">
-                    <i class="nav-icon1" :class="{'nav-icon1-active':itemSelected==='1'}"></i>
-                    <span>账户信息</span>
-                </router-link>
-                <router-link tag="li" :to="{name:'tradeRecord'}" @click.native="selectAnItem('2')" :class="{active:itemSelected==='2'}">
-                    <i class="nav-icon2" :class="{'nav-icon2-active':itemSelected==='2'}"></i>
-                    <span>交易记录</span>
-                </router-link>
-                <router-link tag="li" :to="{name:'transaction'}" @click.native="selectAnItem('3')" :class="{active:itemSelected==='3'}">
-                    <i class="nav-icon3" :class="{'nav-icon3-active':itemSelected==='3'}"></i>
-                    <span>对外转账</span>
-                </router-link>
-                <router-link tag="li" :to="{name:'applications'}" @click.native="selectAnItem('4')" :class="{active:itemSelected==='4'}">
-                    <i class="nav-icon4" :class="{'nav-icon4-active':itemSelected==='4'}"></i>
-                    <span>应用市场</span>
-                </router-link>
-                <router-link tag="li" :to="{name:'createApp'}" @click.native="selectAnItem('5')" :class="{active:itemSelected==='5'}">
-                    <i class="nav-icon5" :class="{'nav-icon5-active':itemSelected==='5'}"></i>
-                    <span>创建应用</span>
-                </router-link>
-            </ul>
-        </nav>
+            <nav>
+                <ul class="no-select-text">
+                    <router-link tag="li" :to="{name:'accountInfo'}" @click.native="selectAnItem('1')"
+                                 :class="{active:itemSelected==='1'}">
+                        <i class="nav-icon1" :class="{'nav-icon1-active':itemSelected==='1'}"></i>
+                        <span>账户信息</span>
+                    </router-link>
+                    <router-link tag="li" :to="{name:'tradeRecord'}" @click.native="selectAnItem('2')"
+                                 :class="{active:itemSelected==='2'}">
+                        <i class="nav-icon2" :class="{'nav-icon2-active':itemSelected==='2'}"></i>
+                        <span>交易记录</span>
+                    </router-link>
+                    <router-link tag="li" :to="{name:'transaction'}" @click.native="selectAnItem('3')"
+                                 :class="{active:itemSelected==='3'}">
+                        <i class="nav-icon3" :class="{'nav-icon3-active':itemSelected==='3'}"></i>
+                        <span>对外转账</span>
+                    </router-link>
+                    <router-link tag="li" :to="{name:'applications'}" @click.native="selectAnItem('4')"
+                                 :class="{active:itemSelected==='4'}">
+                        <i class="nav-icon4" :class="{'nav-icon4-active':itemSelected==='4'}"></i>
+                        <span>应用市场</span>
+                    </router-link>
+                    <router-link tag="li" :to="{name:'createApp'}" @click.native="selectAnItem('5')"
+                                 :class="{active:itemSelected==='5'}">
+                        <i class="nav-icon5" :class="{'nav-icon5-active':itemSelected==='5'}"></i>
+                        <span>创建应用</span>
+                    </router-link>
+                </ul>
+            </nav>
 
         <div class="container">
             <header class="header">
@@ -31,7 +36,10 @@
             </header>
 
             <main class="content">
+
+                <keep-alive>
                 <router-view></router-view>
+                </keep-alive>
             </main>
         </div>
     </div>
@@ -54,6 +62,25 @@
             selectAnItem(index) {
                 this.itemSelected = index;
             }
+        },
+        mounted(){
+            switch(this.$route.name){
+                case 'accountInfo':
+                    this.itemSelected = '1'
+                    break;
+                case 'tradeRecord':
+                    this.itemSelected = '2'
+                    break;
+                case 'transaction':
+                    this.itemSelected = '3'
+                    break;
+                case 'applications':
+                    this.itemSelected = '4'
+                    break;
+                case 'createApp':
+                    this.itemSelected = '5'
+                    break;
+            }
         }
     }
 </script>
@@ -75,9 +102,9 @@
             border-top-style: solid;
             border-top-width: 2px;
             border-image-source: linear-gradient(-85deg,
-                #3410f7 0%,
-                #711bdc 59%,
-                #ad25c0 100%);
+                    #3410f7 0%,
+                    #711bdc 59%,
+                    #ad25c0 100%);
             border-image-slice: 1;
             -webkit-box-sizing: border-box;
             -moz-box-sizing: border-box;

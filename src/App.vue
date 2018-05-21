@@ -38,10 +38,10 @@
             // this.$store.state.privateKey = '8888888888888888888888888888888888888888888888888888888888888888'
             // this.$router.replace('/mainScreen')
 
+            // if (this.$store.state.publicKey === '' || this.$store.state.privateKey === '') {
+            //     this.$router.replace('/')
+            // }
 
-            if (this.$store.state.publicKey === '' || this.$store.state.privateKey === '') {
-                this.$router.replace('/')
-            }
             this.cryptPercent = this.$store.state.cryptPercent
         }
     }

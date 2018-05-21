@@ -8,17 +8,28 @@ export default {
             if (!reg.test(value)) {
                 return callback(new Error($message.createPwd));
             } else {
-                return callback();
+                return callback()
             }
         }
     },
 
     linkToMainScreenRep(params){     //转到主页面 / replace模式
-        // if(params && (typeof params !=='object')){
-        //     return new Error('Param Error')
-        // }
-        // params = params ? params : {}
-        // $router.replace({path: '/mainScreen'},params)
-        $router.replace({path: '/mainScreen/accountInfo'})
+        if(params && (typeof params !=='object')){
+            return new Error('Param Error')
+        }
+        params = params ? params : {}
+        $router.replace({name: 'accountInfo',params: params})
+    },
+
+    getLocalAddress(){
+        let json = localStorage.getItem('userAddress')
+        if(json){
+            return JSON.parse(json)
+        } else {
+            return null
+        }
+    },
+    setLocalAddress(obj){
+        localStorage.setItem('userAddress',JSON.stringify(obj))
     }
 }

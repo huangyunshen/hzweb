@@ -24,7 +24,7 @@
                         <el-form-item class="el-wallet-style mt-40" label="对方账户">
                             <el-input class="el-wallet-input"
                                       v-model="form.to"
-                                      placeholder="0x27d024958a6105a5c8cbd95a8ecb1ff35ad91016"></el-input>
+                                      ></el-input>
                         </el-form-item>
                         <el-form-item class="el-wallet-style mt-40" label="转账数额">
                             <el-input class="el-wallet-input"
@@ -166,12 +166,13 @@
             return {
                 steps: "1",
                 form: {
-                    to: '0x63c15e9e4d67421ed2099c33689d367eb228893b',
-                    value: '0.0005',
+                    to: '',
+                    value: '2',
                     gas: '21000',
                 },
                 unit: 'ETH',
                 address: '',
+                privateKey:'',
                 balance: 0,
                 password: '',
                 transactionHash: '', // 交易hash
@@ -204,12 +205,39 @@
             importAccount() {
                 this.$refs.unlock.importAccount().then((wallet) => {
                     if (typeof wallet === 'object') {
-                        this.$store.commit('setPublicKey', wallet.address ? wallet.address.toLowerCase() : '')
-                        this.$store.commit('setMnemonic', wallet.mnemonic ? wallet.mnemonic : '')
-                        this.$store.commit('setPrivateKey', wallet.privateKey ? wallet.privateKey.replace('0x', '') : '')
-                        this.getSignMsg().then(() => {
-                            this.steps = '3'
-                        })
+                        if(wallet.address !== this.address){
+                            this.$confirm(this.$msg.diffrentAccount, '账户不一致', {
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                                type: 'warning'
+                            }).then(() => {
+
+                                let obj = this.$funs.getLocalAddress()
+                                let addresses = obj ? obj.addresses : []
+                                let index = addresses.indexOf(wallet.address)
+                                if (index === -1) {
+                                    index = obj ? addresses.length : 0
+                                    addresses.push(wallet.address)
+                                }
+                                obj = {active: index, addresses: addresses}
+                                this.$funs.setLocalAddress(obj)
+
+                                this.address = wallet.address
+                                this.privateKey = wallet.privateKey.replace('0x', '')
+
+                                this.getSignMsg().then(() => {
+                                    this.steps = '3'
+                                })
+
+                            }).catch(() => {
+                                this.privateKey = wallet.privateKey.replace('0x', '')
+
+                                this.getSignMsg().then(() => {
+                                    this.steps = '3'
+                                })
+                            });
+                        }
+
                     }
                 }, (err) => {
                 });
@@ -253,7 +281,7 @@
             getSignMsg() {
                 return new Promise((resolve, reject) => {
                     let Tx = require('ethereumjs-tx')
-                    let privateKey = new Buffer(this.$store.state.privateKey, 'hex')
+                    let privateKey = new Buffer(this.privateKey, 'hex')
                     let nonce = this.$web3.eth.getTransactionCount(this.address)
                     let rawTx = {
                         nonce: this.$web3.toHex(nonce),
@@ -273,7 +301,9 @@
             }
         },
         mounted() {
-            this.address = this.$store.state.publicKey
+            let obj = this.$funs.getLocalAddress();
+            this.address = obj.addresses[obj.active]
+
             if (this.address) {
                 let balance = this.$web3.eth.getBalance(this.address);
                 this.balance = this.$web3.fromWei(this.$web3.toDecimal(balance), 'ether')

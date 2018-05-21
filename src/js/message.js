@@ -4,8 +4,8 @@ export default {
     createPwd: '密码应大于8位同时包含数字和字母',
     serviceException: '服务器异常,请联系管理员',
     emptyResult: '无查询结果',
-    emptyAddress: '请先输入目标地址',
-    emptyValue: '请先输入转账数额',
+    emptyAddress: '请输入对方账户地址',
+    emptyValue: '请输入转账数额',
     transactionFail: '转账失败',
     transactionSucc: '转账成功',
     enterPwd: '请输入密码',
@@ -19,5 +19,6 @@ export default {
     corretWalletFile: '已导入钱包文件，请输入密码后导入',
     invalidWalletFile: '不支持的钱包文件',
     invalidFile: '错误的文件类型',
-    readFileErr: '读取文件失败'
+    readFileErr: '读取文件失败',
+    diffrentAccount:'输入账户与当前登录账户不一致，是否把当前登录账户替换'
 }

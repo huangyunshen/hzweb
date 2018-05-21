@@ -86,9 +86,15 @@
             }
         },
         mounted() {
-            this.address = this.$store.state.publicKey
-            this.privateKey = this.$store.state.privateKey
-            this.mnemonic = this.$store.state.mnemonic
+            let obj = this.$funs.getLocalAddress();
+            this.address = obj.addresses[obj.active]
+
+            if(!this.mnemonic&&!this.privateKey){
+                let params = this.$route.params;
+                this.mnemonic = params.mnemonic
+                this.privateKey = params.privateKey
+            }
+
             if (this.address !== '') {
                 this.balance = this.$web3.eth.getBalance(this.address).toJSON()
             }
