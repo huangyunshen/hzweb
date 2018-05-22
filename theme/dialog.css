@@ -431,11 +431,11 @@
       color: #5837FF; }
   .el-dialog__title {
     line-height: 24px;
-    font-size: 18px;
-    color: #303133; }
+    font-size: 20px;
+    color: #ADA7E5; }
   .el-dialog__body {
     padding: 30px 20px;
-    color: #606266;
+    color: #cec8ff;
     font-size: 14px; }
   .el-dialog__footer {
     padding: 20px;

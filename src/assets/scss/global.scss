@@ -37,24 +37,32 @@
     }
 }
 
+input:focus,
+textarea:focus {
+    background-color: #6A62A7;
+}
+.popper__arrow{
+    border-bottom-color: #534B86 !important;
+}
+.popper__arrow:after{
+    border-bottom-color: #433E71!important;
+}
+
 /*****  wallet style start    ****/
 
-.el-wallet-style label {
-    font-size: 20px;
+.el-form label {
+    font-size: 18px;
     color: #b6d7ff;
 }
 
 .el-wallet-style .el-wallet-input input,
 .el-wallet-style .el-wallet-input textarea {
-    height: 44px;
-    background-color: #7a99be;
-    border-radius: 2px;
-    font-size: 16px;
-    color: #182f4a;
-    border: none;
+    font-size: 18px;
+    //background-color: #7a99be;
+    //color: #182f4a;
 }
 
-.transaction .el-wallet-style .el-wallet-input textarea {
+.transaction textarea {
     height: 300px;
 }
 
@@ -69,11 +77,10 @@
         line-height: 70px;
     }
 }
-
-.el-wallet-style .el-wallet-input input:focus,
-.el-wallet-style .el-wallet-input textarea:focus {
-    background-color: #ADCEF7;
-}
+//.el-wallet-style .el-wallet-input input:focus,
+//.el-wallet-style .el-wallet-input textarea:focus {
+//    background-color: #ADCEF7;
+//}
 
 #app .el-wallet-main-button {
     width: 100%;

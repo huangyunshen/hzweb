@@ -32,6 +32,7 @@
 
         <div class="container">
             <header class="header">
+                <el-button size="mini" @click="exit">退出</el-button>
                 <language class="language"></language>
             </header>
 
@@ -58,6 +59,9 @@
         methods: {
             selectAnItem(index) {
                 this.itemSelected = index;
+            },
+            exit(){
+                this.$funs.linkToFirstScreenRep()
             }
         },
         mounted() {
@@ -197,6 +201,14 @@
                 align-items: center;
                 justify-content: flex-end;
 
+                .el-button{
+                    height: 28px;
+                    margin-right: 20px;
+                    background: #403A6D;
+                    color: #CEC8FF;
+                    font-size: 12px;
+                    border: none;
+                }
                 .language {
                     margin-right: 30px;
                 }

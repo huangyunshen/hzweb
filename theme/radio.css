@@ -340,7 +340,7 @@
 /* Break-point
 --------------------------*/
 .el-radio {
-  color: #606266;
+  color: #cec8ff;
   font-weight: 500;
   line-height: 1;
   position: relative;
@@ -348,7 +348,7 @@
   display: inline-block;
   white-space: nowrap;
   outline: none;
-  font-size: 14px;
+  font-size: 16px;
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none; }
@@ -416,9 +416,9 @@
       background-color: #f5f7fa;
       border-color: #e4e7ed; }
       .el-radio__input.is-disabled.is-checked .el-radio__inner::after {
-        background-color: #c0c4cc; }
+        background-color: #F0EDFF; }
     .el-radio__input.is-disabled + span.el-radio__label {
-      color: #c0c4cc;
+      color: #F0EDFF;
       cursor: not-allowed; }
     .el-radio__input.is-checked .el-radio__inner {
       border-color: #5837FF;

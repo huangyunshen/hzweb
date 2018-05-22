@@ -21,18 +21,18 @@
                 </div>
                 <div class="step-1-body">
                     <el-form ref="form" :model="form" label-position="left" label-width="150px">
-                        <el-form-item class="el-wallet-style mt-40" label="对方账户">
-                            <el-input class="el-wallet-input"
+                        <el-form-item class="mt-40" label="对方账户">
+                            <el-input
                                       v-model="form.to"
                                       ></el-input>
                         </el-form-item>
-                        <el-form-item class="el-wallet-style mt-40" label="转账数额">
-                            <el-input class="el-wallet-input"
+                        <el-form-item class="mt-40" label="转账数额">
+                            <el-input
                                       placeholder="数额"
                                       v-model="form.value"></el-input>
                         </el-form-item>
-                        <el-form-item class="el-wallet-style mt-40" label="Gas Limit">
-                            <el-input class="el-wallet-input"
+                        <el-form-item class="mt-40" label="Gas Limit">
+                            <el-input
                                       v-model="form.gas"
                                       value="21000"
                                       placeholder="21000"></el-input>
@@ -54,7 +54,7 @@
                 <div class="step-3-content">
                     <el-form label-position="top" class="emitTransaction">
                         <el-form-item label="未生效交易" class="el-wallet-style">
-                            <el-input class="el-wallet-input"
+                            <el-input
                                       type="textarea"
                                       resize="none"
                                       readonly
@@ -62,8 +62,8 @@
                         </el-form-item>
                     </el-form>
                     <el-form label-position="top" class="emitTransaction">
-                        <el-form-item label="签名交易" class="el-wallet-style">
-                            <el-input class="el-wallet-input"
+                        <el-form-item label="签名交易">
+                            <el-input
                                       type="textarea"
                                       resize="none"
                                       readonly
@@ -131,7 +131,7 @@
                     <span>，请确认</span>
                 </div>
                 <div class="step-4-footer">
-                    <el-button class="abandon">放弃</el-button>
+                    <el-button class="abandon" @click="abandon">放弃</el-button>
                     <el-button class="submit el-wallet-main-button" @click="confirmTransaction">发送交易</el-button>
                 </div>
             </div>
@@ -187,9 +187,9 @@
              */
             typePwd() {
                 this.password = ''
-                if (this.form.to.trim() === '') {
+                if (!this.$web3.isAddress(this.form.to)) {
                     this.$message({
-                        message: this.$msg.emptyAddress,
+                        message: this.$msg.invalidAddress,
                         type: 'error'
                     })
                     return
@@ -262,12 +262,16 @@
                 }
                 this.steps = '4'
             },
+            abandon(){
+                this.steps = '1'
+            },
             /**
              * 点击 确认发送交易
              */
             confirmTransaction() {
                 this.$web3.eth.sendRawTransaction(this.transactionSign, (err, hash) => {
                     if (err) {
+                        console.log(err);
                         this.$message({
                             message: err,
                             type: 'error'
@@ -373,7 +377,7 @@
                         vertical-align: text-top;
                     }
                     .tranc-balance {
-                        margin-right: 100px;
+                        /*margin-right: 100px;*/
                         float: left;
                         i {
                             background: url("../../assets/images/transaction/icon_zz_zhye.png") no-repeat;

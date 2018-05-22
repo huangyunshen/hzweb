@@ -294,7 +294,7 @@
     -webkit-transform: translateY(-50%);
     transform: translateY(-50%);
     cursor: pointer;
-    color: #c0c4cc;
+    color: #F0EDFF;
     font-size: 22px; }
     .el-message__closeBtn:focus {
       outline-width: 0; }

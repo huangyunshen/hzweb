@@ -13,6 +13,10 @@ export default {
         }
     },
 
+    linkToFirstScreenRep(){     //转到登录 / replace模式
+        $router.replace({name: 'importWallet'})
+    },
+
     linkToMainScreenRep(params){     //转到主页面 / replace模式
         if(params && (typeof params !=='object')){
             return new Error('Param Error')

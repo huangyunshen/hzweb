@@ -26,6 +26,6 @@
 
 <style scoped>
     .el-select{
-
+        width: 100px;
     }
 </style>

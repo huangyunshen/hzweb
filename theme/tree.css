@@ -232,7 +232,7 @@
   position: relative;
   cursor: default;
   background: #fff;
-  color: #606266; }
+  color: #cec8ff; }
   .el-tree__empty-block {
     position: relative;
     min-height: 60px;
@@ -286,7 +286,7 @@
       cursor: not-allowed; }
   .el-tree-node__expand-icon {
     cursor: pointer;
-    color: #c0c4cc;
+    color: #F0EDFF;
     font-size: 12px;
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
@@ -301,11 +301,11 @@
       color: transparent;
       cursor: default; }
   .el-tree-node__label {
-    font-size: 14px; }
+    font-size: 16px; }
   .el-tree-node__loading-icon {
     margin-right: 8px;
-    font-size: 14px;
-    color: #c0c4cc; }
+    font-size: 16px;
+    color: #F0EDFF; }
   .el-tree-node > .el-tree-node__children {
     overflow: hidden;
     background-color: transparent; }

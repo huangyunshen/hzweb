@@ -1,23 +1,5 @@
 <template>
     <div>
-        <!--<el-form-->
-        <!--label-width="150px"-->
-        <!--label-position="left"-->
-        <!--:rules="rulesCreate"-->
-        <!--:model="formRulesCreate"-->
-        <!--ref="formRulesCreate"-->
-        <!--@submit.native.prevent>-->
-
-        <!--<el-form-item class="el-wallet-style" label="创建钱包" prop="pwd">-->
-        <!--<el-input-->
-        <!--type="password"-->
-        <!--v-model="formRulesCreate.pwd"-->
-        <!--:placeholder="this.$msg.createPwd"-->
-        <!--auto-complete="off"-->
-        <!--clearable-->
-        <!--&gt;</el-input>-->
-        <!--</el-form-item>-->
-        <!--</el-form>-->
         <el-form
                 label-width="150px"
                 label-position="left"

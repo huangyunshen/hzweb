@@ -352,7 +352,7 @@
     border: 1px solid #dcdfe6;
     font-weight: 500;
     border-left: 0;
-    color: #606266;
+    color: #cec8ff;
     -webkit-appearance: none;
     text-align: center;
     -webkit-box-sizing: border-box;
@@ -391,7 +391,7 @@
       -webkit-box-shadow: -1px 0 0 0 #5837FF;
       box-shadow: -1px 0 0 0 #5837FF; }
     .el-radio-button__orig-radio:disabled + .el-radio-button__inner {
-      color: #c0c4cc;
+      color: #F0EDFF;
       cursor: not-allowed;
       background-image: none;
       background-color: #fff;

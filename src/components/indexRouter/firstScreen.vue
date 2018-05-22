@@ -56,6 +56,18 @@
                 this.isCreate = !this.isCreate;
                 this.walletSelect = this.isCreate ? 'wallet-create' : 'wallet-import';
             }
+        },
+        mounted(){
+            switch (this.$route.name) {
+                case 'createWallet':
+                    this.isCreate = true
+                    this.walletSelect = 'wallet-create'
+                    break;
+                case 'importWallet':
+                    this.isCreate = false
+                    this.walletSelect = 'wallet-import'
+                    break;
+            }
         }
     }
 </script>
