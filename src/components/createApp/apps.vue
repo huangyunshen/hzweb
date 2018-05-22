@@ -47,7 +47,7 @@
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
-                background: url("../../assets/images/apps/icon_cjyy_xz.png");
+                background: url("../../assets/images/apps/icon_cjyy_xz.png") no-repeat;
             }
         }
         .icon:hover,.active {

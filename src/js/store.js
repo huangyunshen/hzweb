@@ -12,7 +12,8 @@ const store = new Vuex.Store({
         cryptPercent: {      //创建或解锁账户进行中
             percent: false,
             text: ''
-        }
+        },
+        userPassword: '',
     },
     mutations: {
         setGasPrice(state, data) {
@@ -30,7 +31,10 @@ const store = new Vuex.Store({
         setCryptPercent(state, data){
             state.cryptPercent.percent = data.percent
             state.cryptPercent.text = data.text
-        }
+        },
+        setPassword(state, data){
+            state.userPassword = data
+        },
     }
 })
 

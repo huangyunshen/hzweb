@@ -1,9 +1,6 @@
-import Vue from 'vue'
 import axios from 'axios'
-import qs from 'qs'
 
-const PRODUCT = 'http://39.104.81.103:8101'
-const HOST = PRODUCT
+const HOST = 'http://39.104.81.103:8088'
 
 axios.defaults.baseURL = HOST  // 设置请求地址，后面的接口都将基于这个基本请求地址
 

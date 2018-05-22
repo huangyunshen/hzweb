@@ -153,12 +153,28 @@ contract interval {
     function getAddress(address _addr) {
         addr.push(_addr);
     }
-    //
+
+    // 后台定时器触发这个函数就可以了
     function trigger(){
         for (uint i = 0; i < addr.length; i++) {
             callFeed(addr[i]);
         }
     }
+
+    function getAddrLen() constant returns (uint){
+        return addr.length;
+    }
+
+    function chargeExist(address _addr) returns (bool){
+        bool flag = false;
+        for (uint i = 0; i < addr.length; i++) {
+            if (addr[i] == _addr) {
+                flag = true;
+            }
+        }
+        return flag;
+    }
+
     // 传入合约地址
     function callFeed(address addr) {
         playGame(addr).getResult();

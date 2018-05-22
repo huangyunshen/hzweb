@@ -18,6 +18,15 @@ contract interval {
         return addr.length;
     }
 
+    function chargeExist(address _addr) returns (bool){
+        bool flag = false;
+        for (uint i = 0; i < addr.length; i++) {
+            if (addr[i] == _addr) {
+                flag = true;
+            }
+        }
+        return flag;
+    }
 
     // 传入合约地址
     function callFeed(address addr) {
@@ -54,7 +63,7 @@ contract playGame {
 
     }
 
-    function getBlockTime() constant returns (uint, uint,uint){
+    function getBlockTime() constant returns (uint, uint, uint){
         return (time, block.timestamp, xor);
     }
 
@@ -141,7 +150,7 @@ contract playGame {
         reset();
     }
     // 重置函数
-    function reset (){
+    function reset(){
         xor = 0;
         time = getTimestamp();
         randomNum.length = 0;

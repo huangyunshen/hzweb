@@ -1,61 +1,4 @@
 <template>
-    <!--<div class="apps" v-loading="loading">-->
-    <!--<el-dialog-->
-    <!--center-->
-    <!--title="部署成功"-->
-    <!--:visible.sync="dialogVisible"-->
-    <!--:close-on-click-modal="false"-->
-    <!--:close-on-press-escape="false"-->
-    <!--width="30%">-->
-    <!--<el-form>-->
-    <!--<el-form-item label="合约地址为" label-width="100px">-->
-    <!--<el-input v-model="contractAddress" auto-complete="off" readonly="true"></el-input>-->
-    <!--</el-form-item>-->
-    <!--</el-form>-->
-    <!--<span slot="footer" class="dialog-footer">-->
-    <!--<el-button type="primary" @click="showTransfer">确 定</el-button>-->
-    <!--</span>-->
-    <!--</el-dialog>-->
-    <!--<el-dialog-->
-    <!--center-->
-    <!--title="向奖金池充值"-->
-    <!--:visible.sync="rechargeVisible"-->
-    <!--:close-on-click-modal="false"-->
-    <!--:close-on-press-escape="false"-->
-    <!--width="30%">-->
-    <!--<el-form :model="rechargeData">-->
-    <!--<el-form-item label="充值金额为" label-width="100px">-->
-    <!--<el-input v-model="rechargeData.value" auto-complete="off">-->
-    <!--<template slot="append">ETH</template>-->
-    <!--</el-input>-->
-    <!--</el-form-item>-->
-    <!--<el-form-item label="gasPrice" label-width="100px">-->
-    <!--<el-input v-model="rechargeData.gasPrice" auto-complete="off">-->
-    <!--<template slot="append">Gwei</template>-->
-    <!--</el-input>-->
-    <!--</el-form-item>-->
-    <!--</el-form>-->
-    <!--<span slot="footer" class="dialog-footer">-->
-    <!--<el-button type="primary" @click="recharge">确 定</el-button>-->
-    <!--</span>-->
-    <!--</el-dialog>-->
-    <!--<el-dialog-->
-    <!--center-->
-    <!--title="转帐提示"-->
-    <!--:visible.sync="transferVisible"-->
-    <!--width="30%">-->
-    <!--<el-form>-->
-    <!--<el-form-item label="转账hash为：" label-width="100px">-->
-    <!--<el-input v-model="transferHash" auto-complete="off">-->
-    <!--</el-input>-->
-    <!--</el-form-item>-->
-    <!--</el-form>-->
-    <!--<span slot="footer" class="dialog-footer">-->
-    <!--<el-button type="primary" @click="transferVisible = false">确 定</el-button>-->
-    <!--</span>-->
-    <!--</el-dialog>-->
-    <!--</div>-->
-
     <div>
         <div class="create-app">
             <div class="create-header no-select-text">
@@ -109,9 +52,9 @@
                                 </el-form-item>
                             </el-form>
                             <el-form class="mt-50"
-                                    label-width="110px"
-                                    label-position="left"
-                                    @submit.native.prevent>
+                                     label-width="110px"
+                                     label-position="left"
+                                     @submit.native.prevent>
 
                                 <el-form-item class="el-wallet-style" label="下注金额">
                                     <el-row>
@@ -157,7 +100,7 @@
                                         <el-col :span="20">
                                             <el-input class="el-wallet-input"
                                                       auto-complete="off"
-                                                      v-model="contractAddress"
+                                                      v-model="contractAddressUrl"
                                                       readonly
                                             ></el-input>
                                         </el-col>
@@ -196,7 +139,7 @@
         data() {
             return {
                 steps: 1,
-                selected:null,
+                selected: null,
                 appList: [
                     {
                         imgUrl: require('../../assets/images/apps/game_icon1.png'),
@@ -233,12 +176,8 @@
                 ],
                 btnVal: "下一步",
                 setCoin: null,
-                loading: false,
-                dialogVisible: false, // 部署成功显示合约地址
-                rechargeVisible: false,// 充值弹窗
-                transferVisible: false,// 转账成功弹窗
-                transferHash: '',
                 contractAddress: '',
+                contractAddressUrl:'',// 可以访问的地址
                 rechargeValue: '',
                 rechargeData: {
                     value: '100',
@@ -247,7 +186,9 @@
                     price1: '1',
                     price2: '5',
                     price3: '10'
-                }
+                },
+                publicKey: '',
+                password: ''
             }
         },
         methods: {
@@ -258,44 +199,78 @@
             },
             nextStep() {
                 if (this.steps < 4) {
-                    if(this.steps===2&& (typeof this.selected !== 'number')){
+                    if (this.steps === 2 && (typeof this.selected !== 'number')) {
                         this.$message({
-                            message:this.$msg.mustSelectAnApp,
-                            type:'error'
+                            message: this.$msg.mustSelectAnApp,
+                            type: 'error'
                         })
                         return
                     }
-                    if(this.steps===3){
+                    if (this.steps === 3) {
+                        if (isNaN(this.rechargeData.value)) {
+                            this.$message.error('请输入正确的充值数量！')
+                            return
+                        }
+                        if (this.rechargeData.value === '' || Number(this.rechargeData.value) === 0) {
+                            this.$message.error('充值数量不能为空和不能为0！')
+                            return
+                        }
+                        if (isNaN(this.rechargeData.gasPrice)) {
+                            this.$message.error('请输入正确的gasPrice！')
+                            return
+                        }
+                        if (this.rechargeData.gasPrice === '' || Number(this.rechargeData.gasPrice) === 0) {
+                            this.$message.error('gasPrice不能为空和不能为0！')
+                            return
+                        }
+                        if (isNaN(this.rechargeData.price1)
+                            || isNaN(this.rechargeData.price2)
+                            || isNaN(this.rechargeData.price3)) {
+                            this.$message.error('请设置正确的下注金额！')
+                            return
+                        }
+                        if (this.rechargeData.price1.trim() === ''
+                            || this.rechargeData.price2.trim() === ''
+                            || this.rechargeData.price3.trim() === ''
+                            || Number(this.rechargeData.price1) === 0
+                            || Number(this.rechargeData.price2) === 0
+                            || Number(this.rechargeData.price3) === 0) {
+                            this.$message.error('充值数量不能为空和不能为0！')
+                            return
+                        }
+                        this.steps--
                         this.$confirm('确认部署合约吗?', '提示', {
                             confirmButtonText: '确定',
                             cancelButtonText: '取消',
                             type: 'warning'
                         }).then(() => {
                             let users = this.$funs.getLocalAddress()
-                            let user = users.addresses[users.active]
+                            this.publicKey = users.addresses[users.active]
                             if (this.$store.state.userPassword === "") {
-                                this.$prompt(`请输入${user}的密码`, '提示', {
+                                this.$prompt(`请输入${this.publicKey}的密码`, '提示', {
                                     confirmButtonText: '确定',
                                     cancelButtonText: '取消',
                                 }).then(({value}) => {
+                                    this.password = value
                                     this.$confirm('是否保存密码?', '提示', {
                                         confirmButtonText: '确定',
                                         cancelButtonText: '取消',
                                         type: 'warning'
                                     }).then(() => {
-                                        this.$store.commit("setPassword", "value")
-                                        this.migration(user, value)
+                                        this.$store.commit("setPassword", value)
+                                        this.migration(this.publicKey, value)
                                     }).catch(() => {
-                                        this.migration(user, value)
+                                        this.migration(this.publicKey, value)
                                     })
                                 }).catch((error) => {
+                                    console.log(error)
                                 })
                             } else {
-                                this.migration(user, this.$store.state.userPassword)
+                                this.migration(this.publicKey, this.$store.state.userPassword)
                             }
                         }).catch((err) => {
                             if (err !== 'cancel') {
-                                this.$message.error('无效地址或者密码错误！')
+                                this.$message.error(String(err))
                             }
                         })
                     }
@@ -308,185 +283,75 @@
                     this.$refs.funcs[c].selectApp(index)
                 }
             },
-            // showTransfer() {
-            //     this.dialogVisible = false
-            //     let timer = setTimeout(() => {
-            //         clearTimeout(timer)
-            //         this.rechargeVisible = true
-            //     }, 500)
-            // },
             /**
              * 充值
              */
             recharge() {
-                if (isNaN(this.rechargeData.value)) {
-                    this.$message.error('请输入正确的充值数量！')
-                    return false
-                }
-                if (this.rechargeData.value === '' || Number(this.rechargeData.value) === 0) {
-                    this.$message.error('充值数量不能为空和不能为0！')
-                    return false
-                }
-                if (isNaN(this.rechargeData.gasPrice)) {
-                    this.$message.error('请输入正确的gasPrice！')
-                    return false
-                }
-                if (this.rechargeData.gasPrice === '' || Number(this.rechargeData.gasPrice) === 0) {
-                    this.$message.error('gasPrice不能为空和不能为0！')
-                    return false
-                }
-                // todo
-                this.$web3.personal.unlockAccount(this.$store.state.publicKey, 'jacky')
+                let users = this.$funs.getLocalAddress()
+                this.publicKey = users.addresses[users.active]
+                this.rechargeFun(this.publicKey,this.password)
+            },
+            //
+            rechargeFun(user, value) {
+                this.$web3.personal.unlockAccount(user, value)
                 let MyContract = this.$web3.eth.contract(
                     playGameContract.abi
                 )
                 let myContractInstance = MyContract.at(this.contractAddress)
-                // let myContractInstance = MyContract.at('0x1eae033ce4e56e62c3bc26ce7750c1cd9621fac2')
                 // 转账 到合约账户，返回交易hash
                 let hash = myContractInstance.deposit({
-                    from: this.$store.state.publicKey,
+                    from: user,
                     value: this.$web3.toWei(this.rechargeData.value, 'ether'),
                     gasPrice: this.rechargeData.gasPrice * Math.pow(10, 9),
                     gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
                 })
                 if (hash) {
-                    // this.rechargeVisible = false
-                    // let timer = setTimeout(() => {
-                    //     clearTimeout(timer)
-                        this.transferHash = hash
-                    //     this.transferVisible = true
-                    // }, 500)
+                    let timer = setTimeout(() => {
+                        clearTimeout(timer)
+                        this.$store.commit('setCryptPercent', {percent: false, text: '充值成功！'})
+                        this.steps++
+                        this.btnVal('完成')
+                    }, 500)
                 }
             },
-            // next() {
-            //     if (this.active++ > 1) {
-            //         this.btnVal = '完成'
-            //     }
-            //     if (this.active > 3) {
-            //         this.active--
-            //         this.$confirm('确认部署合约吗?', '提示', {
-            //             confirmButtonText: '确定',
-            //             cancelButtonText: '取消',
-            //             type: 'warning'
-            //         }).then(() => {
-            //             let users = this.$funs.getLocalAddress()
-            //             let user = users.addresses[users.active]
-            //             if (this.$store.state.userPassword === "") {
-            //                 this.$prompt(`请输入${user}的密码`, '提示', {
-            //                     confirmButtonText: '确定',
-            //                     cancelButtonText: '取消',
-            //                 }).then(({value}) => {
-            //                     this.$confirm('是否保存密码?', '提示', {
-            //                         confirmButtonText: '确定',
-            //                         cancelButtonText: '取消',
-            //                         type: 'warning'
-            //                     }).then(() => {
-            //                         this.$store.commit("setPassword", "value")
-            //                         this.migration(user, value)
-            //                     }).catch(() => {
-            //                         this.migration(user, value)
-            //                     })
-            //                 }).catch((error) => {
-            //                 })
-            //             } else {
-            //                 this.migration(user, this.$store.state.userPassword)
-            //             }
-            //         }).catch((err) => {
-            //             if (err !== 'cancel') {
-            //                 this.$message.error('无效地址或者密码错误！')
-            //             }
-            //         })
-            //     }
-            // },
+            /**
+             * 部署
+             * @param user
+             * @param value
+             */
             migration(user, value) {
-                let url = "http://localhost:8080/appDetail"
-                this.$msgbox({
-                    title: '消息',
-                    message: `${url}?0x6ef1a17b452ab6b7b5aca4c7c2204040b8141643`,
-                    showCancelButton: true,
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    beforeClose: (action, instance, done) => {
-                        if (action === 'confirm') {
-                            instance.confirmButtonLoading = true;
-                            instance.confirmButtonText = '执行中...';
-                            setTimeout(() => {
-                                done();
-                                setTimeout(() => {
-                                    instance.confirmButtonLoading = false;
-                                }, 300);
-                            }, 3000);
-                        } else {
-                            done();
-                        }
-                    }
-                }).then(action => {
-                    this.$message({
-                        type: 'info',
-                        message: 'action: ' + action
-                    });
-                });
                 this.$web3.personal.unlockAccount(user, value)
-                return
-                this.loading = true
+                this.$store.commit('setCryptPercent', {percent: true, text: '创建中···'})
                 let MyContract = this.$web3.eth.contract(
                     playGameContract.abi
                 )
                 MyContract.new({
                     data: playGameContract.bytecode,
                     from: user,
-                    gasPrice: '20000000000',
+                    gasPrice: '41000000000',
                     gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
                 }, (err, myContract) => {
                     if (err) {
-                        this.loading = false
-                        this.$message.error('部署失败！')
+                        this.$store.commit('setCryptPercent', {percent: false, text: '创建中···'})
+                        this.$message.error(String(err))
                     } else {
                         if (myContract.address) {
-                            this.loading = false
+                            this.$store.commit('setCryptPercent', {percent: true, text: '创建成功！正在充值···'})
                             console.log(myContract.address)
                             this.contractAddress = myContract.address
-                            this.dialogVisible = true
                             localStorage.setItem('contractAddress', myContract.address)
-                            this.$store.commit('setContractAddress', myContract.address)
-
                             // 每次部署完合约，需要向定时器合约中注册当前合约地址
                             let myIntContractInstance = MyContract.at(myContract.address)
-                            myIntContractInstance.registerInterval('0x4e9f0c8d3378042c418c42a8a5f48783731d65d2', {
+                            myIntContractInstance.registerInterval('0x68f29df20809fb99988d1180ee030a93c23b291a', {
                                 from: user,
-                                gasPrice: 20000000000,
+                                gasPrice: 41000000000,
                                 gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
                             })
-
+                            sessionStorage.setItem('userContract', myContract.address)
+                            this.recharge() // 充值
                             //部署成功！你的合约地址为
                             let url = "http://localhost:8080/appDetail"
-                            this.$msgbox({
-                                title: '消息',
-                                message: `${url}?0x6ef1a17b452ab6b7b5aca4c7c2204040b8141643`,
-                                showCancelButton: true,
-                                confirmButtonText: '确定',
-                                cancelButtonText: '取消',
-                                beforeClose: (action, instance, done) => {
-                                    if (action === 'confirm') {
-                                        instance.confirmButtonLoading = true;
-                                        instance.confirmButtonText = '执行中...';
-                                        setTimeout(() => {
-                                            done();
-                                            setTimeout(() => {
-                                                instance.confirmButtonLoading = false;
-                                            }, 300);
-                                        }, 3000);
-                                    } else {
-                                        done();
-                                    }
-                                }
-                            }).then(action => {
-                                this.$message({
-                                    type: 'info',
-                                    message: 'action: ' + action
-                                });
-                            });
-                            // 0xf7b2d96eb1c84f846c226da6e265b27225243b71
+                            this.contractAddressUrl = `${url}?${myContract.address}`
                         }
                     }
                 })
@@ -550,34 +415,34 @@
                 box-sizing: border-box;
             }
             .step-3 {
-                .content{
+                .content {
                     width: 800px;
                     padding: 30px;
                 }
             }
-            .step-4{
-                .body{
+            .step-4 {
+                .body {
                     border-left: none;
                     border-top: none;
                     border-right: none;
                     margin-bottom: 30px;
-                    .finishe-icon{
+                    .finishe-icon {
                         text-align: center;
                         padding: 100px 0;
-                        i{
+                        i {
                             display: inline-block;
                             width: 120px;
                             height: 120px;
                             background: url("../../assets/images/apps/icon_cjcg.png");
                         }
-                        p{
+                        p {
                             margin-top: 25px;
                             font-size: 24px;
                             color: #8490c5;
                         }
                     }
-                    .finishe-address{
-                        .el-button{
+                    .finishe-address {
+                        .el-button {
                             width: 80%;
                             height: 70px;
                             margin-left: 10px;

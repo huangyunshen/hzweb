@@ -123,7 +123,10 @@
                     } else if (this.form.decryptType === '2') {          //keystore文件+密码
 
                         if (!this.form.fileContent) {
-                            this.$message(this.$msg.selectAnFile)
+                            this.$message({
+                                message: this.$msg.selectAnFile,
+                                type: 'error'
+                            })
                             reject(false)
                             return
                         }
