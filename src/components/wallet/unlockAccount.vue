@@ -114,18 +114,24 @@
                             let wallet = new this.$Wallet('0x' + this.form.privateKey)
                             resolve(wallet)
                         } catch (err) {
-                            this.$message.error(this.$msg.invalidPrivateKey)
+                            this.$message({
+                                message: this.$msg.invalidPrivateKey,
+                                type: 'error'
+                            })
                             reject(false)
                         }
                     } else if (this.form.decryptType === '2') {          //keystore文件+密码
 
                         if (!this.form.fileContent) {
-                            this.$message.error(this.$msg.selectAnFile)
+                            this.$message(this.$msg.selectAnFile)
                             reject(false)
                             return
                         }
                         if (!this.form.pwd) {
-                            this.$message.error(this.$msg.enterPwd)
+                            this.$message({
+                                message: this.$msg.enterPwd,
+                                type: 'error'
+                            })
                             reject(false)
                             return
                         }
@@ -145,7 +151,10 @@
                                 resolve(wallet)
                             }, (err) => {
                                 this.form.pwd = ''
-                                this.$message.error(this.$msg.unlockFailByPwd)
+                                this.$message({
+                                    message: this.$msg.unlockFailByPwd,
+                                    type: 'error'
+                                });
                                 this.$store.commit('setCryptPercent', {
                                         percent: false,
                                         text: ''
@@ -158,7 +167,10 @@
                             this.form.fileContent = ''
                             this.form.pwd = ''
 
-                            this.$message.error(this.$msg.invalidMnemonic)
+                            this.$message({
+                                message: this.$msg.invalidMnemonic,
+                                type: 'error'
+                            })
                             reject(false)
                         }
 
@@ -167,7 +179,10 @@
                             let wallet = this.$Wallet.fromMnemonic(this.form.mnemonic)
                             resolve(wallet)
                         } catch (err) {
-                            this.$message.error(this.$msg.invalidMnemonic)
+                            this.$message({
+                                message: this.$msg.invalidMnemonic,
+                                type: 'error'
+                            });
                             reject(false)
                         }
                     } else if (this.form.decryptType === '4') {          //账户地址
@@ -176,7 +191,10 @@
                             this.form.mnemonic = ''
                             resolve({address:this.form.address})
                         } else {
-                            this.$message.error(this.$msg.invalidAddress)
+                            this.$message({
+                                message: this.$msg.invalidAddress,
+                                type: 'error'
+                            })
                             reject(false)
                         }
                     }
@@ -200,17 +218,29 @@
 
                         if (keystore.Crypto != null || keystore.crypto != null || (keystore.hash != null && keystore.locked)) {
                             this.form.fileContent = reader.result
-                            this.$message.success(this.$msg.corretWalletFile)
+                            this.$message({
+                                message: this.$msg.corretWalletFile,
+                                type: 'success'
+                            })
                         } else {
-                            this.$message.error(this.$msg.invalidWalletFile)
+                            this.$message({
+                                message: this.$msg.invalidWalletFile,
+                                type: 'error'
+                            });
                         }
                     } catch (err) {
-                        this.$message.error(this.$msg.invalidFile)
+                        this.$message({
+                            message: this.$msg.invalidFile,
+                            type: 'error'
+                        });
                     }
                 }
 
                 reader.onerror = () => {
-                    this.$message.error(this.$msg.readFileErr)
+                    this.$message({
+                        message: this.$msg.readFileErr,
+                        type: 'error'
+                    });
                 }
             }
         },

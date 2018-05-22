@@ -1,157 +1,609 @@
 <template>
-    <div class="createApp">
-        <el-steps :active="active" finish-status="finish" align-center>
-            <el-step title="步骤 1"></el-step>
-            <el-step title="步骤 2"></el-step>
-            <el-step title="步骤 3"></el-step>
-        </el-steps>
-        <div class="content">
-            <div class="protocol" v-if="active === 0">
-                <h2 align="center">用户注册协议</h2>
-                <h4>一、总则</h4>
-                1.1 保宝网的所有权和运营权归深圳市永兴元科技有限公司所有。 <br>
-                1.2
-                用户在注册之前，应当仔细阅读本协议，并同意遵守本协议后方可成为注册用户。一旦注册成功，则用户与保宝网之间自动形成协议关系，用户应当受本协议的约束。用户在使用特殊的服务或产品时，应当同意接受相关协议后方能使用。
-                <br>
-                1.3 本协议则可由保宝网随时更新，用户应当及时关注并同意本站不承担通知义务。本站的通知、公告、声明或其它类似内容是本协议的一部分。
-                <p></p>
-                <p>
-                </p><h4>二、服务内容</h4>
-                2.1 保宝网的具体内容由本站根据实际情况提供。 <br>
-                2.2
-                本站仅提供相关的网络服务，除此之外与相关网络服务有关的设备(如个人电脑、手机、及其他与接入互联网或移动网有关的装置)及所需的费用(如为接入互联网而支付的电话费及上网费、为使用移动网而支付的手机费)均应由用户自行负担。
-                <p></p>
-                <p>
-                </p><h4>三、用户帐号</h4>
-                3.1 经本站注册系统完成注册程序并通过身份认证的用户即成为正式用户，可以获得本站规定用户所应享有的一切权限；未经认证仅享有本站规定的部分会员权限。保宝网有权对会员的权限设计进行变更。 <br>
-                3.2
-                用户只能按照注册要求使用真实姓名，及身份证号注册。用户有义务保证密码和帐号的安全，用户利用该密码和帐号所进行的一切活动引起的任何损失或损害，由用户自行承担全部责任，本站不承担任何责任。如用户发现帐号遭到未授权的使用或发生其他任何安全问题，应立即修改帐号密码并妥善保管，如有必要，请通知本站。因黑客行为或用户的保管疏忽导致帐号非法使用，本站不承担任何责任。
-                <p></p>
-                <p>
-                </p><h4>四、使用规则</h4>
-                4.1
-                遵守中华人民共和国相关法律法规，包括但不限于《中华人民共和国计算机信息系统安全保护条例》、《计算机软件保护条例》、《最高人民法院关于审理涉及计算机网络著作权纠纷案件适用法律若干问题的解释(法释[2004]1号)》、《全国人大常委会关于维护互联网安全的决定》、《互联网电子公告服务管理规定》、《互联网新闻信息服务管理规定》、《互联网著作权行政保护办法》和《信息网络传播权保护条例》等有关计算机互联网规定和知识产权的法律和法规、实施办法。
-                <br>
-                4.2 用户对其自行发表、上传或传送的内容负全部责任，所有用户不得在本站任何页面发布、转载、传送含有下列内容之一的信息，否则本站有权自行处理并不通知用户：<br>
-                <span>(1)违反宪法确定的基本原则的； <br>
-                (2)危害国家安全，泄漏国家机密，颠覆国家政权，破坏国家统一的； <br>
-                (3)损害国家荣誉和利益的； <br>
-                (4)煽动民族仇恨、民族歧视，破坏民族团结的； <br>
-                (5)破坏国家宗教政策，宣扬邪教和封建迷信的； <br>
-                (6)散布谣言，扰乱社会秩序，破坏社会稳定的；<br>
-                (7)散布淫秽、色情、赌博、暴力、恐怖或者教唆犯罪的； <br>
-                (8)侮辱或者诽谤他人，侵害他人合法权益的； <br>
-                (9)煽动非法集会、结社、游行、示威、聚众扰乱社会秩序的； <br>
-                (10)以非法民间组织名义活动的；<br>
-                (11)含有法律、行政法规禁止的其他内容的。
-                </span>
-                4.3
-                用户承诺对其发表或者上传于本站的所有信息(即属于《中华人民共和国著作权法》规定的作品，包括但不限于文字、图片、音乐、电影、表演和录音录像制品和电脑程序等)均享有完整的知识产权，或者已经得到相关权利人的合法授权；如用户违反本条规定造成本站被第三人索赔的，用户应全额补偿本站一切费用(包括但不限于各种赔偿费、诉讼代理费及为此支出的其它合理费用)；
-                <br>
-                4.4
-                当第三方认为用户发表或者上传于本站的信息侵犯其权利，并根据《信息网络传播权保护条例》或者相关法律规定向本站发送权利通知书时，用户同意本站可以自行判断决定删除涉嫌侵权信息，除非用户提交书面证据材料排除侵权的可能性，本站将不会自动恢复上述删除的信息；
-                <span>
-                 (1)不得为任何非法目的而使用网络服务系统； <br>
-                (2)遵守所有与网络服务有关的网络协议、规定和程序；
-                (3)不得利用本站进行任何可能对互联网的正常运转造成不利影响的行为； <br>
-                (4)不得利用本站进行任何不利于本站的行为。
-                </span>
-                4.5 如用户在使用网络服务时违反上述任何规定，本站有权要求用户改正或直接采取一切必要的措施(包括但不限于删除用户张贴的内容、暂停或终止用户使用网络服务的权利)以减轻用户不当行为而造成的影响。
-                <p></p>
-                <p>
-                </p><h4>五、隐私保护</h4>
-                5.1 本站不对外公开或向第三方提供单个用户的注册资料及用户在使用网络服务时存储在本站的非公开内容，但下列情况除外：
-                <span>
-                (1)事先获得用户的明确授权； <br>
-                (2)根据有关的法律法规要求；<br>
-                (3)按照相关政府主管部门的要求；<br>
-                (4)为维护社会公众的利益。
-                </span>
-                5.2 本站可能会与第三方合作向用户提供相关的网络服务，在此情况下，如该第三方同意承担与本站同等的保护用户隐私的责任，则本站有权将用户的注册资料等提供给该第三方。<br>
-                5.3 在不透露单个用户隐私资料的前提下，本站有权对整个用户数据库进行分析并对用户数据库进行商业上的利用。<p></p>
-                <p>
-                </p><h4>六、版权声明</h4>
-                6.1 本站的文字、图片、音频、视频等版权均归永兴元科技有限公司享有或与作者共同享有，未经本站许可，不得任意转载。 <br>
-                6.2 本站特有的标识、版面设计、编排方式等版权均属永兴元科技有限公司享有，未经本站许可，不得任意复制或转载。 <br>
-                6.3 使用本站的任何内容均应注明“来源于保宝网”及署上作者姓名，按法律规定需要支付稿酬的，应当通知本站及作者及支付稿酬，并独立承担一切法律责任。<br>
-                6.4 本站享有所有作品用于其它用途的优先权，包括但不限于网站、电子杂志、平面出版等，但在使用前会通知作者，并按同行业的标准支付稿酬。<br>
-                6.5 本站所有内容仅代表作者自己的立场和观点，与本站无关，由作者本人承担一切法律责任。 <br>
-                6.6 恶意转载本站内容的，本站保留将其诉诸法律的权利。
-                <p></p>
-                <p>
-                </p><h4>七、责任声明</h4>
-                7.1 用户明确同意其使用本站网络服务所存在的风险及一切后果将完全由用户本人承担，保宝网对此不承担任何责任。 <br>
-                7.2 本站无法保证网络服务一定能满足用户的要求，也不保证网络服务的及时性、安全性、准确性。 <br>
-                7.3 本站不保证为方便用户而设置的外部链接的准确性和完整性，同时，对于该等外部链接指向的不由本站实际控制的任何网页上的内容，本站不承担任何责任。<br>
-                7.4 对于因不可抗力或本站不能控制的原因造成的网络服务中断或其它缺陷，本站不承担任何责任，但将尽力减少因此而给用户造成的损失和影响。<br>
-                7.5 对于站向用户提供的下列产品或者服务的质量缺陷本身及其引发的任何损失，本站无需承担任何责任：
-                <span>
-                    (1)本站向用户免费提供的各项网络服务； <br>
-                (2)本站向用户赠送的任何产品或者服务。
-                </span>
-                7.6 本站有权于任何时间暂时或永久修改或终止本服务(或其任何部分)，而无论其通知与否，本站对用户和任何第三人均无需承担任何责任。<p></p>
-                <p>
-                </p><h4>八、附则</h4>
-                8.1 本协议的订立、执行和解释及争议的解决均应适用中华人民共和国法律。 <br>
-                8.2 如本协议中的任何条款无论因何种原因完全或部分无效或不具有执行力，本协议的其余条款仍应有效并且有约束力。<br>
-                8.3 本协议解释权及修订权归深圳永兴元科技有限公司所有。 <br>
-                <p class="tc" style="margin: 20px 0">
-                    <el-checkbox label="同意用户协议" v-model="agree"></el-checkbox>
-                </p>
+    <!--<div class="apps" v-loading="loading">-->
+    <!--<el-dialog-->
+    <!--center-->
+    <!--title="部署成功"-->
+    <!--:visible.sync="dialogVisible"-->
+    <!--:close-on-click-modal="false"-->
+    <!--:close-on-press-escape="false"-->
+    <!--width="30%">-->
+    <!--<el-form>-->
+    <!--<el-form-item label="合约地址为" label-width="100px">-->
+    <!--<el-input v-model="contractAddress" auto-complete="off" readonly="true"></el-input>-->
+    <!--</el-form-item>-->
+    <!--</el-form>-->
+    <!--<span slot="footer" class="dialog-footer">-->
+    <!--<el-button type="primary" @click="showTransfer">确 定</el-button>-->
+    <!--</span>-->
+    <!--</el-dialog>-->
+    <!--<el-dialog-->
+    <!--center-->
+    <!--title="向奖金池充值"-->
+    <!--:visible.sync="rechargeVisible"-->
+    <!--:close-on-click-modal="false"-->
+    <!--:close-on-press-escape="false"-->
+    <!--width="30%">-->
+    <!--<el-form :model="rechargeData">-->
+    <!--<el-form-item label="充值金额为" label-width="100px">-->
+    <!--<el-input v-model="rechargeData.value" auto-complete="off">-->
+    <!--<template slot="append">ETH</template>-->
+    <!--</el-input>-->
+    <!--</el-form-item>-->
+    <!--<el-form-item label="gasPrice" label-width="100px">-->
+    <!--<el-input v-model="rechargeData.gasPrice" auto-complete="off">-->
+    <!--<template slot="append">Gwei</template>-->
+    <!--</el-input>-->
+    <!--</el-form-item>-->
+    <!--</el-form>-->
+    <!--<span slot="footer" class="dialog-footer">-->
+    <!--<el-button type="primary" @click="recharge">确 定</el-button>-->
+    <!--</span>-->
+    <!--</el-dialog>-->
+    <!--<el-dialog-->
+    <!--center-->
+    <!--title="转帐提示"-->
+    <!--:visible.sync="transferVisible"-->
+    <!--width="30%">-->
+    <!--<el-form>-->
+    <!--<el-form-item label="转账hash为：" label-width="100px">-->
+    <!--<el-input v-model="transferHash" auto-complete="off">-->
+    <!--</el-input>-->
+    <!--</el-form-item>-->
+    <!--</el-form>-->
+    <!--<span slot="footer" class="dialog-footer">-->
+    <!--<el-button type="primary" @click="transferVisible = false">确 定</el-button>-->
+    <!--</span>-->
+    <!--</el-dialog>-->
+    <!--</div>-->
+
+    <div>
+        <div class="create-app">
+            <div class="create-header no-select-text">
+                <p :class="{'header-active':steps===1}">用户协议</p>
+                <span></span>
+                <p :class="{'header-active':steps===2}">选择类型</p>
+                <span></span>
+                <p :class="{'header-active':steps===3}">配置应用</p>
+                <span></span>
+                <p :class="{'header-active':steps===4}">创建成功</p>
             </div>
-            <div class="protocol" v-if="active === 1">step 2</div>
-            <div class="protocol" v-if="active === 2">step 3</div>
-            <div class="protocol" v-if="active === 3">step 4</div>
-            <el-button type="primary" class="step-btn" @click="next" :disabled="!agree">{{ btnVal }}</el-button>
+
+            <div class="create-body">
+                <!--step-1-->
+                <div class="step-1" v-show="steps===1">
+                    <div class="header">用户协议</div>
+                    <div class="body">
+                        <agreement></agreement>
+                    </div>
+                </div>
+                <!--step-2-->
+                <div class="step-2" v-show="steps===2">
+                    <div class="header">选择你想要创建的游戏</div>
+                    <div class="body">
+                        <el-row>
+                            <el-col :span="4" v-for="(item,index) in appList" :key="index">
+                                <application :item="item"
+                                             :index="index"
+                                             ref="funcs"
+                                             @click.native="selectAnApp(index)"
+                                ></application>
+                            </el-col>
+                        </el-row>
+                    </div>
+                </div>
+                <!--step3-->
+                <div class="step-3" v-show="steps===3">
+                    <div class="header">请配置相关参数</div>
+                    <div class="body">
+                        <div class="content">
+                            <el-form
+                                    label-width="110px"
+                                    label-position="left"
+                                    @submit.native.prevent>
+
+                                <el-form-item class="el-wallet-style" label="充值金额">
+                                    <el-input class="el-wallet-input"
+                                              auto-complete="off"
+                                              v-model="rechargeData.value"
+                                    ></el-input>
+                                </el-form-item>
+                            </el-form>
+                            <el-form class="mt-50"
+                                    label-width="110px"
+                                    label-position="left"
+                                    @submit.native.prevent>
+
+                                <el-form-item class="el-wallet-style" label="下注金额">
+                                    <el-row>
+                                        <el-col :span="7">
+                                            <el-input class="el-wallet-input"
+                                                      auto-complete="off"
+                                                      v-model="rechargeData.price1"
+                                            ></el-input>
+                                        </el-col>
+                                        <el-col :span="7" :offset="1">
+                                            <el-input class="el-wallet-input"
+                                                      auto-complete="off"
+                                                      v-model="rechargeData.price2"
+                                            ></el-input>
+                                        </el-col>
+                                        <el-col :span="7" :offset="1">
+                                            <el-input class="el-wallet-input"
+                                                      auto-complete="off"
+                                                      v-model="rechargeData.price3"
+                                            ></el-input>
+                                        </el-col>
+                                    </el-row>
+                                </el-form-item>
+                            </el-form>
+                        </div>
+                    </div>
+                </div>
+                <!--step4-->
+                <div class="step-4" v-show="steps===4">
+                    <div class="body">
+                        <div class="finishe-icon">
+                            <i></i>
+                            <p>创建成功</p>
+                        </div>
+                        <div class="finishe-address">
+                            <el-form
+                                    label-width="110px"
+                                    label-position="left"
+                                    @submit.native.prevent>
+
+                                <el-form-item class="el-wallet-style" label="应用地址">
+                                    <el-row>
+                                        <el-col :span="20">
+                                            <el-input class="el-wallet-input"
+                                                      auto-complete="off"
+                                                      v-model="contractAddress"
+                                                      readonly
+                                            ></el-input>
+                                        </el-col>
+                                        <el-col :span="4">
+                                            <el-button>复制</el-button>
+                                        </el-col>
+                                    </el-row>
+                                </el-form-item>
+                            </el-form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="create-footer">
+                <el-button class="el-wallet-main-button" @click="preStep" v-show="steps===2 || steps===3">上一步
+                </el-button>
+                <el-button class="el-wallet-main-button" @click="nextStep">{{btnVal}}</el-button>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+    import agreement from './agreement'
+    import application from './apps'
+    // 先部署定时器合约 得到其地址
+    import intervalContract from '../../../contracts/interval.json'
+    import playGameContract from '../../../contracts/playGame.json'
+
     export default {
         name: "create-app",
+        components: {
+            agreement,
+            application
+        },
         data() {
             return {
-                active: 0,
-                agree: true,
-                btnVal: "下一步"
+                steps: 1,
+                selected:null,
+                appList: [
+                    {
+                        imgUrl: require('../../assets/images/apps/game_icon1.png'),
+                        title: '欢乐麻将'
+                    },
+                    {
+                        imgUrl: require('../../assets/images/apps/game_icon2.png'),
+                        title: '欢乐麻将'
+                    },
+                    {
+                        imgUrl: require('../../assets/images/apps/game_icon3.png'),
+                        title: '欢乐麻将'
+                    },
+                    {
+                        imgUrl: require('../../assets/images/apps/game_icon4.png'),
+                        title: '欢乐麻将'
+                    },
+                    {
+                        imgUrl: require('../../assets/images/apps/game_icon5.png'),
+                        title: '欢乐麻将'
+                    },
+                    {
+                        imgUrl: require('../../assets/images/apps/game_icon6.png'),
+                        title: '欢乐麻将'
+                    },
+                    {
+                        imgUrl: require('../../assets/images/apps/game_icon7.png'),
+                        title: '欢乐麻将'
+                    },
+                    {
+                        imgUrl: require('../../assets/images/apps/game_icon8.png'),
+                        title: '欢乐麻将'
+                    }
+                ],
+                btnVal: "下一步",
+                setCoin: null,
+                loading: false,
+                dialogVisible: false, // 部署成功显示合约地址
+                rechargeVisible: false,// 充值弹窗
+                transferVisible: false,// 转账成功弹窗
+                transferHash: '',
+                contractAddress: '',
+                rechargeValue: '',
+                rechargeData: {
+                    value: '100',
+                    gasPrice: '41',
+                    gas: '21000',
+                    price1: '1',
+                    price2: '5',
+                    price3: '10'
+                }
             }
         },
         methods: {
-            next() {
-                if (this.active++ > 1) {
-                    this.btnVal = '完成'
+            preStep() {
+                if (this.steps > 1) {
+                    this.steps--
                 }
-                if (this.active > 3) {
-                    this.active--
+            },
+            nextStep() {
+                if (this.steps < 4) {
+                    if(this.steps===2&& (typeof this.selected !== 'number')){
+                        this.$message({
+                            message:this.$msg.mustSelectAnApp,
+                            type:'error'
+                        })
+                        return
+                    }
+                    if(this.steps===3){
+                        this.$confirm('确认部署合约吗?', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            type: 'warning'
+                        }).then(() => {
+                            let users = this.$funs.getLocalAddress()
+                            let user = users.addresses[users.active]
+                            if (this.$store.state.userPassword === "") {
+                                this.$prompt(`请输入${user}的密码`, '提示', {
+                                    confirmButtonText: '确定',
+                                    cancelButtonText: '取消',
+                                }).then(({value}) => {
+                                    this.$confirm('是否保存密码?', '提示', {
+                                        confirmButtonText: '确定',
+                                        cancelButtonText: '取消',
+                                        type: 'warning'
+                                    }).then(() => {
+                                        this.$store.commit("setPassword", "value")
+                                        this.migration(user, value)
+                                    }).catch(() => {
+                                        this.migration(user, value)
+                                    })
+                                }).catch((error) => {
+                                })
+                            } else {
+                                this.migration(user, this.$store.state.userPassword)
+                            }
+                        }).catch((err) => {
+                            if (err !== 'cancel') {
+                                this.$message.error('无效地址或者密码错误！')
+                            }
+                        })
+                    }
+                    this.steps++
                 }
+            },
+            selectAnApp(index) {
+                this.selected = index
+                for (let c = 0; c < this.appList.length; c++) {
+                    this.$refs.funcs[c].selectApp(index)
+                }
+            },
+            // showTransfer() {
+            //     this.dialogVisible = false
+            //     let timer = setTimeout(() => {
+            //         clearTimeout(timer)
+            //         this.rechargeVisible = true
+            //     }, 500)
+            // },
+            /**
+             * 充值
+             */
+            recharge() {
+                if (isNaN(this.rechargeData.value)) {
+                    this.$message.error('请输入正确的充值数量！')
+                    return false
+                }
+                if (this.rechargeData.value === '' || Number(this.rechargeData.value) === 0) {
+                    this.$message.error('充值数量不能为空和不能为0！')
+                    return false
+                }
+                if (isNaN(this.rechargeData.gasPrice)) {
+                    this.$message.error('请输入正确的gasPrice！')
+                    return false
+                }
+                if (this.rechargeData.gasPrice === '' || Number(this.rechargeData.gasPrice) === 0) {
+                    this.$message.error('gasPrice不能为空和不能为0！')
+                    return false
+                }
+                // todo
+                this.$web3.personal.unlockAccount(this.$store.state.publicKey, 'jacky')
+                let MyContract = this.$web3.eth.contract(
+                    playGameContract.abi
+                )
+                let myContractInstance = MyContract.at(this.contractAddress)
+                // let myContractInstance = MyContract.at('0x1eae033ce4e56e62c3bc26ce7750c1cd9621fac2')
+                // 转账 到合约账户，返回交易hash
+                let hash = myContractInstance.deposit({
+                    from: this.$store.state.publicKey,
+                    value: this.$web3.toWei(this.rechargeData.value, 'ether'),
+                    gasPrice: this.rechargeData.gasPrice * Math.pow(10, 9),
+                    gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
+                })
+                if (hash) {
+                    // this.rechargeVisible = false
+                    // let timer = setTimeout(() => {
+                    //     clearTimeout(timer)
+                        this.transferHash = hash
+                    //     this.transferVisible = true
+                    // }, 500)
+                }
+            },
+            // next() {
+            //     if (this.active++ > 1) {
+            //         this.btnVal = '完成'
+            //     }
+            //     if (this.active > 3) {
+            //         this.active--
+            //         this.$confirm('确认部署合约吗?', '提示', {
+            //             confirmButtonText: '确定',
+            //             cancelButtonText: '取消',
+            //             type: 'warning'
+            //         }).then(() => {
+            //             let users = this.$funs.getLocalAddress()
+            //             let user = users.addresses[users.active]
+            //             if (this.$store.state.userPassword === "") {
+            //                 this.$prompt(`请输入${user}的密码`, '提示', {
+            //                     confirmButtonText: '确定',
+            //                     cancelButtonText: '取消',
+            //                 }).then(({value}) => {
+            //                     this.$confirm('是否保存密码?', '提示', {
+            //                         confirmButtonText: '确定',
+            //                         cancelButtonText: '取消',
+            //                         type: 'warning'
+            //                     }).then(() => {
+            //                         this.$store.commit("setPassword", "value")
+            //                         this.migration(user, value)
+            //                     }).catch(() => {
+            //                         this.migration(user, value)
+            //                     })
+            //                 }).catch((error) => {
+            //                 })
+            //             } else {
+            //                 this.migration(user, this.$store.state.userPassword)
+            //             }
+            //         }).catch((err) => {
+            //             if (err !== 'cancel') {
+            //                 this.$message.error('无效地址或者密码错误！')
+            //             }
+            //         })
+            //     }
+            // },
+            migration(user, value) {
+                let url = "http://localhost:8080/appDetail"
+                this.$msgbox({
+                    title: '消息',
+                    message: `${url}?0x6ef1a17b452ab6b7b5aca4c7c2204040b8141643`,
+                    showCancelButton: true,
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    beforeClose: (action, instance, done) => {
+                        if (action === 'confirm') {
+                            instance.confirmButtonLoading = true;
+                            instance.confirmButtonText = '执行中...';
+                            setTimeout(() => {
+                                done();
+                                setTimeout(() => {
+                                    instance.confirmButtonLoading = false;
+                                }, 300);
+                            }, 3000);
+                        } else {
+                            done();
+                        }
+                    }
+                }).then(action => {
+                    this.$message({
+                        type: 'info',
+                        message: 'action: ' + action
+                    });
+                });
+                this.$web3.personal.unlockAccount(user, value)
+                return
+                this.loading = true
+                let MyContract = this.$web3.eth.contract(
+                    playGameContract.abi
+                )
+                MyContract.new({
+                    data: playGameContract.bytecode,
+                    from: user,
+                    gasPrice: '20000000000',
+                    gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
+                }, (err, myContract) => {
+                    if (err) {
+                        this.loading = false
+                        this.$message.error('部署失败！')
+                    } else {
+                        if (myContract.address) {
+                            this.loading = false
+                            console.log(myContract.address)
+                            this.contractAddress = myContract.address
+                            this.dialogVisible = true
+                            localStorage.setItem('contractAddress', myContract.address)
+                            this.$store.commit('setContractAddress', myContract.address)
+
+                            // 每次部署完合约，需要向定时器合约中注册当前合约地址
+                            let myIntContractInstance = MyContract.at(myContract.address)
+                            myIntContractInstance.registerInterval('0x4e9f0c8d3378042c418c42a8a5f48783731d65d2', {
+                                from: user,
+                                gasPrice: 20000000000,
+                                gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
+                            })
+
+                            //部署成功！你的合约地址为
+                            let url = "http://localhost:8080/appDetail"
+                            this.$msgbox({
+                                title: '消息',
+                                message: `${url}?0x6ef1a17b452ab6b7b5aca4c7c2204040b8141643`,
+                                showCancelButton: true,
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                                beforeClose: (action, instance, done) => {
+                                    if (action === 'confirm') {
+                                        instance.confirmButtonLoading = true;
+                                        instance.confirmButtonText = '执行中...';
+                                        setTimeout(() => {
+                                            done();
+                                            setTimeout(() => {
+                                                instance.confirmButtonLoading = false;
+                                            }, 300);
+                                        }, 3000);
+                                    } else {
+                                        done();
+                                    }
+                                }
+                            }).then(action => {
+                                this.$message({
+                                    type: 'info',
+                                    message: 'action: ' + action
+                                });
+                            });
+                            // 0xf7b2d96eb1c84f846c226da6e265b27225243b71
+                        }
+                    }
+                })
             }
         }
     }
 </script>
 
 <style lang="scss" type="text/scss" scoped>
-    .createApp {
-        width: 80%;
-        margin: 0 auto;
-        .content {
-            height: 68vh;
-            border: 1px solid #4DAD95;
-            border-radius: 10px;
-            margin-top: 20px;
-            padding: 20px;
-            padding-bottom: 50px;
-            position: relative;
-            .step-btn {
-                position: absolute;
-                bottom: 20px;
-                left: 50%;
-                transform: translateX(-50%);
+    $title_color: #cec8ff;
+    $content_color: #8abdec;
+
+    .create-app {
+        .create-header {
+            display: flex;
+            text-align: center;
+            p {
+                flex-grow: 1;
+                line-height: 70px;
+                background-color: #221D44;
+                box-shadow: 1px 0px 0px 0px #272345;
+                font-size: 20px;
+                color: #d3ceff;
+
             }
-            .protocol {
-                line-height: 35px;
-                height: 95%;
-                overflow-y: scroll;
+            .header-active {
+                line-height: 68px;
+                border-bottom-style: solid;
+                border-bottom-width: 2px;
+                border-image-source: linear-gradient(105deg,
+                        #3410f7 0%,
+                        #711bdc 59%,
+                        #ad25c0 100%);
+                border-image-slice: 1;
+                background-color: #3a346a;
+            }
+            span {
+                display: inline-block;
+                height: 70px;
+                border-right: 2px solid #272345;
+            }
+        }
+
+        .create-body {
+            padding: 20px 70px;
+            font-size: 16px;
+            color: #cec8ff;
+
+            .header {
+                line-height: 40px;
+                font-size: 20px;
+                text-align: center;
+            }
+            .body {
+                height: 500px;
+                overflow-y: auto;
+                padding: 10px;
+                border: solid 1px rgba(208, 202, 253, 0.15);
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+            }
+            .step-3 {
+                .content{
+                    width: 800px;
+                    padding: 30px;
+                }
+            }
+            .step-4{
+                .body{
+                    border-left: none;
+                    border-top: none;
+                    border-right: none;
+                    margin-bottom: 30px;
+                    .finishe-icon{
+                        text-align: center;
+                        padding: 100px 0;
+                        i{
+                            display: inline-block;
+                            width: 120px;
+                            height: 120px;
+                            background: url("../../assets/images/apps/icon_cjcg.png");
+                        }
+                        p{
+                            margin-top: 25px;
+                            font-size: 24px;
+                            color: #8490c5;
+                        }
+                    }
+                    .finishe-address{
+                        .el-button{
+                            width: 80%;
+                            height: 70px;
+                            margin-left: 10px;
+                            background-image: linear-gradient(
+                                            #443e67,
+                                            #443e67),
+                            linear-gradient(
+                                            #443e67,
+                                            #443e67);
+                            background-blend-mode: normal, normal;
+                            font-size: 26px;
+                            color: #bbb3ef;
+                            border: none;
+                        }
+                    }
+                }
+            }
+        }
+        .create-footer {
+            position: relative;
+            width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            .el-button:last-child {
+                margin-left: 50px;
             }
         }
     }

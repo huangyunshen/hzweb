@@ -64,7 +64,7 @@ $--border-color-lighter: #ebeef5 !default;
 $--border-color-extra-light: #f2f6fc !default;
 $--border-color-hover: $--color-text-placeholder !default;
 $--border-base: $--border-width-base $--border-style-base $--border-color-base !default;
-$--border-radius-base: 3px !default;
+$--border-radius-base: 2px !default;
 $--border-radius-small: 2px !default;
 $--border-radius-circle: 100% !default;
 
@@ -259,7 +259,7 @@ $--alert-icon-large-size: 28px !default;
 
 /* Message Box
 -------------------------- */
-$--msgbox-width: 420px !default;
+$--msgbox-width: 500px !default;
 $--msgbox-border-radius: 4px !default;
 $--msgbox-font-size: $--font-size-large !default;
 $--msgbox-content-font-size: $--font-size-base !default;
@@ -275,18 +275,18 @@ $--msgbox-danger-color: $--color-danger !default;
 /* Message
 -------------------------- */
 $--message-shadow: $--box-shadow-base !default;
-$--message-min-width: 380px !default;
-$--message-background-color: #edf2fc !default;
-$--message-padding: 15px 15px 15px 20px !default;
+$--message-min-width: 500px !default;
+$--message-background-color: #303787 !default;
+$--message-padding: 10px !default;
 $--message-content-color: $--color-text-regular !default;
 $--message-close-color: $--color-text-placeholder !default;
-$--message-close-size: 16px !default;
-$--message-close-hover-color: $--color-text-secondary !default;
+$--message-close-size: 22px !default;
+$--message-close-hover-color: #4348A0 !default;
 
-$--message-success-color: $--color-success !default;
-$--message-info-color: $--color-info !default;
-$--message-warning-color: $--color-warning !default;
-$--message-danger-color: $--color-danger !default;
+$--message-success-color: #79e4ff !default;
+$--message-info-color: #d3e8ed !default;
+$--message-warning-color: #ffaf84 !default;
+$--message-danger-color: #ff6691 !default;
 
 /* Notification
 -------------------------- */
@@ -477,11 +477,11 @@ $--dialog-padding-primary: 20px !default;
 -------------------------- */
 $--table-border-color: $--border-color-lighter !default;
 $--table-border: 1px solid $--table-border-color !default;
-$--table-text-color: $--color-text-regular !default;
-$--table-header-color: $--color-text-secondary !default;
-$--table-row-hover-background: $--background-color-base !default;
-$--table-current-row-background: $--color-primary-light-9 !default;
-$--table-header-background: $--color-white !default;
+$--table-text-color: rgb(132, 144, 197) !default;
+$--table-header-color: rgb(211, 206, 255) !default;
+$--table-row-hover-background: #5A50A2 !default;
+$--table-current-row-background: #342C67 !default;
+$--table-header-background: #342C67 !default;
 $--table-footer-background: $--color-text-placeholder !default;
 $--table-fixed-box-shadow: 0 0 10px rgba(0, 0, 0, .12) !default;
 

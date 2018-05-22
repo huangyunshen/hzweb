@@ -27,7 +27,10 @@
                     if (typeof wallet === 'object') {
                         this.$funs.setLocalAddress(wallet)
                         this.$funs.linkToMainScreenRep(wallet)
-                        this.$message.success(this.$msg.importSucc)
+                        this.$message({
+                            message: this.$msg.importSucc,
+                            type: 'success'
+                        })
                     }
                 }, (err) => {  });
             }

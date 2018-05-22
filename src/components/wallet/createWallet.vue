@@ -126,11 +126,17 @@
                 this.createDialog=false
                 this.walletInfo.fileDownloaded=true
                 if (!this.formRulesCreate.pwd || !this.formRulesCreate.confirmPwd) {
-                    this.$message.error(this.$msg.pwdIsEmpty)
+                    this.$message({
+                        message: this.$msg.pwdIsEmpty,
+                        type:'error'
+                    })
                     return
                 }
                 if (this.formRulesCreate.pwd !== this.formRulesCreate.confirmPwd) {
-                    this.$message.error(this.$msg.pwdInconformity)
+                    this.$message({
+                        message: this.$msg.pwdInconformity,
+                        type: 'error'
+                    })
                     return
                 }
                 if (this.$funs.validatePwd(null, this.formRulesCreate.pwd, (param) => {
@@ -162,13 +168,19 @@
                         this.createDialog = true
                     });
                 } else {
-                    this.$message.error(this.$msg.createPwd)
+                    this.$message({
+                        message: this.$msg.createPwd,
+                        type: 'error'
+                    })
                 }
             },
             unlockNewAccount() {
                 this.$funs.setLocalAddress(this.wallet)
                 this.$funs.linkToMainScreenRep(this.wallet)
-                this.$message.success(this.$msg.unlockSucc)
+                this.$message({
+                    message: this.$msg.unlockSucc,
+                    type: 'success'
+                })
             },
             getBlob(mime, str) {
                 str = (typeof str === 'object') ? JSON.stringify(str) : str;

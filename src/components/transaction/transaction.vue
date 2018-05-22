@@ -188,16 +188,25 @@
             typePwd() {
                 this.password = ''
                 if (this.form.to.trim() === '') {
-                    this.$message.error(this.$msg.emptyAddress)
+                    this.$message({
+                        message: this.$msg.emptyAddress,
+                        type: 'error'
+                    })
                     return
                 }
                 if (this.form.value.trim() === '') {
-                    this.$message.error(this.$msg.emptyValue)
+                    this.$message({
+                        message: this.$msg.emptyValue,
+                        type: 'error'
+                    })
                     return
                 }
                 let reg = /^[0-9]*$/
                 if (this.form.gas.trim() === '' || !reg.test(this.form.gas) || this.form.gas.trim() === '0') {
-                    this.$message.error(this.$msg.invalidGas)
+                    this.$message({
+                        message: this.$msg.invalidGas,
+                        type: 'error'
+                    })
                     return
                 }
                 this.steps = '2'
@@ -259,9 +268,15 @@
             confirmTransaction() {
                 this.$web3.eth.sendRawTransaction(this.transactionSign, (err, hash) => {
                     if (err) {
-                        this.$message.error(err)
+                        this.$message({
+                            message: err,
+                            type: 'error'
+                        });
                     } else {
-                        this.$message.success(this.$msg.transactionSucc)
+                        this.$message({
+                            message: this.$msg.transactionSucc,
+                            type: 'success'
+                        })
                         this.transactionHash = hash
                         this.steps = '5'
                     }

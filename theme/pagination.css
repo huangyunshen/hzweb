@@ -1001,7 +1001,7 @@
   position: absolute;
   z-index: 1001;
   border: solid 1px #e4e7ed;
-  border-radius: 3px;
+  border-radius: 2px;
   background-color: #fff;
   -webkit-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
@@ -1290,7 +1290,7 @@
     background-color: #fff;
     background-image: none;
     border: 1px solid #dcdfe6;
-    border-radius: 3px;
+    border-radius: 2px;
     -webkit-transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
     transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1); }
     .el-textarea__inner::-webkit-input-placeholder {
@@ -1354,7 +1354,7 @@
     -webkit-appearance: none;
     background-color: #fff;
     background-image: none;
-    border-radius: 3px;
+    border-radius: 2px;
     border: 1px solid #dcdfe6;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
@@ -1476,7 +1476,7 @@
     display: table-cell;
     position: relative;
     border: 1px solid #dcdfe6;
-    border-radius: 3px;
+    border-radius: 2px;
     padding: 0 20px;
     width: 1px;
     white-space: nowrap; }

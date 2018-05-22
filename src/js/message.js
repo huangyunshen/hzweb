@@ -21,5 +21,6 @@ export default {
     invalidWalletFile: '不支持的钱包文件',
     invalidFile: '错误的文件类型',
     readFileErr: '读取文件失败',
-    diffrentAccount:'输入账户与当前登录账户不一致，是否把当前登录账户替换'
+    diffrentAccount:'输入账户与当前登录账户不一致，是否把当前登录账户替换',
+    mustSelectAnApp:'请选择需要创建的应用'
 }

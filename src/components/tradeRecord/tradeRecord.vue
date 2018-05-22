@@ -144,7 +144,10 @@
                         this.showSwitch = 'table'
                     }
                 } else {
-                    this.$message.error(this.$msg.serviceException)
+                    this.$message({
+                        message: this.$msg.serviceException,
+                        type: 'error'
+                    })
                 }
             },
             headerCellStyle({row, rowIndex}) {
