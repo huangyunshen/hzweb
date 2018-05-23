@@ -1,6 +1,6 @@
 pragma solidity ^0.4.0;
 
-contract playGame {
+contract PlayGame {
     uint xor = 0; // 保存异或的值
     uint [] randomNum; // 保存传入的随机数
     address [] dragon;  // 保存选龙的地址
@@ -19,7 +19,7 @@ contract playGame {
     // 在函数中获取的msg.sender为当前调用者的地址
     // 函数中返回的this指当前合约地址
     address creator = msg.sender;
-
+    uint [] price;
     // 返回是否下注成功
     event returnBetResult(bool _bool);
     // 返回最终结果
@@ -29,7 +29,15 @@ contract playGame {
 
     }
 
-    function getBlockTime() constant returns (uint, uint,uint){
+    function PlayGame(uint price1, uint price2, uint price3, uint _type){
+        price = [price1, price2, price3, _type];
+    }
+
+    function getPrice() constant returns (uint []){
+        return price;
+    }
+
+    function getBlockTime() constant returns (uint, uint, uint){
         return (time, block.timestamp, xor);
     }
 
@@ -116,7 +124,7 @@ contract playGame {
         reset();
     }
     // 重置函数
-    function reset (){
+    function reset(){
         xor = 0;
         time = getTimestamp();
         randomNum.length = 0;
@@ -143,11 +151,11 @@ contract playGame {
     }
 
     function registerInterval(address contractAddr){
-        interval(contractAddr).getAddress(this);
+        Interval(contractAddr).getAddress(this);
     }
 }
 
-contract interval {
+contract Interval {
     address [] addr;
 
     function getAddress(address _addr) {
@@ -177,6 +185,6 @@ contract interval {
 
     // 传入合约地址
     function callFeed(address addr) {
-        playGame(addr).getResult();
+        PlayGame(addr).getResult();
     }
 }

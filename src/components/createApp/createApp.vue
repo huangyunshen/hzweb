@@ -18,6 +18,9 @@
                     <div class="body">
                         <agreement></agreement>
                     </div>
+                    <p class="tc" style="margin: 20px;color: #f00">
+                        <el-checkbox v-model="checked">同意以上协议</el-checkbox>
+                    </p>
                 </div>
                 <!--step-2-->
                 <div class="step-2" v-show="steps===2">
@@ -28,7 +31,7 @@
                                 <application :item="item"
                                              :index="index"
                                              ref="funcs"
-                                             @click.native="selectAnApp(index)"
+                                             @click.native="selectAnApp(item.type,index)"
                                 ></application>
                             </el-col>
                         </el-row>
@@ -117,7 +120,7 @@
             <div class="create-footer">
                 <el-button class="el-wallet-main-button" @click="preStep" v-show="steps===2 || steps===3">上一步
                 </el-button>
-                <el-button class="el-wallet-main-button" @click="nextStep">{{btnVal}}</el-button>
+                <el-button class="el-wallet-main-button" @click="nextStep" :disabled="!checked">{{btnVal}}</el-button>
             </div>
         </div>
     </div>
@@ -139,45 +142,12 @@
         data() {
             return {
                 steps: 1,
-                selected: null,
-                appList: [
-                    {
-                        imgUrl: require('../../assets/images/apps/game_icon1.png'),
-                        title: '欢乐麻将'
-                    },
-                    {
-                        imgUrl: require('../../assets/images/apps/game_icon2.png'),
-                        title: '欢乐麻将'
-                    },
-                    {
-                        imgUrl: require('../../assets/images/apps/game_icon3.png'),
-                        title: '欢乐麻将'
-                    },
-                    {
-                        imgUrl: require('../../assets/images/apps/game_icon4.png'),
-                        title: '欢乐麻将'
-                    },
-                    {
-                        imgUrl: require('../../assets/images/apps/game_icon5.png'),
-                        title: '欢乐麻将'
-                    },
-                    {
-                        imgUrl: require('../../assets/images/apps/game_icon6.png'),
-                        title: '欢乐麻将'
-                    },
-                    {
-                        imgUrl: require('../../assets/images/apps/game_icon7.png'),
-                        title: '欢乐麻将'
-                    },
-                    {
-                        imgUrl: require('../../assets/images/apps/game_icon8.png'),
-                        title: '欢乐麻将'
-                    }
-                ],
+                selected: '',
+                appList: [],
                 btnVal: "下一步",
                 setCoin: null,
                 contractAddress: '',
-                contractAddressUrl:'',// 可以访问的地址
+                contractAddressUrl: '',// 可以访问的地址
                 rechargeValue: '',
                 rechargeData: {
                     value: '100',
@@ -188,7 +158,8 @@
                     price3: '10'
                 },
                 publicKey: '',
-                password: ''
+                password: '',
+                checked: false,//同意协议
             }
         },
         methods: {
@@ -199,7 +170,8 @@
             },
             nextStep() {
                 if (this.steps < 4) {
-                    if (this.steps === 2 && (typeof this.selected !== 'number')) {
+                    if (this.steps === 2 && (this.selected === '')) {
+                        console.log(this.selected)
                         this.$message({
                             message: this.$msg.mustSelectAnApp,
                             type: 'error'
@@ -274,11 +246,22 @@
                             }
                         })
                     }
+                    if (this.steps === 1) {
+                        let users = this.$funs.getLocalAddress()
+                        let balance = this.$web3.eth.getBalance(users.addresses[users.active]).toString(10)
+                        if (Number(balance) === 0) {
+                            this.$message({
+                                message: "余额不足，无法创建！",
+                                type: 'error'
+                            })
+                            this.steps--
+                        }
+                    }
                     this.steps++
                 }
             },
-            selectAnApp(index) {
-                this.selected = index
+            selectAnApp(type, index) {
+                this.selected = type
                 for (let c = 0; c < this.appList.length; c++) {
                     this.$refs.funcs[c].selectApp(index)
                 }
@@ -289,13 +272,13 @@
             recharge() {
                 let users = this.$funs.getLocalAddress()
                 this.publicKey = users.addresses[users.active]
-                this.rechargeFun(this.publicKey,this.password)
+                this.rechargeFun(this.publicKey, this.password)
             },
             //
             rechargeFun(user, value) {
                 this.$web3.personal.unlockAccount(user, value)
                 let MyContract = this.$web3.eth.contract(
-                    playGameContract.abi
+                    playGameContract.abi,//selected等于1,龙虎斗
                 )
                 let myContractInstance = MyContract.at(this.contractAddress)
                 // 转账 到合约账户，返回交易hash
@@ -310,7 +293,7 @@
                         clearTimeout(timer)
                         this.$store.commit('setCryptPercent', {percent: false, text: '充值成功！'})
                         this.steps++
-                        this.btnVal('完成')
+                        this.btnVal = '完成'
                     }, 500)
                 }
             },
@@ -325,11 +308,12 @@
                 let MyContract = this.$web3.eth.contract(
                     playGameContract.abi
                 )
-                MyContract.new({
+                // 传入设置的下注金额和类型(1 代表是龙虎斗)
+                MyContract.new(Number(this.rechargeData.price1), Number(this.rechargeData.price2), Number(this.rechargeData.price3), Number(this.selected), {
                     data: playGameContract.bytecode,
                     from: user,
-                    gasPrice: '41000000000',
-                    gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
+                    gasPrice: 41000000000,
+                    gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode}) * 2
                 }, (err, myContract) => {
                     if (err) {
                         this.$store.commit('setCryptPercent', {percent: false, text: '创建中···'})
@@ -338,11 +322,28 @@
                         if (myContract.address) {
                             this.$store.commit('setCryptPercent', {percent: true, text: '创建成功！正在充值···'})
                             console.log(myContract.address)
+                            this.$axios.post('/url/api/addContract.php', {
+                                "type": this.selected,
+                                "contractAddr": myContract.address,
+                                "createAddr": user,
+                                "createMoney": this.$web3.toWei(this.rechargeData.value, 'ether')
+                            }).then((res) => {
+                                if (res.status === 200) {
+                                    let data = res.data
+                                    this.appList = res.data
+                                }
+                            }).catch((error) => {
+                                this.$message.error(String(error))
+                                let timer = setTimeout(() => {
+                                    clearTimeout(timer)
+                                    this.$message.error('无法获取应用列表')
+                                }, 3000)
+                            })
                             this.contractAddress = myContract.address
                             localStorage.setItem('contractAddress', myContract.address)
                             // 每次部署完合约，需要向定时器合约中注册当前合约地址
                             let myIntContractInstance = MyContract.at(myContract.address)
-                            myIntContractInstance.registerInterval('0x68f29df20809fb99988d1180ee030a93c23b291a', {
+                            myIntContractInstance.registerInterval('0x1ba89ad2a6668ee1d326e2e5c8b5ad1c33da1067', {
                                 from: user,
                                 gasPrice: 41000000000,
                                 gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
@@ -355,7 +356,26 @@
                         }
                     }
                 })
+            },
+            sendMsgToServer() {
+                this.$axios.get('/url/api/requestContract.php')
+                    .then((res) => {
+                        if (res.status === 200) {
+                            let data = res.data
+                            this.appList = res.data
+                        }
+                    })
+                    .catch((error) => {
+                        this.$message.error(String(error))
+                        let timer = setTimeout(() => {
+                            clearTimeout(timer)
+                            this.$message.error('无法获取应用列表')
+                        }, 3000)
+                    })
             }
+        },
+        mounted() {
+            this.sendMsgToServer()
         }
     }
 </script>

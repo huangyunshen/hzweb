@@ -83,11 +83,14 @@
     font-weight: 100;
     color: #ffffff;
     border: none;
-}
-
-#app .el-wallet-main-button:hover {
-    background-color: #6262FF;
-    color: #ffffff;
+    &:hover{
+        background-color: #6262FF;
+        color: #ffffff;
+    }
+    &:disabled{
+        background: $ph_color;
+        color: $font_color;
+    }
 }
 
 .el-wallet-style .el-wallet-input input:-moz-placeholder,
@@ -136,3 +139,5 @@
         font-size: 20px;
     }
 }
+
+
