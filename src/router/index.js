@@ -11,6 +11,7 @@ import tradeRecord from '@/components/tradeRecord/tradeRecord'
 import transaction from '@/components/transaction/transaction'
 import applications from '@/components/applications/appList'
 import createApp from '@/components/createApp/createApp'
+import myApps from '@/components/myApps/myApps'
 
 
 import appDetail from '@/components/applications/appDetail'
@@ -76,6 +77,11 @@ export default new Router({
                     path: 'createApp',
                     name: 'createApp',
                     component: createApp
+                },
+                {
+                    path: 'myApps',
+                    name: 'myApps',
+                    component: myApps
                 },
             ]
         },
