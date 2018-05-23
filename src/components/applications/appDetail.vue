@@ -167,6 +167,9 @@
              * 下注
              */
             callContract() {
+                if(!this.chargeLegality()){
+                    return false
+                }
                 console.log(this.myContractInstance.getCurrentBalance().toString(10))
                 let params = {
                     addr: this.$store.state.publicKey,
@@ -252,11 +255,34 @@
                     return true
                 }
                 return true
+            },
+            chargeLegality(){
+                let arr =[]
+                try {
+                    arr = this.myContractInstance.getPrice()
+                    if(arr.length === 0){
+                        this.$message({
+                            type: 'error',
+                            message: "合约地址有误，请检查合约地址是否正确",
+                        })
+                        return false
+                    }
+                    return true
+                } catch (err){
+                    this.$message({
+                        type: 'error',
+                        message: String(err),
+                    })
+                    return false
+                }
             }
         },
         mounted() {
             if (this.getContractAddr()) {
                 this.contactContract()
+                if(!this.chargeLegality()){
+                    return false
+                }
                 // 实时获取下注币数
                 this.getCoinsTimer = setInterval(() => {
                     this.betCoin.length = 0

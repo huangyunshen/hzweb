@@ -1,11 +1,11 @@
 <template>
     <div class="apps no-select-text">
         <div class="icon" :class="{active:isSelected}">
-            <img :src="item.imgUrl">
+            <img :src="item.type | getImg">
             <i :class="{selected:isSelected}"></i>
         </div>
         <div class="title">
-            <p>{{item.title}}</p>
+            <p>{{item.type | getTitle}}</p>
         </div>
     </div>
 </template>
@@ -17,6 +17,26 @@
         data() {
             return {
                 isSelected: false
+            }
+        },
+        filters: {
+            getTitle: (value)=> {
+                let result = ''
+                switch (value){
+                    case "1":
+                        result = '龙虎斗'
+                        break;
+                }
+                return result
+            },
+            getImg: (value)=> {
+                let result = ''
+                switch (value){
+                    case "1":
+                        result = require('../../assets/images/apps/longhudou.png')
+                        break;
+                }
+                return result
             }
         },
         methods: {
