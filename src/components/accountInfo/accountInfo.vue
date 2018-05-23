@@ -70,14 +70,14 @@
                 address: '',
                 mnemonic: '',
                 privateKey: '',
-                warningInfo:'无相关信息'
+                warningInfo: '无相关信息',
             }
         },
         computed: {
             balanceCom() {
                 return this.$web3.fromWei(this.balance, 'ether')
             },
-            privateKeyCom(){
+            privateKeyCom() {
                 if (this.privateKey) {
                     return this.privateKey
                 } else {
@@ -86,13 +86,13 @@
             }
         },
         mounted() {
-            let obj = this.$funs.getLocalAddress();
+            let obj = this.$funs.getLocalAddress()
             this.address = obj.addresses[obj.active]
 
-            if(!this.mnemonic&&!this.privateKey){
-                let params = this.$route.params;
+            if (!this.mnemonic && !this.privateKey) {
+                let params = this.$route.params
                 this.mnemonic = params.mnemonic || ''
-                this.privateKey = params.privateKey ? params.privateKey.replace('0x','') : ''
+                this.privateKey = params.privateKey ? params.privateKey.replace('0x', '') : ''
             }
 
             if (this.address !== '') {
@@ -110,7 +110,7 @@
     $list_height: 100px;
 
     .container {
-        padding:0 70px;
+        padding: 0 70px;
         .list-content {
             display: flex;
             ul {

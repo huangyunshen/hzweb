@@ -52,7 +52,10 @@ export default new Router({
                 {
                     path: 'accountInfo',
                     name: 'accountInfo',
-                    component: accountInfo
+                    component: accountInfo,
+                    meta: {
+                        keepAlive: true // 需要被缓存
+                    }
                 },
                 {
                     path: 'tradeRecord',

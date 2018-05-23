@@ -5,7 +5,7 @@
                 <application :item="item"
                              :index="index"
                              ref="funcs"
-                             @click.native="goPlay(index)"
+                             @click.native="goPlay(item)"
                 ></application>
             </el-col>
         </el-row>
@@ -17,65 +17,41 @@
 
     export default {
         name: "app-list",
-        components:{
+        components: {
             application
         },
-        data(){
+        data() {
             return {
-                appList: [
-                    {
-                        imgUrl: require('../../assets/images/apps/game_icon1.png'),
-                        title: '欢乐麻将'
-                    },
-                    {
-                        imgUrl: require('../../assets/images/apps/game_icon2.png'),
-                        title: '欢乐麻将'
-                    },
-                    {
-                        imgUrl: require('../../assets/images/apps/game_icon3.png'),
-                        title: '欢乐麻将'
-                    },
-                    {
-                        imgUrl: require('../../assets/images/apps/game_icon4.png'),
-                        title: '欢乐麻将'
-                    },
-                    {
-                        imgUrl: require('../../assets/images/apps/game_icon5.png'),
-                        title: '欢乐麻将'
-                    },
-                    {
-                        imgUrl: require('../../assets/images/apps/game_icon6.png'),
-                        title: '欢乐麻将'
-                    },
-                    {
-                        imgUrl: require('../../assets/images/apps/game_icon7.png'),
-                        title: '欢乐麻将'
-                    },
-                    {
-                        imgUrl: require('../../assets/images/apps/game_icon8.png'),
-                        title: '欢乐麻将'
-                    }
-                ],
-
+                appList: [],
             }
         },
         methods: {
-            goPlay() {
-                let con = sessionStorage.getItem('userContract')
-                if (con === null || con === undefined) {
-                    this.$message.warning('你还没有创建该应用！请先创建！')
-                    let timer = setTimeout(()=>{
-                        clearTimeout(timer)
-                        this.$router.replace({
-                            name: 'createApp'
-                        })
-                    },2000)
-                } else {
-                    this.$router.replace({
-                        path: '/appDetail?' + sessionStorage.getItem('userContract')
+            goPlay(item) {
+                this.$router.replace({
+                    path: '/appDetail?' + item.contractAddr
+                })
+            },
+            /**
+             * 获取所有应用
+             */
+            sendMsgToServer() {
+                this.$axios.get('/url/api/requestContract.php')
+                    .then((res) => {
+                        if (res.status === 200) {
+                            this.appList = res.data
+                        }
                     })
-                }
-            }
+                    .catch((error) => {
+                        this.$message.error(String(error))
+                        let timer = setTimeout(() => {
+                            clearTimeout(timer)
+                            this.$message.error('无法获取应用列表')
+                        }, 3000)
+                    })
+            },
+        },
+        mounted() {
+            this.sendMsgToServer()
         }
     }
 </script>
