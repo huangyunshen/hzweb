@@ -27,6 +27,11 @@
                     <i class="nav-icon5" :class="{'nav-icon5-active':itemSelected==='5'}"></i>
                     <span>创建应用</span>
                 </router-link>
+                <router-link tag="li" :to="{name:'myApps'}" @click.native="selectAnItem('6')"
+                             :class="{active:itemSelected==='6'}">
+                    <i class="nav-icon6" :class="{'nav-icon6-active':itemSelected==='6'}"></i>
+                    <span>我的应用</span>
+                </router-link>
             </ul>
         </nav>
 
@@ -84,6 +89,11 @@
                     break;
                 case 'createApp':
                     this.itemSelected = '5'
+                    break;
+                case 'myApps':
+                    this.itemSelected = '6'
+                    break;
+                default:
                     break;
             }
         }
@@ -172,6 +182,14 @@
                         background: url("../../assets/images/mainScreen/icon_cjyy.png") no-repeat;
                     }
                     .nav-icon5-active {
+                        width: 34px;
+                        height: 35px;
+                        background: url("../../assets/images/mainScreen/icon_zhxx_xz.png") no-repeat;
+                    }
+                    .nav-icon6 {
+                        background: url("../../assets/images/mainScreen/icon_cjyy.png") no-repeat;
+                    }
+                    .nav-icon6-active {
                         width: 34px;
                         height: 35px;
                         background: url("../../assets/images/mainScreen/icon_zhxx_xz.png") no-repeat;

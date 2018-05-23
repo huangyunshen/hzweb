@@ -10,7 +10,8 @@ contract PlayGame {
     address [] draw;    // 保存选合的地址
     mapping(address => uint) drawMap; // 选合用户的下注金额
     uint time = 0; // 保存上一次结算时出块时间戳
-    uint totalCoins = 0; // 下注总币
+    uint totalCoins = 0; // 当前局下注总币
+    uint historyTotalCoins = 0; // 历史下注总币
     uint dragonCoins = 0; // 下注龙总币
     uint tigerCoins = 0; // 下注虎总币
     uint drawCoins = 0; // 下注合总币
@@ -45,6 +46,7 @@ contract PlayGame {
     // 如果下注金额大于当前奖池金额，返回false，下注失败
     function sendBetInfo(address addr, uint cho, uint ran, uint coin) payable {
         totalCoins += coin;
+        historyTotalCoins += coin;
         deposit();
         if (getCurrentBalance() / 10 < totalCoins) {
             returnBetResult(false);
@@ -115,7 +117,15 @@ contract PlayGame {
     function transferCoin(address _to, uint _coins) {
         _to.transfer(_coins);
     }
-
+    // 提现函数,只有创建者账户可以提现
+    function drawings(uint coin) payable{
+        if (msg.sender == creator) {
+            uint _balance = getCurrentBalance();
+            if ((_balance - coin) / 10 > totalCoins) {
+                transferCoin(creator, coin);
+            }
+        }
+    }
     // 结算函数
     function getResult() {
         //异或后得到了12位的随机数
@@ -143,7 +153,7 @@ contract PlayGame {
 
     // 返回下注金额
     function getTotalCoins() constant returns (uint, uint, uint, uint) {
-        return (totalCoins, dragonCoins, tigerCoins, drawCoins);
+        return (historyTotalCoins, dragonCoins, tigerCoins, drawCoins);
     }
 
     function getMsgValue() constant returns (uint) {
