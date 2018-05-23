@@ -140,7 +140,7 @@
                 <div class="step-5-body">
                     <el-form label-position="top" class="emitTransaction">
                         <el-form-item label="交易Hash" class="el-wallet-style">
-                            <el-input class="el-wallet-input"
+                            <el-input
                                       readonly
                                       :value="transactionHash"></el-input>
                         </el-form-item>
@@ -394,8 +394,8 @@
             .step-1 {
 
                 .step-1-head {
-                    height: 90px;
-                    line-height: 90px;
+                    padding: 20px 0;
+                    line-height: 60px;
                     color: #8490c5;
                     i {
                         display: inline-block;
@@ -406,14 +406,13 @@
                         vertical-align: text-top;
                     }
                     .tranc-balance {
-                        /*margin-right: 100px;*/
-                        float: left;
+                        display: inline-block;
                         i {
                             background: url("../../assets/images/transaction/icon_zz_zhye.png") no-repeat;
                         }
                     }
                     .tranc-address {
-                        float: left;
+                        display: inline-block;
                         i {
                             background: url("../../assets/images/transaction/icon_zz_zhdz.png") no-repeat;
                         }

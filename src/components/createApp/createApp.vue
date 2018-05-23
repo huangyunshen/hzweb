@@ -48,7 +48,7 @@
                                     @submit.native.prevent>
 
                                 <el-form-item class="el-wallet-style" label="充值金额">
-                                    <el-input class="el-wallet-input"
+                                    <el-input
                                               auto-complete="off"
                                               v-model="rechargeData.value"
                                     ></el-input>
@@ -62,19 +62,19 @@
                                 <el-form-item class="el-wallet-style" label="下注金额">
                                     <el-row>
                                         <el-col :span="7">
-                                            <el-input class="el-wallet-input"
+                                            <el-input
                                                       auto-complete="off"
                                                       v-model="rechargeData.price1"
                                             ></el-input>
                                         </el-col>
                                         <el-col :span="7" :offset="1">
-                                            <el-input class="el-wallet-input"
+                                            <el-input
                                                       auto-complete="off"
                                                       v-model="rechargeData.price2"
                                             ></el-input>
                                         </el-col>
                                         <el-col :span="7" :offset="1">
-                                            <el-input class="el-wallet-input"
+                                            <el-input
                                                       auto-complete="off"
                                                       v-model="rechargeData.price3"
                                             ></el-input>
@@ -101,14 +101,14 @@
                                 <el-form-item class="el-wallet-style" label="应用地址">
                                     <el-row>
                                         <el-col :span="20">
-                                            <el-input class="el-wallet-input"
+                                            <el-input   id="appAddress"
                                                       auto-complete="off"
                                                       v-model="contractAddressUrl"
                                                       readonly
                                             ></el-input>
                                         </el-col>
                                         <el-col :span="4">
-                                            <el-button>复制</el-button>
+                                            <el-button @click="copyAddress">复制</el-button>
                                         </el-col>
                                     </el-row>
                                 </el-form-item>
@@ -220,20 +220,26 @@
                             this.publicKey = users.addresses[users.active]
                             if (this.$store.state.userPassword === "") {
                                 this.$prompt(`请输入${this.publicKey}的密码`, '提示', {
+                                    inputType: 'password',
                                     confirmButtonText: '确定',
                                     cancelButtonText: '取消',
                                 }).then(({value}) => {
                                     this.password = value
-                                    this.$confirm('是否保存密码?', '提示', {
-                                        confirmButtonText: '确定',
-                                        cancelButtonText: '取消',
-                                        type: 'warning'
-                                    }).then(() => {
-                                        this.$store.commit("setPassword", value)
-                                        this.migration(this.publicKey, value)
-                                    }).catch(() => {
-                                        this.migration(this.publicKey, value)
-                                    })
+                                    try {
+                                        this.$web3.personal.unlockAccount(this.publicKey, value, 6000000)
+                                        this.$confirm('是否临时保存密码，页面在刷新或者关闭后自动清除', '提示', {
+                                            confirmButtonText: '确定',
+                                            cancelButtonText: '取消',
+                                            type: 'warning'
+                                        }).then(() => {
+                                            this.$store.commit("setPassword", value)
+                                            this.migration(this.publicKey, value)
+                                        }).catch(() => {
+                                            this.migration(this.publicKey, value)
+                                        })
+                                    } catch (err) {
+                                        this.$message.error(String(err))
+                                    }
                                 }).catch((error) => {
                                     console.log(error)
                                 })
@@ -303,7 +309,6 @@
              * @param value
              */
             migration(user, value) {
-                this.$web3.personal.unlockAccount(user, value)
                 this.$store.commit('setCryptPercent', {percent: true, text: '创建中···'})
                 let MyContract = this.$web3.eth.contract(
                     playGameContract.abi
@@ -372,6 +377,11 @@
                             this.$message.error('无法获取应用列表')
                         }, 3000)
                     })
+            },
+            copyAddress($event) {
+                let input = document.getElementById('appAddress')
+                input.select()
+                document.execCommand('copy')
             }
         },
         mounted() {
