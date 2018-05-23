@@ -58,29 +58,14 @@
 
 <style lang="scss" type="text/scss" scoped>
     .app-list {
-        margin: 0 auto;
-        overflow: hidden;
-        li {
-            height: 150px;
-            width: 150px;
-            margin: 10px;
-            cursor: pointer;
-            float: left;
-            &:hover {
-                .tc {
-                    color: #f00;
-                }
-            }
-            .app-icon {
-                width: 100px;
-                height: 100px;
-                margin: 20px auto;
-                img {
-                    width: 100%;
-                    height: 100%;
-                    border-radius: 10px;
-                }
-            }
+        height: 100%;
+        padding: 2%;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        overflow-y: auto;
+        .el-col{
+            padding:0 5px;
         }
     }
 </style>

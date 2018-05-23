@@ -260,10 +260,10 @@ $--alert-icon-large-size: 28px !default;
 /* Message Box
 -------------------------- */
 $--msgbox-width: 500px !default;
-$--msgbox-border-radius: 4px !default;
+$--msgbox-border-radius: 2px !default;
 $--msgbox-font-size: $--font-size-large !default;
 $--msgbox-content-font-size: $--font-size-base !default;
-$--msgbox-content-color: $--color-text-regular !default;
+$--msgbox-content-color: #8abdec !default;
 $--msgbox-error-font-size: 12px !default;
 $--msgbox-padding-primary: 15px !default;
 
@@ -415,11 +415,11 @@ $--button-mini-padding-vertical: 7px !default;
 $--button-mini-padding-horizontal: 15px !default;
 
 $--button-default-color: $--color-text-regular !default;
-$--button-default-fill: $--color-white !default;
+$--button-default-fill: #5837FF !default;
 $--button-default-border: $--border-color-base !default;
 
 $--button-disabled-color: $--color-text-placeholder !default;
-$--button-disabled-fill: $--color-white !default;
+$--button-disabled-fill: #9386CE !default;
 $--button-disabled-border: $--border-color-lighter !default;
 
 $--button-primary-border: $--color-primary !default;

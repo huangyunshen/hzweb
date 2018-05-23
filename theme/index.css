@@ -5972,7 +5972,7 @@
   line-height: 1;
   white-space: nowrap;
   cursor: pointer;
-  background: #fff;
+  background: #5837FF;
   border: 1px solid #dcdfe6;
   border-color: #dcdfe6;
   color: #cec8ff;
@@ -6023,7 +6023,7 @@
     color: #F0EDFF;
     cursor: not-allowed;
     background-image: none;
-    background-color: #fff;
+    background-color: #9386CE;
     border-color: #ebeef5; }
   .el-button.is-disabled.el-button--text {
     background-color: transparent; }
@@ -9590,7 +9590,7 @@
     line-height: 1;
     white-space: nowrap;
     vertical-align: middle;
-    background: #fff;
+    background: #5837FF;
     border: 1px solid #dcdfe6;
     font-weight: 500;
     border-left: 0;
@@ -9636,7 +9636,7 @@
       color: #F0EDFF;
       cursor: not-allowed;
       background-image: none;
-      background-color: #fff;
+      background-color: #9386CE;
       border-color: #ebeef5;
       -webkit-box-shadow: none;
       box-shadow: none; }
@@ -10192,7 +10192,7 @@
     white-space: nowrap;
     vertical-align: middle;
     cursor: pointer;
-    background: #fff;
+    background: #5837FF;
     border: 1px solid #dcdfe6;
     border-left: 0;
     color: #cec8ff;
@@ -10237,7 +10237,7 @@
     color: #F0EDFF;
     cursor: not-allowed;
     background-image: none;
-    background-color: #fff;
+    background-color: #9386CE;
     border-color: #ebeef5;
     -webkit-box-shadow: none;
     box-shadow: none; }
@@ -13452,7 +13452,7 @@
   line-height: 1;
   white-space: nowrap;
   cursor: pointer;
-  background: #fff;
+  background: #5837FF;
   border: 1px solid #dcdfe6;
   border-color: #dcdfe6;
   color: #cec8ff;
@@ -13503,7 +13503,7 @@
     color: #F0EDFF;
     cursor: not-allowed;
     background-image: none;
-    background-color: #fff;
+    background-color: #9386CE;
     border-color: #ebeef5; }
   .el-button.is-disabled.el-button--text {
     background-color: transparent; }
@@ -14467,7 +14467,7 @@
     white-space: nowrap;
     vertical-align: middle;
     cursor: pointer;
-    background: #fff;
+    background: #5837FF;
     border: 1px solid #dcdfe6;
     border-left: 0;
     color: #cec8ff;
@@ -14512,7 +14512,7 @@
     color: #F0EDFF;
     cursor: not-allowed;
     background-image: none;
-    background-color: #fff;
+    background-color: #9386CE;
     border-color: #ebeef5;
     -webkit-box-shadow: none;
     box-shadow: none; }
@@ -16302,7 +16302,7 @@
     white-space: nowrap;
     vertical-align: middle;
     cursor: pointer;
-    background: #fff;
+    background: #5837FF;
     border: 1px solid #dcdfe6;
     border-left: 0;
     color: #cec8ff;
@@ -16347,7 +16347,7 @@
     color: #F0EDFF;
     cursor: not-allowed;
     background-image: none;
-    background-color: #fff;
+    background-color: #9386CE;
     border-color: #ebeef5;
     -webkit-box-shadow: none;
     box-shadow: none; }
@@ -26082,7 +26082,7 @@
   line-height: 1;
   white-space: nowrap;
   cursor: pointer;
-  background: #fff;
+  background: #5837FF;
   border: 1px solid #dcdfe6;
   border-color: #dcdfe6;
   color: #cec8ff;
@@ -26133,7 +26133,7 @@
     color: #F0EDFF;
     cursor: not-allowed;
     background-image: none;
-    background-color: #fff;
+    background-color: #9386CE;
     border-color: #ebeef5; }
   .el-button.is-disabled.el-button--text {
     background-color: transparent; }
@@ -26944,7 +26944,7 @@
   padding-bottom: 10px;
   vertical-align: middle;
   background-color: #fff;
-  border-radius: 4px;
+  border-radius: 2px;
   border: 1px solid #ebeef5;
   font-size: 20px;
   -webkit-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
@@ -26993,7 +26993,7 @@
   .el-message-box__content {
     position: relative;
     padding: 10px 15px;
-    color: #cec8ff;
+    color: #8abdec;
     font-size: 16px; }
   .el-message-box__input {
     padding-top: 15px; }
@@ -40840,7 +40840,7 @@
   line-height: 1;
   white-space: nowrap;
   cursor: pointer;
-  background: #fff;
+  background: #5837FF;
   border: 1px solid #dcdfe6;
   border-color: #dcdfe6;
   color: #cec8ff;
@@ -40891,7 +40891,7 @@
     color: #F0EDFF;
     cursor: not-allowed;
     background-image: none;
-    background-color: #fff;
+    background-color: #9386CE;
     border-color: #ebeef5; }
   .el-button.is-disabled.el-button--text {
     background-color: transparent; }
@@ -41735,7 +41735,7 @@
     white-space: nowrap;
     vertical-align: middle;
     cursor: pointer;
-    background: #fff;
+    background: #5837FF;
     border: 1px solid #dcdfe6;
     border-left: 0;
     color: #cec8ff;
@@ -41780,7 +41780,7 @@
     color: #F0EDFF;
     cursor: not-allowed;
     background-image: none;
-    background-color: #fff;
+    background-color: #9386CE;
     border-color: #ebeef5;
     -webkit-box-shadow: none;
     box-shadow: none; }

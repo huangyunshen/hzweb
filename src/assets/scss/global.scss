@@ -106,8 +106,7 @@ textarea:focus {
         color: #ffffff;
     }
     &:disabled{
-        background: $ph_color;
-        color: $font_color;
+        background: #9386CE;
     }
 }
 
@@ -158,4 +157,16 @@ textarea:focus {
     }
 }
 
-
+.el-message-box{
+    background-color:#1F1A42;
+    border: solid 1px #524c91;
+    button:first-child{
+        background: #372e65;
+        color: #fff;
+        border: 1px solid #372e65;
+        &:hover{
+            background: #5A50A2;
+            border: 1px solid #5A50A2;
+        }
+    }
+}

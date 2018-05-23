@@ -434,6 +434,11 @@
                 -moz-box-sizing: border-box;
                 box-sizing: border-box;
             }
+            .step-1 {
+                .body {
+                    height: 440px;
+                }
+            }
             .step-3 {
                 .content {
                     width: 800px;
