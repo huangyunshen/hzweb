@@ -166,9 +166,9 @@
             return {
                 steps: "1",
                 form: {
-                    to: '',
-                    value: '2',
-                    gas: '21000',
+                    to: '0x556fa4b9b24ebc544e1f37c38c0eddced4531a0e',
+                    value: 2,
+                    gas: 21000,
                 },
                 unit: 'ETH',
                 address: '',
@@ -181,12 +181,32 @@
                 transactionMsg: {}
             }
         },
+        computed:{
+            balanceToWei(){
+                return this.$web3.toWei(this.balance)
+            },
+            valueToWei(){
+                return this.$web3.toWei(this.form.value,'ether')
+            },
+            totalPrice(){
+                let total = ((this.$store.state.gasPrice * Math.pow(10, 9)) * this.form.gas) + Number(this.valueToWei)
+                return total
+            }
+        },
         methods: {
             /**
              * 点击 生成交易
              */
             typePwd() {
                 this.password = ''
+
+                if(this.balanceToWei<this.totalPrice){
+                    this.$message({
+                        message: this.$msg.balanceNotEnough,
+                        type: 'error'
+                    })
+                    return
+                }
                 if (!this.$web3.isAddress(this.form.to)) {
                     this.$message({
                         message: this.$msg.invalidAddress,
@@ -194,26 +214,34 @@
                     })
                     return
                 }
-                if (this.form.value.trim() === '') {
+                if (!this.$funs.validateFloatNum(this.form.value)) {
                     this.$message({
-                        message: this.$msg.emptyValue,
+                        message: this.$msg.errorValue,
                         type: 'error'
                     })
                     return
                 }
-                let reg = /^[0-9]*$/
-                if (this.form.gas.trim() === '' || !reg.test(this.form.gas) || this.form.gas.trim() === '0') {
+                if (!this.$funs.validateIntNum(this.form.gas)) {
                     this.$message({
                         message: this.$msg.invalidGas,
                         type: 'error'
                     })
                     return
                 }
+
                 this.steps = '2'
             },
             importAccount() {
                 this.$refs.unlock.importAccount().then((wallet) => {
                     if (typeof wallet === 'object') {
+                        let balance = this.$web3.eth.getBalance(wallet.address,'latest')
+                        if(balance.toJSON() < this.totalPrice){
+                            this.$message({
+                                message: this.$msg.balanceNotEnough,
+                                type: 'error'
+                            })
+                            return
+                        }
                         if(wallet.address !== this.address){
                             this.$confirm(this.$msg.diffrentAccount, '账户不一致', {
                                 confirmButtonText: '确定',
@@ -222,6 +250,7 @@
                             }).then(() => {
                                 this.$funs.setLocalAddress(wallet)
                                 this.address = wallet.address
+                                this.balance = this.$web3.fromWei(this.$web3.toDecimal(balance), 'ether')
                                 this.privateKey = wallet.privateKey.replace('0x', '')
                                 this.getSignMsg().then(() => {
                                     this.steps = '3'

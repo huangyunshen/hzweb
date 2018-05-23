@@ -113,6 +113,7 @@
                         try {
                             let wallet = new this.$Wallet('0x' + this.form.privateKey)
                             resolve(wallet)
+                            this.form.privateKey
                         } catch (err) {
                             this.$message({
                                 message: this.$msg.invalidPrivateKey,

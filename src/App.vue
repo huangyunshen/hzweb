@@ -2,7 +2,8 @@
     <div id="app"
          v-loading="cryptPercent.percent"
          :element-loading-text="cryptPercent.text"
-         element-loading-spinner="el-icon-loading">
+         element-loading-custom-class="full-loading"
+         >
 
         <img src="./assets/images/logo.png" class="logoImg"></img>
 

@@ -18,6 +18,17 @@
         left: 100px;
     }
 }
+.full-loading{
+    background: rgba(0,0,0, 0.6);
+    line-height: 20px;
+    .el-loading-spinner .path{
+        stroke: #B7D8FF;
+    }
+    p{
+        color: #B7D8FF !important;
+        font-size: 18px!important;
+    }
+}
 
 .trade-record-table th {
     background-color: #221d44;
@@ -137,9 +148,9 @@ textarea:focus {
     border-color: #5873AD;
     justify-content: center;
     i {
-        font-size: 22px;
+        font-size: 20px;
     }
     p {
-        font-size: 20px;
+        font-size: 18px;
     }
 }
