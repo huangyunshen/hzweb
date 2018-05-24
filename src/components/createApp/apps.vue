@@ -53,7 +53,7 @@
 
 <style scoped lang="scss">
     .apps {
-        margin: 20px 30px;
+        margin: 20px 15px;
         .icon {
             position: relative;
             box-shadow: 0 6px 24px 0 rgba(11, 6, 27, 0.45);

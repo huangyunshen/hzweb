@@ -1,9 +1,9 @@
 <template>
     <div>
         <el-form
-            label-width="120px"
-            label-position="left"
-            @submit.native.prevent>
+                label-width="120px"
+                label-position="left"
+                @submit.native.prevent>
 
             <el-form-item class="el-wallet-style" label="解锁方式">
                 <div class="wallet-decrypt-type no-select-text">
@@ -87,15 +87,15 @@
 
     export default {
         name: "unlockAccount",
-        props:['isTranc'],
+        props: ['isTranc'],
         data() {
 
             return {
                 form: {
                     decryptType: '4',   //解锁方式,
-                    privateKey: 'dc30fc72b8bc875b5ae4b6d717c900292beb2457f3cedca2106954626a02af8b',
+                    privateKey: '995e8b48cbe3eae58e404453a6d928b3f566762f33bfbb4e6022d0867b55fc7d',
                     mnemonic: '',
-                    address:'',
+                    address: '',
                     pwd: '',
                     keystore: {},
                     // fileName: '请选择keystore钱包文件',
@@ -105,7 +105,7 @@
         },
         methods: {
             selectDecryptType(type) {
-                this.form.decryptType = type;
+                this.form.decryptType = type
             },
             importAccount() {
                 return new Promise((resolve, reject) => {
@@ -158,7 +158,7 @@
                                 this.$message({
                                     message: this.$msg.unlockFailByPwd,
                                     type: 'error'
-                                });
+                                })
                                 this.$store.commit('setCryptPercent', {
                                         percent: false,
                                         text: ''
@@ -186,14 +186,14 @@
                             this.$message({
                                 message: this.$msg.invalidMnemonic,
                                 type: 'error'
-                            });
+                            })
                             reject(false)
                         }
                     } else if (this.form.decryptType === '4') {          //账户地址
-                        if(this.$web3.isAddress(this.form.address)){
+                        if (this.$web3.isAddress(this.form.address)) {
                             this.form.privateKey = ''
                             this.form.mnemonic = ''
-                            resolve({address:this.form.address})
+                            resolve({address: this.form.address})
                         } else {
                             this.$message({
                                 message: this.$msg.invalidAddress,
@@ -230,13 +230,13 @@
                             this.$message({
                                 message: this.$msg.invalidWalletFile,
                                 type: 'error'
-                            });
+                            })
                         }
                     } catch (err) {
                         this.$message({
                             message: this.$msg.invalidFile,
                             type: 'error'
-                        });
+                        })
                     }
                 }
 
@@ -244,37 +244,39 @@
                     this.$message({
                         message: this.$msg.readFileErr,
                         type: 'error'
-                    });
+                    })
                 }
             }
         },
         computed: {
-            isTrancCom(){
-                if(this.isTranc==='isTranc'){
-                    return false;
+            isTrancCom() {
+                if (this.isTranc === 'isTranc') {
+                    return false
                 } else {
-                    return true;
-                };
+                    return true
+                }
+
             },
-            decryptInfo(){
+            decryptInfo() {
                 switch (this.form.decryptType) {
                     case '1':
-                        return '使用您的私钥访问您的帐户';
+                        return '使用您的私钥访问您的帐户'
                     case '2':
-                        return '使用您的密钥存储文件(UTC)访问您的帐户';
+                        return '使用您的密钥存储文件(UTC)访问您的帐户'
                     case '3':
-                        return '使用助记符短语访问您的帐户';
+                        return '使用助记符短语访问您的帐户'
                     case '4':
-                        return '使用账户地址访问您的帐户';
+                        return '使用账户地址访问您的帐户'
                 }
             }
         },
-        beforeMount(){          //设置默认的方式
-            if(this.isTranc==='isTranc'){
-                this.form.decryptType='2'
+        beforeMount() {          //设置默认的方式
+            if (this.isTranc === 'isTranc') {
+                this.form.decryptType = '1'
             } else {
-                this.form.decryptType='4'
-            };
+                this.form.decryptType = '1'
+            }
+
         }
     }
 </script>
@@ -327,9 +329,9 @@
             border-style: solid;
             border-width: 1px;
             border-image-source: linear-gradient(-16deg,
-                #3410f7 0%,
-                #711bdc 59%,
-                #ad25c0 100%);
+                    #3410f7 0%,
+                    #711bdc 59%,
+                    #ad25c0 100%);
             border-image-slice: 1;
         }
     }

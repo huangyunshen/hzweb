@@ -1,15 +1,24 @@
 <template>
     <div class="my-apps">
         <el-header class="app-list" height="250px">
-            <ul>
-                <li class="app-item fl" v-for="(item,index) in appList" :key="index">
-                    <application :item="item"
-                                 :index="index"
-                                 ref="funcs"
-                                 @click.native="showDetail(item,index)"
-                    ></application>
-                </li>
-            </ul>
+            <p class="tc title">我的应用</p>
+            <p class="prev tc btn">
+                <i @click="goPage('prev')" :class="{hover: !prevIsHover,disabled: prevIsDisabled,}"></i>
+            </p>
+            <div class="list-box">
+                <ul :style="{left: left + 'px'}" style="transition: left 1s;">
+                    <li class="app-item" ref="item" v-for="(item,index) in appList" :key="index">
+                        <application :item="item"
+                                     :index="index"
+                                     ref="funcs"
+                                     @click.native="showDetail(item,index)"
+                        ></application>
+                    </li>
+                </ul>
+            </div>
+            <p class="next tc btn">
+                <i @click="goPage('next')" :class="{hover: nextIsHover,disabled: !nextIsDisabled,}"></i>
+            </p>
         </el-header>
         <el-main class="app-info">
             <el-form ref="form" :model="form" label-position="left" label-width="150px">
@@ -60,10 +69,133 @@
         data() {
             return {
                 form: {},
-                appList: [],
+                appList: [
+                    {
+                        "id": "94",
+                        "type": "1",
+                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
+                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
+                        "currentCoin": "1000000000000.00000000",
+                        "historyCoin": null,
+                        "time": "2018-05-23 02:51:08"
+                    },
+                    {
+                        "id": "94",
+                        "type": "1",
+                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
+                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
+                        "currentCoin": "1000000000000.00000000",
+                        "historyCoin": null,
+                        "time": "2018-05-23 02:51:08"
+                    },
+                    {
+                        "id": "94",
+                        "type": "1",
+                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
+                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
+                        "currentCoin": "1000000000000.00000000",
+                        "historyCoin": null,
+                        "time": "2018-05-23 02:51:08"
+                    },
+                    {
+                        "id": "94",
+                        "type": "1",
+                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
+                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
+                        "currentCoin": "1000000000000.00000000",
+                        "historyCoin": null,
+                        "time": "2018-05-23 02:51:08"
+                    },
+                    {
+                        "id": "94",
+                        "type": "1",
+                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
+                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
+                        "currentCoin": "1000000000000.00000000",
+                        "historyCoin": null,
+                        "time": "2018-05-23 02:51:08"
+                    },
+                    {
+                        "id": "94",
+                        "type": "1",
+                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
+                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
+                        "currentCoin": "1000000000000.00000000",
+                        "historyCoin": null,
+                        "time": "2018-05-23 02:51:08"
+                    },
+                    {
+                        "id": "94",
+                        "type": "1",
+                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
+                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
+                        "currentCoin": "1000000000000.00000000",
+                        "historyCoin": null,
+                        "time": "2018-05-23 02:51:08"
+                    },
+                    {
+                        "id": "94",
+                        "type": "1",
+                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
+                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
+                        "currentCoin": "1000000000000.00000000",
+                        "historyCoin": null,
+                        "time": "2018-05-23 02:51:08"
+                    },
+                    {
+                        "id": "94",
+                        "type": "1",
+                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
+                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
+                        "currentCoin": "1000000000000.00000000",
+                        "historyCoin": null,
+                        "time": "2018-05-23 02:51:08"
+                    },
+                    {
+                        "id": "94",
+                        "type": "1",
+                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
+                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
+                        "currentCoin": "1000000000000.00000000",
+                        "historyCoin": null,
+                        "time": "2018-05-23 02:51:08"
+                    },
+                    {
+                        "id": "94",
+                        "type": "1",
+                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
+                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
+                        "currentCoin": "1000000000000.00000000",
+                        "historyCoin": null,
+                        "time": "2018-05-23 02:51:08"
+                    },
+                    {
+                        "id": "94",
+                        "type": "1",
+                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
+                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
+                        "currentCoin": "1000000000000.00000000",
+                        "historyCoin": null,
+                        "time": "2018-05-23 02:51:08"
+                    },
+                    {
+                        "id": "94",
+                        "type": "1",
+                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
+                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
+                        "currentCoin": "1000000000000.00000000",
+                        "historyCoin": null,
+                        "time": "2018-05-23 02:51:08"
+                    },
+                ],
                 myContractInstance: null,
                 user: '',
-                password: ''
+                password: '',
+                left: 0, // itemBox的left
+                prevIsHover: true,
+                prevIsDisabled: true,
+                nextIsHover: true,
+                nextIsDisabled: true,
             }
         },
         methods: {
@@ -99,12 +231,12 @@
                     // this.$store.commit("setPassword", value)
                     this.rechargefun(this.user, value)
                 }).catch((error) => {
-                    if(error !== 'cancel'){
+                    if (error !== 'cancel') {
                         this.$message.error(String(error))
                     }
                 })
             },
-            rechargefun(user,value) {
+            rechargefun(user, value) {
                 this.$web3.personal.unlockAccount(user, value)
                 let hash = this.myContractInstance.deposit({
                     from: user,
@@ -112,10 +244,10 @@
                     gasPrice: this.$store.state.gasPrice * Math.pow(10, 9),
                     gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
                 })
-                if(hash){
+                if (hash) {
                     this.$alert(`交易hash为：${hash}`, '充值成功', {
                         confirmButtonText: '确定',
-                    });
+                    })
                 }
             },
             /**
@@ -140,22 +272,22 @@
                 }).then(({value}) => {
                     this.drawingFun(this.user, value)
                 }).catch((error) => {
-                    if(error !== 'cancel'){
+                    if (error !== 'cancel') {
                         this.$message.error(String(error))
                     }
                 })
             },
-            drawingFun(user, value){
+            drawingFun(user, value) {
                 this.$web3.personal.unlockAccount(user, value)
-                let hash = this.myContractInstance.drawings(this.$web3.toWei(this.form.drawingVal),{
+                let hash = this.myContractInstance.drawings(this.$web3.toWei(this.form.drawingVal), {
                     from: user,
                     gasPrice: this.$store.state.gasPrice * Math.pow(10, 9),
                     gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
                 })
-                if(hash){
+                if (hash) {
                     this.$alert(`交易hash为：${hash}`, '提现成功', {
                         confirmButtonText: '确定',
-                    });
+                    })
                 }
             },
             /**
@@ -167,8 +299,33 @@
                     this.$refs.funcs[c].selectApp(i)
                 }
                 this.contactContract(this.form.contractAddr)
-                this.form.currentCoin = this.$web3.fromWei(this.myContractInstance.getCurrentBalance().toString(10),'ether')
-            }
+                this.form.currentCoin = this.$web3.fromWei(this.myContractInstance.getCurrentBalance().toString(10), 'ether')
+            },
+            goPage(sign) {
+                let itemW = this.$refs.item[0].getBoundingClientRect().width
+                if (sign === 'prev') {
+                    if (this.left === 0) {
+                        return
+                    }
+                    this.left += itemW * 8
+                    this.nextIsHover = true
+                    this.nextIsDisabled = true
+                    if (this.left === 0) {
+                        this.prevIsHover = true
+                        this.prevIsDisabled = true
+                    }
+                } else {
+                    if ((-this.left) < (Math.floor(this.appList.length / 8)) * itemW * 8) {
+                        this.left -= itemW * 8
+                        this.prevIsHover = false
+                        this.prevIsDisabled = false
+                        if ((-this.left) >= (Math.floor(this.appList.length / 8)) * itemW * 8) {
+                            this.nextIsHover = false
+                            this.nextIsDisabled = false
+                        }
+                    }
+                }
+            },
         },
         mounted() {
             let users = this.$funs.getLocalAddress()
@@ -177,7 +334,7 @@
                 "createAddr": this.user
             }).then((res) => {
                 if (res.status === 200) {
-                    this.appList = res.data
+                    // this.appList = res.data
                 }
             }).catch((error) => {
                 this.$message.error(String(error))
@@ -194,9 +351,72 @@
     .my-apps {
         height: 100%;
         .app-list {
-            .app-item {
-                box-sizing: border-box;
-                width: 220px;
+            position: relative;
+            background-color: #221D44;
+            .title {
+                padding-top: 18px;
+                font-size: 20px;
+                font-weight: normal;
+                font-stretch: normal;
+                letter-spacing: 0;
+                color: #cec8ff;
+            }
+            .btn {
+                width: 50px;
+                line-height: 260px;
+                height: 250px;
+                position: absolute;
+                top: 0;
+                i {
+                    display: inline-block;
+                    width: 28px;
+                    height: 28px;
+                    background: url("../../assets/images/myApps/icon_left.png") no-repeat;
+                    cursor: pointer;
+                    &.hover:hover {
+                        background: url("../../assets/images/myApps/icon_left_hover.png") no-repeat;
+                    }
+                    &:active {
+                        background: url("../../assets/images/myApps/icon_left_ht.png") no-repeat;
+                    }
+                    &.disabled {
+                        background: url("../../assets/images/myApps/icon_left_ht.png") no-repeat;
+                    }
+                }
+                &.next {
+                    right: 20px;
+                    i {
+                        background: url("../../assets/images/myApps/icon_right.png") no-repeat;
+                        &.hover:hover {
+                            background: url("../../assets/images/myApps/icon_right_hover.png") no-repeat;
+                        }
+                        &:active {
+                            background: url("../../assets/images/myApps/icon_right_ht.png") no-repeat;
+                        }
+                        &.disabled {
+                            background: url("../../assets/images/myApps/icon_right_ht.png") no-repeat;
+                        }
+                    }
+                }
+            }
+            .list-box {
+                width: 93%;
+                margin: 0 auto;
+                overflow: hidden;
+                height: 200px;
+                position: relative;
+                ul {
+                    height: 200px;
+                    white-space: nowrap;
+                    position: absolute;
+                    li {
+                        display: inline-block;
+                        box-sizing: border-box;
+                        &.app-item {
+                            width: 165px;
+                        }
+                    }
+                }
             }
         }
         .app-info {

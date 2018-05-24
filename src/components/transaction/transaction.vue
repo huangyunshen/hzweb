@@ -166,7 +166,7 @@
             return {
                 steps: "1",
                 form: {
-                    to: '',
+                    to: '0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5',
                     value: 2,
                     gas: 21000,
                 },
@@ -199,14 +199,6 @@
              */
             typePwd() {
                 this.password = ''
-
-                if(this.balanceToWei<this.totalPrice){
-                    this.$message({
-                        message: this.$msg.balanceNotEnough,
-                        type: 'error'
-                    })
-                    return
-                }
                 if (!this.$web3.isAddress(this.form.to)) {
                     this.$message({
                         message: this.$msg.invalidAddress,
@@ -217,6 +209,13 @@
                 if (!this.$funs.validateFloatNum(this.form.value)) {
                     this.$message({
                         message: this.$msg.errorValue,
+                        type: 'error'
+                    })
+                    return
+                }
+                if(this.balanceToWei<this.totalPrice){
+                    this.$message({
+                        message: this.$msg.balanceNotEnough,
                         type: 'error'
                     })
                     return
@@ -286,7 +285,7 @@
                     gasLimit: this.form.gas,
                     gasPrice: this.$store.state.gasPrice + ' Gwei',
                     maxTXFee: this.form.gas * this.$store.state.gasPrice + ' Gwei',
-                    nonce: '0',
+                    nonce: this.$web3.eth.getTransactionCount(this.address),
                     data: '0x'
                 }
                 this.steps = '4'
@@ -298,12 +297,12 @@
              * 点击 确认发送交易
              */
             confirmTransaction() {
-                this.$web3.eth.sendRawTransaction(this.transactionSign, (err, hash) => {
+                console.log(this.$web3.eth.sendRawTransaction(this.transactionSign, (err, hash) => {
                     if (err) {
                         this.$message({
                             message: String(err),
-                            type: 'error'
-                        });
+                            type: 'error',
+                        })
                     } else {
                         this.$message({
                             message: this.$msg.transactionSucc,
@@ -312,7 +311,7 @@
                         this.transactionHash = hash
                         this.steps = '5'
                     }
-                })
+                }))
             },
             finished() {
                 this.steps = '1'
@@ -322,14 +321,13 @@
                     let Tx = require('ethereumjs-tx')
                     let privateKey = new Buffer(this.privateKey, 'hex')
                     let nonce = this.$web3.eth.getTransactionCount(this.address)
-                    console.log(nonce)
                     let rawTx = {
-                        nonce: this.$web3.toHex(nonce),
+                        nonce: this.$web3.toHex(nonce + 1),
                         gasPrice: this.$web3.toHex(this.$store.state.gasPrice * (Math.pow(10, 9))),
                         gasLimit: this.$web3.toHex(this.form.gas),
                         to: this.form.to,
                         value: this.$web3.toHex(this.$web3.toWei(this.form.value, 'ether')),
-                        data: ""
+                        data: "0x"
                     }
                     let tx = new Tx(rawTx)
                     tx.sign(privateKey)

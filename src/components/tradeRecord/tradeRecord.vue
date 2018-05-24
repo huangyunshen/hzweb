@@ -3,52 +3,58 @@
         <!--<el-input placeholder="Search by Address / Txhash" v-model="searchParams">-->
         <!--<el-button slot="append" icon="el-icon-search" @click="getTransaction(searchParams)"></el-button>-->
         <!--</el-input>-->
-        <el-table class="trade-record-table"
-            v-if="showSwitch==='table'"
-            :data="transactionsList"
-            max-height="816px"
-            style="color:#8490c5;font-size: 16px;background:#221d44;text-align:center;"
-            :header-cell-style="headerCellStyle"
-            :row-style="rowStyle"
-            :cell-style="{'border-bottom':'none'}"
-        >
-            <el-table-column
-                prop="txHash"
-                label="交易hash"
-                min-width="100px"
+        <div v-if="showSwitch==='table'" class="table-list">
+            <el-table class="trade-record-table"
+                      :data="transactionsList"
+                      max-height="816px"
+                      style="color:#8490c5;font-size: 16px;background:#221d44;text-align:center;"
+                      :header-cell-style="headerCellStyle"
+                      :row-style="rowStyle"
+                      :cell-style="{'border-bottom':'none'}"
             >
-                <template slot-scope="scope">
-                    <a style="color:#8490c5;"
-                       :title="scope.row.txHash"
-                       :href="scope.row.txHash"
-                       @click.prevent="getTransaction(scope.row.txHash)">{{
-                        scope.row.txHash }}</a>
-                </template>
-            </el-table-column>
+                <el-table-column
+                        prop="txHash"
+                        label="交易hash"
+                        min-width="100px"
+                >
+                    <template slot-scope="scope">
+                        <a style="color:#8490c5;"
+                           :title="scope.row.txHash"
+                           :href="scope.row.txHash"
+                           @click.prevent="getTransaction(scope.row.txHash)">{{
+                            scope.row.txHash }}</a>
+                    </template>
+                </el-table-column>
 
-            <el-table-column
-                prop="block"
-                label="区块值">
-            </el-table-column>
-            <el-table-column
-                prop="time"
-                label="时间">
-            </el-table-column>
-            <el-table-column
-                prop="from"
-                label="转出方"
-                min-width="300px">
-            </el-table-column>
-            <el-table-column
-                prop="to"
-                label="转入方"
-                min-width="300px">
-            </el-table-column>
-            <el-table-column
-                prop="value"
-                label="金额">
-            </el-table-column>
-        </el-table>
+                <el-table-column
+                        prop="block"
+                        label="区块值">
+                </el-table-column>
+                <el-table-column
+                        prop="time"
+                        label="时间">
+                </el-table-column>
+                <el-table-column
+                        prop="from"
+                        label="转出方"
+                        min-width="300px">
+                </el-table-column>
+                <el-table-column
+                        prop="to"
+                        label="转入方"
+                        min-width="300px">
+                </el-table-column>
+                <el-table-column
+                        prop="value"
+                        label="金额">
+                </el-table-column>
+            </el-table>
+            <el-pagination
+                background
+                layout="prev, pager, next"
+                :total="1000">
+            </el-pagination>
+        </div>
 
         <div v-if="showSwitch==='list'" class="tx-list">
             <p class="title">交易信息</p>
@@ -137,7 +143,7 @@
                 let connected = this.$web3.isConnected()
                 if (connected) {
                     if (hash) {
-                        let result = this.$web3.eth.getTransaction(hash);
+                        let result = this.$web3.eth.getTransaction(hash)
                         this.transactionsData = result
                         this.showSwitch = 'list'
                     } else {
@@ -166,15 +172,25 @@
 
 <style lang="scss" type="text/scss" scoped>
     .trade-record {
+        height: 100%;
         .el-table::before {
             height: 0; //勿删
         }
-        /*.el-input {*/
-            /*margin-bottom: 50px;*/
-        /*}*/
+        .table-list {
+            height: 100%;
+            position: relative;
+            .el-pagination{
+                text-align: center;
+                position: absolute;
+                bottom: 40px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
         .tx-list {
             padding: 20px;
-            color:#8490c5;font-size: 16px;
+            color: #8490c5;
+            font-size: 16px;
             .title {
                 width: 100%;
                 height: 50px;
