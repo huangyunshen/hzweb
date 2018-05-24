@@ -168,7 +168,7 @@
                 form: {
                     to: '',
                     value: 2,
-                    gas: 210000,
+                    gas: 21000,
                 },
                 unit: 'ETH',
                 address: '',
@@ -300,7 +300,6 @@
             confirmTransaction() {
                 this.$web3.eth.sendRawTransaction(this.transactionSign, (err, hash) => {
                     if (err) {
-                        console.log(err);
                         this.$message({
                             message: String(err),
                             type: 'error'
