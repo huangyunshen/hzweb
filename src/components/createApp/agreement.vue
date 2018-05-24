@@ -337,9 +337,12 @@
     }
     p, li, .mb, h2, h3, h4, h5 {
         margin-bottom: .512rem;
+        font-weight: 400;
+        font-size: 16px;
     }
     .strong {
-        font-weight: bold;
+        font-weight: 400;
+        font-size: 16px;
     }
     .right {
         text-align: right;
