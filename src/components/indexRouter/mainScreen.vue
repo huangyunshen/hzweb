@@ -235,7 +235,7 @@
 
                 .el-button {
                     height: 28px;
-                    margin-right: 20px;
+                    margin-right: 30px;
                     background: #403A6D;
                     color: #CEC8FF;
                     font-size: 12px;
