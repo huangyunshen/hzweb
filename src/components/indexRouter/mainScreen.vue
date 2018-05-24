@@ -44,11 +44,14 @@
             </header>
 
             <main class="content">
-                <keep-alive>
-                    <router-view v-if="$route.meta.keepAlive"></router-view>
-                </keep-alive>
-
-                <router-view v-if="!$route.meta.keepAlive"></router-view>
+                <transition name="fof-fade">
+                    <router-view v-if="!$route.meta.keepAlive"></router-view>
+                </transition>
+                <transition name="fof-fade">
+                    <keep-alive>
+                        <router-view v-if="$route.meta.keepAlive"></router-view>
+                    </keep-alive>
+                </transition>
             </main>
         </div>
     </div>
@@ -110,7 +113,7 @@
         overflow: hidden;
 
         /**  侧边栏   **/
-        .left-nav{
+        .left-nav {
             width: 400px;
             float: left;
             padding-top: 150px;
@@ -144,7 +147,12 @@
                         line-height: 90px;
                         font-size: 24px;
                         color: #8abdec;
-
+                        &:hover {
+                            background: url("../../assets/images/mainScreen/btn_xz.png") no-repeat;
+                            font-size: 26px;
+                            color: #e9f4ff;
+                            cursor: pointer;
+                        }
                         span {
                             cursor: default;
                         }

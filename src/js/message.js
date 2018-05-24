@@ -6,6 +6,7 @@ export default {
     emptyResult: '无查询结果',
     emptyAddress: '请输入对方账户地址',
     errorGasLimit: 'Gas Limit不正确',
+    errorValue: '转账数额不正确',
     transactionFail: '转账失败',
     transactionSucc: '转账成功',
     enterPwd: '请输入密码',
