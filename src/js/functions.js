@@ -20,6 +20,11 @@ export default {
         let reg = /^\d*[1-9]+\d*$/g
         return reg.test(num)
     },
+    onlyEnterNum(n){
+        console.log(n);
+        let reg = /^[1-9]+\d*$/g
+      return n.replace(reg,'')
+    },
 
     linkToFirstScreenRep(){     //转到登录 / replace模式
         $router.replace({name: 'importWallet'})

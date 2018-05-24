@@ -121,6 +121,7 @@
                 <el-button class="el-wallet-main-button" @click="preStep" v-show="steps===2 || steps===3">上一步
                 </el-button>
                 <el-button class="el-wallet-main-button" @click="nextStep" :disabled="!checked">{{btnVal}}</el-button>
+                <a id="linkToApp" :href="contractAddressUrl" target="_blank"></a>
             </div>
         </div>
     </div>
@@ -170,8 +171,18 @@
             },
             nextStep() {
                 if (this.steps < 4) {
+                    if (this.steps === 1) {
+                        let users = this.$funs.getLocalAddress()
+                        let balance = this.$web3.eth.getBalance(users.addresses[users.active]).toString(10)
+                        if (Number(balance) === 0) {
+                            this.$message({
+                                message: "余额不足，无法创建！",
+                                type: 'error'
+                            })
+                            return
+                        }
+                    }
                     if (this.steps === 2 && (this.selected === '')) {
-                        console.log(this.selected)
                         this.$message({
                             message: this.$msg.mustSelectAnApp,
                             type: 'error'
@@ -180,7 +191,7 @@
                     }
                     if (this.steps === 3) {
                         if (isNaN(this.rechargeData.value)) {
-                            this.$message.error('请输入正确的充值数量！')
+                            this.$message.error('请输入正确的充值数额！')
                             return
                         }
                         if (this.rechargeData.value === '' || Number(this.rechargeData.value) === 0) {
@@ -252,18 +263,10 @@
                             }
                         })
                     }
-                    if (this.steps === 1) {
-                        let users = this.$funs.getLocalAddress()
-                        let balance = this.$web3.eth.getBalance(users.addresses[users.active]).toString(10)
-                        if (Number(balance) === 0) {
-                            this.$message({
-                                message: "余额不足，无法创建！",
-                                type: 'error'
-                            })
-                            this.steps--
-                        }
-                    }
                     this.steps++
+                } else {
+                    let a = document.getElementById('linkToApp')
+                    a.click()
                 }
             },
             selectAnApp(type, index) {
@@ -334,7 +337,7 @@
                                 "createMoney": this.$web3.toWei(this.rechargeData.value, 'ether')
                             }).then((res) => {
                                 if (res.status === 200) {
-                                    let data = res.data
+                                    // let data = res.data
                                     this.appList = res.data
                                 }
                             }).catch((error) => {
