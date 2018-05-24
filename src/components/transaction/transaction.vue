@@ -168,7 +168,7 @@
                 form: {
                     to: '',
                     value: 2,
-                    gas: 21000,
+                    gas: 210000,
                 },
                 unit: 'ETH',
                 address: '',
@@ -287,7 +287,7 @@
                     gasPrice: this.$store.state.gasPrice + ' Gwei',
                     maxTXFee: this.form.gas * this.$store.state.gasPrice + ' Gwei',
                     nonce: '0',
-                    data: ''
+                    data: '0x'
                 }
                 this.steps = '4'
             },
@@ -302,7 +302,7 @@
                     if (err) {
                         console.log(err);
                         this.$message({
-                            message: err,
+                            message: String(err),
                             type: 'error'
                         });
                     } else {
@@ -323,13 +323,14 @@
                     let Tx = require('ethereumjs-tx')
                     let privateKey = new Buffer(this.privateKey, 'hex')
                     let nonce = this.$web3.eth.getTransactionCount(this.address)
+                    console.log(nonce)
                     let rawTx = {
                         nonce: this.$web3.toHex(nonce),
                         gasPrice: this.$web3.toHex(this.$store.state.gasPrice * (Math.pow(10, 9))),
                         gasLimit: this.$web3.toHex(this.form.gas),
                         to: this.form.to,
                         value: this.$web3.toHex(this.$web3.toWei(this.form.value, 'ether')),
-                        data: "0x"
+                        data: ""
                     }
                     let tx = new Tx(rawTx)
                     tx.sign(privateKey)

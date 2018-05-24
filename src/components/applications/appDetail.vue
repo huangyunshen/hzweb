@@ -187,7 +187,7 @@
                     return
                 }
                 this.$store.commit('setCryptPercent',{percent: true,text: '正在下注···'})
-                this.$web3.personal.unlockAccount("0x27d024958a6105a5c8cbd95a8ecb1ff35ad91016", 'jacky')
+                this.$web3.personal.unlockAccount("0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5", 'jacky0011')
                 // 监听是否下注失败
                 let betResult = this.myContractInstance.returnBetResult()
                 betResult.watch((err, result) => {
@@ -205,7 +205,7 @@
                     }
                 })
                 this.myContractInstance.sendBetInfo(params.addr, params.cho, params.ran, params.coin, {
-                    from: "0x27d024958a6105a5c8cbd95a8ecb1ff35ad91016",
+                    from: "0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5",
                     gasPrice: 200000000000,
                     value: params.coin,
                     gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
@@ -225,7 +225,8 @@
             },
             // 获取服务器定时器时间
             getTimerTime() {
-                axios.get('http://39.104.81.103:8088')
+                // axios.get('http://39.104.81.103:8088')
+                axios.get('http://192.168.1.124:8089')
                     .then((res) => {
                         this.countDown = res.data
                         this.interval()
