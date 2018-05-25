@@ -351,7 +351,8 @@
                             localStorage.setItem('contractAddress', myContract.address)
                             // 每次部署完合约，需要向定时器合约中注册当前合约地址
                             let myIntContractInstance = MyContract.at(myContract.address)
-                            myIntContractInstance.registerInterval('0xc1388f72f44c47a1fdba33abcb63c259236ddf3c', {
+                            // myIntContractInstance.registerInterval('0xc1388f72f44c47a1fdba33abcb63c259236ddf3c', {
+                            myIntContractInstance.registerInterval('0x1ba89ad2a6668ee1d326e2e5c8b5ad1c33da1067', {
                                 from: user,
                                 gasPrice: 41000000000,
                                 gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})

@@ -10,7 +10,7 @@
                     </div>
                 </div>
                 <div class="game-talbe">
-                    <p class="time-remaining">剩余下注时间 <span>15</span> 秒</p>
+                    <p class="time-remaining">剩余下注时间 <span>{{countDown}}</span> 秒</p>
                     <div class="selectable">
                         <div class="item-1">
                             <p>
@@ -19,10 +19,10 @@
                                 </i>
                             </p>
                             <p>
-                                <input maxlength="10">
+                                <input v-model="betCoin[1]" readonly>
                             </p>
                             <p>
-                                <span :class="{selected:choosed===1}" @click="callContract(1)"></span>
+                                <span :class="{selected:choosed==='dragon'}" @click="callContract('dragon')"></span>
                             </p>
                         </div>
                         <div class="item-2">
@@ -32,10 +32,10 @@
                                 </i>
                             </p>
                             <p>
-                                <input maxlength="10">
+                                <input v-model="betCoin[3]" readonly>
                             </p>
                             <p>
-                                <span :class="{selected:choosed===2}" @click="callContract(2)"></span>
+                                <span :class="{selected:choosed==='leopard'}" @click="callContract('leopard')"></span>
                             </p>
                         </div>
                         <div class="item-3">
@@ -45,10 +45,10 @@
                                 </i>
                             </p>
                             <p>
-                                <input maxlength="10">
+                                <input v-model="betCoin[2]" readonly>
                             </p>
                             <p>
-                                <span :class="{selected:choosed===3}" @click="callContract(3)"></span>
+                                <span :class="{selected:choosed==='tiger'}" @click="callContract('tiger')"></span>
                             </p>
                         </div>
                     </div>
@@ -75,10 +75,10 @@
                                   :class="'amount'+item"></span>
                         </div>
                     </div>
-                    <div class="input-item" @click="selectAnItem(false)">
-                        <p>输入下注金额</p>
+                    <div class="input-item">
+                        <p>下注金额</p>
                         <p>
-                            <input maxlength="15">
+                            <input maxlength="15" v-model="moneyNum">
                         </p>
                     </div>
                 </div>
@@ -180,7 +180,7 @@
         data() {
             return {
                 isSelected: null,
-                amountArr: [],
+                amountArr: [1,5,10],
                 resultList: ['龙', '龙', '虎', '和', '龙'],
                 amount1: ['0'],
                 amount2: ['0'],
@@ -190,7 +190,7 @@
                 // betChoosed: '', // 金额选中的标识
                 betZh: '',
                 moneyNum: 0,
-                countDown: 120,
+                countDown: 60,
                 betAllowed: false,
                 timer: null, // 页面倒计时定时器
                 getCoinsTimer: null,
@@ -225,11 +225,11 @@
                     case 'dragon':
                         this.betZh = '0'
                         break
-                    case 'leopard':
-                        this.betZh = '2'
-                        break
                     case 'tiger':
                         this.betZh = '1'
+                        break
+                    case 'leopard':
+                        this.betZh = '2'
                         break
                     default:
                         return false
@@ -244,6 +244,7 @@
                 this.$store.commit('setCryptPercent', {percent: true, text: '正在结算···'})
                 let event = this.myContractInstance.returnBetPoints()
                 event.watch((err, result) => {
+                    console.log(result);
                     event.stopWatching()
                     this.$store.commit('setCryptPercent', {percent: false, text: '正在结算···'})
                     if (err) {
@@ -265,12 +266,11 @@
             /**
              * 下注
              */
-            callContract(selectId) {
-                // if (!this.chargeLegality()) {
-                //     return false
-                // }
-                this.choosed = selectId
-                return false
+            callContract(sign) {
+                if (!this.chargeLegality()) {
+                    return false
+                }
+                this.bet(sign)
                 console.log(this.myContractInstance.getCurrentBalance().toString(10))
                 let params = {
                     addr: this.$store.state.publicKey,
@@ -279,21 +279,18 @@
                     // coin: this.$web3.toWei(this.moneyNum, 'ether'),
                     coin: this.moneyNum * Math.pow(10, 6),
                 }
-                if (params.cho === '') {
-                    this.$message.error('请先选择一方下注！')
-                    return
-                }
                 if (params.coin === 0) {
-                    this.$message.error('请先选择或输入下注金额！')
-                    return
+                    this.$message.error('请选择或输入下注金额！')
+                    return false
                 }
                 this.$store.commit('setCryptPercent', {percent: true, text: '正在下注···'})
-                this.$web3.personal.unlockAccount("0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5", 'jacky0011')
+                // this.$web3.personal.unlockAccount("0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5", 'jacky0011')
+                this.$web3.personal.unlockAccount("0x27d024958a6105a5c8cbd95a8ecb1ff35ad91016", 'jacky')
                 // 监听是否下注失败
                 let betResult = this.myContractInstance.returnBetResult()
                 betResult.watch((err, result) => {
                     betResult.stopWatching()
-                    this.$store.commit('setCryptPercent', {percent: false, text: '正在下注···'})
+                    this.$store.commit('setCryptPercent', {percent: false, text: ''})
                     if (err) {
                         this.$message.error('下注失败！')
                         return
@@ -306,7 +303,8 @@
                     }
                 })
                 this.myContractInstance.sendBetInfo(params.addr, params.cho, params.ran, params.coin, {
-                    from: "0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5",
+                    // from: "0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5",
+                    from: "0x27d024958a6105a5c8cbd95a8ecb1ff35ad91016",
                     gasPrice: 200000000000,
                     value: params.coin,
                     gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
@@ -326,8 +324,8 @@
             },
             // 获取服务器定时器时间
             getTimerTime() {
-                // axios.get('http://39.104.81.103:8088')
-                axios.get('http://192.168.1.124:8089')
+                axios.get('http://39.104.81.103:8088')
+                // axios.get('http://192.168.1.124:8089')
                     .then((res) => {
                         this.countDown = res.data
                         this.interval()
@@ -388,23 +386,23 @@
                 }
             }
         },
-        // mounted() {
-        //     if (this.getContractAddr()) {
-        //         this.contactContract()
-        //         if(!this.chargeLegality()){
-        //             return false
-        //         }
-        //         // 实时获取下注币数
-        //         this.getCoinsTimer = setInterval(() => {
-        //             this.betCoin.length = 0
-        //             let arr = this.myContractInstance.getTotalCoins()
-        //             if (arr) {
-        //                 this.betCoin = arr
-        //             }
-        //         }, 1000)
-        //         this.getTimerTime()
-        //     }
-        // },
+        mounted() {
+            if (this.getContractAddr()) {
+                this.contactContract()
+                if(!this.chargeLegality()){
+                    return false
+                }
+                // 实时获取下注币数
+                this.getCoinsTimer = setInterval(() => {
+                    this.betCoin.length = 0
+                    let arr = this.myContractInstance.getTotalCoins()
+                    if (arr) {
+                        this.betCoin = arr
+                    }
+                }, 1000)
+                this.getTimerTime()
+            }
+        },
         deactivated() {
             clearInterval(this.getCoinsTimer)
             clearInterval(this.timer)
@@ -412,12 +410,6 @@
         beforeDestroy() {
             clearInterval(this.getCoinsTimer)
             clearInterval(this.timer)
-        },
-        makeStrimg(amount) {
-            let arr = amount.split('')
-            for (let i = 0; i < arr.length; i++) {
-
-            }
         }
     }
 </script>

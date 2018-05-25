@@ -30,7 +30,7 @@
                     </router-link>
                     <router-link tag="li" :to="{name:'myApps'}" @click.native="selectAnItem('6')"
                                  :class="{active:itemSelected==='6'}">
-                        <i class="nav-icon6" :class="{'nav-icon5-active':itemSelected==='6'}"></i>
+                        <i class="nav-icon6" :class="{'nav-icon6-active':itemSelected==='6'}"></i>
                         <span>我的应用</span>
                     </router-link>
                 </ul>
@@ -177,7 +177,7 @@
                         .nav-icon2-active {
                             width: 34px;
                             height: 35px;
-                            background: url("../../assets/images/mainScreen/icon_zhxx_xz.png") no-repeat;
+                            background: url("../../assets/images/mainScreen/icon_jyjl_xz.png") no-repeat;
                         }
                         .nav-icon3 {
                             background: url("../../assets/images/mainScreen/icon_dwzz.png") no-repeat;
@@ -185,7 +185,7 @@
                         .nav-icon3-active {
                             width: 34px;
                             height: 35px;
-                            background: url("../../assets/images/mainScreen/icon_zhxx_xz.png") no-repeat;
+                            background: url("../../assets/images/mainScreen/icon_dwzz_xz.png") no-repeat;
                         }
                         .nav-icon4 {
                             background: url("../../assets/images/mainScreen/icon_yysc.png") no-repeat;
@@ -193,7 +193,7 @@
                         .nav-icon4-active {
                             width: 34px;
                             height: 35px;
-                            background: url("../../assets/images/mainScreen/icon_zhxx_xz.png") no-repeat;
+                            background: url("../../assets/images/mainScreen/icon_yysc_xz.png") no-repeat;
                         }
                         .nav-icon5 {
                             background: url("../../assets/images/mainScreen/icon_cjyy.png") no-repeat;
@@ -201,7 +201,7 @@
                         .nav-icon5-active {
                             width: 34px;
                             height: 35px;
-                            background: url("../../assets/images/mainScreen/icon_zhxx_xz.png") no-repeat;
+                            background: url("../../assets/images/mainScreen/icon_cjyy_xz.png") no-repeat;
                         }
                         .nav-icon6 {
                             background: url("../../assets/images/mainScreen/icon_cjyy.png") no-repeat;
@@ -209,7 +209,7 @@
                         .nav-icon6-active {
                             width: 34px;
                             height: 35px;
-                            background: url("../../assets/images/mainScreen/icon_zhxx_xz.png") no-repeat;
+                            background: url("../../assets/images/mainScreen/icon_cjyy_xz.png") no-repeat;
                         }
                     }
                     .active {
