@@ -43,7 +43,7 @@ $--color-info-lighter: mix($--color-white, $--color-info, 90%) !default;
 $--color-text-primary: #ADA7E5 !default;
 $--color-text-regular: #cec8ff !default;
 $--color-text-secondary: #E0DBFF !default;
-$--color-text-placeholder: #F0EDFF !default;
+$--color-text-placeholder: #726bab !default;
 
 /* Link
 -------------------------- */
@@ -81,9 +81,9 @@ $--fill-base: $--color-white !default;
 /* Font
 -------------------------- */
 $--font-path: 'fonts' !default;
-$--font-size-base: 16px !default;
-$--font-size-small: 14px !default;
-$--font-size-large: 20px !default;
+$--font-size-base: 14px !default;
+$--font-size-small: 13px !default;
+$--font-size-large: 18px !default;
 $--font-color-disabled-base: #bbb !default;
 $--font-weight-primary: 500 !default;
 $--font-line-height-primary: 24px !default;
@@ -215,7 +215,7 @@ $--select-disabled-border: $--disabled-border-base !default;
 $--select-font-size: $--font-size-base !default;
 $--select-close-hover-color: #696299 !default;
 
-$--select-input-color: #696299 !default;
+$--select-input-color: #CEC8FF !default;
 $--select-multiple-input-color: #696299 !default;
 $--select-input-focus-background: #433e71 !default;
 $--select-input-font-size: 14px !default;

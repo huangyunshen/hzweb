@@ -1,5 +1,5 @@
 <template>
-    <el-select v-model="value" size="mini">
+    <el-select class="language-style" v-model="value" size="mini">
         <el-option
                 v-for="(item,index) in options"
                 :key="index"
@@ -24,8 +24,8 @@
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
     .el-select{
-        width: 100px;
+        width: 90px;
     }
 </style>

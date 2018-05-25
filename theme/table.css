@@ -462,7 +462,7 @@
 .el-checkbox {
   color: #cec8ff;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 14px;
   position: relative;
   cursor: pointer;
   display: inline-block;
@@ -536,22 +536,22 @@
       cursor: not-allowed; }
       .el-checkbox__input.is-disabled .el-checkbox__inner::after {
         cursor: not-allowed;
-        border-color: #F0EDFF; }
+        border-color: #726bab; }
       .el-checkbox__input.is-disabled .el-checkbox__inner + .el-checkbox__label {
         cursor: not-allowed; }
     .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner {
       background-color: #f2f6fc;
       border-color: #dcdfe6; }
       .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner::after {
-        border-color: #F0EDFF; }
+        border-color: #726bab; }
     .el-checkbox__input.is-disabled.is-indeterminate .el-checkbox__inner {
       background-color: #f2f6fc;
       border-color: #dcdfe6; }
       .el-checkbox__input.is-disabled.is-indeterminate .el-checkbox__inner::before {
-        background-color: #F0EDFF;
-        border-color: #F0EDFF; }
+        background-color: #726bab;
+        border-color: #726bab; }
     .el-checkbox__input.is-disabled + span.el-checkbox__label {
-      color: #F0EDFF;
+      color: #726bab;
       cursor: not-allowed; }
     .el-checkbox__input.is-checked .el-checkbox__inner {
       background-color: #5837FF;
@@ -684,7 +684,7 @@
   .el-checkbox-button.is-checked:first-child .el-checkbox-button__inner {
     border-left-color: #5837FF; }
   .el-checkbox-button.is-disabled .el-checkbox-button__inner {
-    color: #F0EDFF;
+    color: #726bab;
     cursor: not-allowed;
     background-image: none;
     background-color: #9386CE;
@@ -1786,10 +1786,10 @@
     position: absolute;
     left: 7px; }
     .el-table .sort-caret.ascending {
-      border-bottom-color: #F0EDFF;
+      border-bottom-color: #726bab;
       top: 5px; }
     .el-table .sort-caret.descending {
-      border-top-color: #F0EDFF;
+      border-top-color: #726bab;
       bottom: 7px; }
   .el-table .ascending .sort-caret.ascending {
     border-bottom-color: #5837FF; }
