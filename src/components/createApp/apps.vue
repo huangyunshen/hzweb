@@ -54,8 +54,15 @@
 <style scoped lang="scss">
     .apps {
         margin: 20px 15px;
+        text-align: center;
         .icon {
             position: relative;
+            max-width: 160px;
+            max-height: 160px;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            margin: 0 auto;
             box-shadow: 0 6px 24px 0 rgba(11, 6, 27, 0.45);
             img {
                 width: 100%;

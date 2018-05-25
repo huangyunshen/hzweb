@@ -348,7 +348,7 @@
   display: inline-block;
   white-space: nowrap;
   outline: none;
-  font-size: 16px;
+  font-size: 14px;
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none; }
@@ -416,9 +416,9 @@
       background-color: #f5f7fa;
       border-color: #e4e7ed; }
       .el-radio__input.is-disabled.is-checked .el-radio__inner::after {
-        background-color: #F0EDFF; }
+        background-color: #726bab; }
     .el-radio__input.is-disabled + span.el-radio__label {
-      color: #F0EDFF;
+      color: #726bab;
       cursor: not-allowed; }
     .el-radio__input.is-checked .el-radio__inner {
       border-color: #5837FF;

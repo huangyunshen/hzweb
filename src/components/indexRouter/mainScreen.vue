@@ -4,32 +4,32 @@
             <nav>
                 <ul class="no-select-text">
                     <router-link tag="li" :to="{name:'accountInfo'}" @click.native="selectAnItem('1')"
-                                 :class="{active:itemSelected==='1'}">
+                                 class="pass-enter1" :class="{active:itemSelected==='1'}">
                         <i class="nav-icon1" :class="{'nav-icon1-active':itemSelected==='1'}"></i>
                         <span>账户信息</span>
                     </router-link>
                     <router-link tag="li" :to="{name:'tradeRecord'}" @click.native="selectAnItem('2')"
-                                 :class="{active:itemSelected==='2'}">
+                                 class="pass-enter2" :class="{active:itemSelected==='2'}">
                         <i class="nav-icon2" :class="{'nav-icon2-active':itemSelected==='2'}"></i>
                         <span>交易记录</span>
                     </router-link>
                     <router-link tag="li" :to="{name:'transaction'}" @click.native="selectAnItem('3')"
-                                 :class="{active:itemSelected==='3'}">
+                                 class="pass-enter3" :class="{active:itemSelected==='3'}">
                         <i class="nav-icon3" :class="{'nav-icon3-active':itemSelected==='3'}"></i>
                         <span>对外转账</span>
                     </router-link>
                     <router-link tag="li" :to="{name:'applications'}" @click.native="selectAnItem('4')"
-                                 :class="{active:itemSelected==='4'}">
+                                 class="pass-enter4" :class="{active:itemSelected==='4'}">
                         <i class="nav-icon4" :class="{'nav-icon4-active':itemSelected==='4'}"></i>
                         <span>应用市场</span>
                     </router-link>
                     <router-link tag="li" :to="{name:'createApp'}" @click.native="selectAnItem('5')"
-                                 :class="{active:itemSelected==='5'}">
+                                 class="pass-enter5" :class="{active:itemSelected==='5'}">
                         <i class="nav-icon5" :class="{'nav-icon5-active':itemSelected==='5'}"></i>
                         <span>创建应用</span>
                     </router-link>
                     <router-link tag="li" :to="{name:'myApps'}" @click.native="selectAnItem('6')"
-                                 :class="{active:itemSelected==='6'}">
+                                 class="pass-enter6" :class="{active:itemSelected==='6'}">
                         <i class="nav-icon6" :class="{'nav-icon6-active':itemSelected==='6'}"></i>
                         <span>我的应用</span>
                     </router-link>
@@ -110,6 +110,7 @@
 
     .mainScreen {
         height: $height;
+        min-width: 1700px;
         overflow: hidden;
 
         /**  侧边栏   **/
@@ -124,7 +125,7 @@
 
             nav {
                 height: $height;
-                padding: 30px;
+                padding: 26px;
                 overflow-y: auto;
                 border-top-style: solid;
                 border-top-width: 2px;
@@ -147,14 +148,38 @@
                         line-height: 90px;
                         font-size: 24px;
                         color: #8abdec;
+                        cursor: pointer;
+                        position: relative;
+                        left: -110%;
+                        animation-name: passInto;
+                        animation-timing-function: ease-in-out;
+                        animation-fill-mode: forwards;
+                        &.pass-enter1{
+                            animation-duration: 0.5s;
+                        }
+                        &.pass-enter2{
+                            animation-duration: 0.6s;
+                        }
+                        &.pass-enter3{
+                            animation-duration: 0.7s;
+                        }
+                        &.pass-enter4{
+                            animation-duration: 0.8s;
+                        }
+                        &.pass-enter5{
+                            animation-duration: 0.9s;
+                        }
+                        &.pass-enter6{
+                            animation-duration: 1s;
+                        }
                         &:hover {
                             background: url("../../assets/images/mainScreen/btn_xz.png") no-repeat;
                             font-size: 26px;
                             color: #e9f4ff;
-                            cursor: pointer;
                         }
                         span {
                             cursor: default;
+                            cursor: pointer;
                         }
                         i {
                             display: inline-block;
@@ -162,6 +187,7 @@
                             height: 30px;
                             margin-right: 5px;
                             vertical-align: text-top;
+                            cursor: pointer;
                         }
                         .nav-icon1 {
                             background: url("../../assets/images/mainScreen/icon_zhxx.png") no-repeat;
@@ -248,6 +274,11 @@
                     color: #CEC8FF;
                     font-size: 12px;
                     border: none;
+                    border: solid 1px #433e71;
+                    background: rgba(0, 0, 0, 0);
+                    &:hover {
+                        border-color: #726bab;
+                    }
                 }
                 .language {
                     margin-right: 30px;
@@ -263,6 +294,15 @@
                 box-sizing: border-box;
                 margin: 30px;
             }
+        }
+    }
+
+    @keyframes passInto {
+        from {
+            left: -110%;
+        }
+        to {
+            left:0;
         }
     }
 </style>

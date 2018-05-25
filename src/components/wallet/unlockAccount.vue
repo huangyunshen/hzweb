@@ -93,7 +93,7 @@
             return {
                 form: {
                     decryptType: '4',   //解锁方式,
-                    privateKey: '995e8b48cbe3eae58e404453a6d928b3f566762f33bfbb4e6022d0867b55fc7d',
+                    privateKey: '18b04a063eb47ec101df4015276dfc50d45589ef94122d4131394f46c4b39e91',
                     mnemonic: '',
                     address: '',
                     pwd: '',

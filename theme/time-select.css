@@ -582,7 +582,7 @@
   .el-date-editor .el-range__icon {
     font-size: 14px;
     margin-left: -5px;
-    color: #F0EDFF;
+    color: #726bab;
     float: left;
     line-height: 32px; }
   .el-date-editor .el-range-input {
@@ -597,16 +597,16 @@
     padding: 0;
     width: 39%;
     text-align: center;
-    font-size: 16px;
+    font-size: 14px;
     color: #cec8ff; }
     .el-date-editor .el-range-input::-webkit-input-placeholder {
-      color: #F0EDFF; }
+      color: #726bab; }
     .el-date-editor .el-range-input:-ms-input-placeholder {
-      color: #F0EDFF; }
+      color: #726bab; }
     .el-date-editor .el-range-input::-ms-input-placeholder {
-      color: #F0EDFF; }
+      color: #726bab; }
     .el-date-editor .el-range-input::placeholder {
-      color: #F0EDFF; }
+      color: #726bab; }
   .el-date-editor .el-range-separator {
     display: inline-block;
     height: 100%;
@@ -619,7 +619,7 @@
     color: #ADA7E5; }
   .el-date-editor .el-range__close-icon {
     font-size: 14px;
-    color: #F0EDFF;
+    color: #726bab;
     width: 25px;
     display: inline-block;
     float: right;
@@ -687,24 +687,24 @@
 .el-range-editor.is-disabled {
   background-color: #f5f7fa;
   border-color: #e4e7ed;
-  color: #F0EDFF;
+  color: #726bab;
   cursor: not-allowed; }
   .el-range-editor.is-disabled:hover, .el-range-editor.is-disabled:focus {
     border-color: #e4e7ed; }
   .el-range-editor.is-disabled input {
     background-color: #f5f7fa;
-    color: #F0EDFF;
+    color: #726bab;
     cursor: not-allowed; }
     .el-range-editor.is-disabled input::-webkit-input-placeholder {
-      color: #F0EDFF; }
+      color: #726bab; }
     .el-range-editor.is-disabled input:-ms-input-placeholder {
-      color: #F0EDFF; }
+      color: #726bab; }
     .el-range-editor.is-disabled input::-ms-input-placeholder {
-      color: #F0EDFF; }
+      color: #726bab; }
     .el-range-editor.is-disabled input::placeholder {
-      color: #F0EDFF; }
+      color: #726bab; }
   .el-range-editor.is-disabled .el-range-separator {
-    color: #F0EDFF; }
+    color: #726bab; }
 
 /* Element Chalk Variables */
 /* Transition

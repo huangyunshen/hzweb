@@ -621,7 +621,7 @@
     color: #4f32e6;
     border-color: #4f32e6; }
   .el-button.is-disabled, .el-button.is-disabled:hover, .el-button.is-disabled:focus {
-    color: #F0EDFF;
+    color: #726bab;
     cursor: not-allowed;
     background-image: none;
     background-color: #9386CE;
@@ -631,7 +631,7 @@
   .el-button.is-disabled.is-plain, .el-button.is-disabled.is-plain:hover, .el-button.is-disabled.is-plain:focus {
     background-color: #fff;
     border-color: #ebeef5;
-    color: #F0EDFF; }
+    color: #726bab; }
   .el-button.is-loading {
     position: relative;
     pointer-events: none; }
@@ -1258,7 +1258,7 @@
   display: inline-block;
   position: relative;
   color: #cec8ff;
-  font-size: 16px; }
+  font-size: 14px; }
   .el-dropdown .el-button-group {
     display: block; }
     .el-dropdown .el-button-group .el-button {
@@ -1305,7 +1305,7 @@
     line-height: 36px;
     padding: 0 20px;
     margin: 0;
-    font-size: 16px;
+    font-size: 14px;
     color: #cec8ff;
     cursor: pointer;
     outline: none; }

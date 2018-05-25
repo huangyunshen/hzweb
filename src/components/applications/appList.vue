@@ -1,8 +1,9 @@
 <template>
     <div class="app-list">
-        <el-row>
+        <el-row class="row-content">
             <el-col style="padding: 0 15px;"
-                    :span="12" v-for="(item,index) in appList"
+                    :span="12"
+                    v-for="(item,index) in appList"
                     :key="index">
                 <div class="panel">
                     <el-row>
@@ -98,28 +99,33 @@
         -webkit-box-sizing: border-box;
         -moz-box-sizing: border-box;
         box-sizing: border-box;
-        overflow-y: auto;
-        .el-col {
-            padding: 0 5px;
-            .panel{
-                background-color: rgba(50, 44, 92, 0.26);
-                border: solid 1px rgba(208, 202, 253, 0.15);
-                margin-bottom: 20px;
-                .info-list{
-                    padding: 10px 0;
-                    li{
-                        height: 35px;
-                        line-height: 45px;
-                        white-space: nowrap;
-                        .label{
-                            display: inline-block;
-                            width: 90px;
-                            color: #cec8ff;
-                            font-size: 15px;
-                        }
-                        .data{
-                            font-size: 17px;
-                            color: #8abdec;
+        .row-content {
+            max-height: calc(100% - 100px);
+            overflow-y: auto;
+            .el-col {
+                padding: 0 5px;
+                .panel {
+                    background-color: rgba(50, 44, 92, 0.26);
+                    border: solid 1px rgba(208, 202, 253, 0.15);
+                    margin-bottom: 20px;
+                    .info-list {
+                        padding: 10px 0;
+                        font-size: 14px;
+                        li {
+                            height: 35px;
+                            line-height: 45px;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            .label {
+                                display: inline-block;
+                                width: 90px;
+                                color: #cec8ff;
+                            }
+                            .data {
+                                color: #8abdec;
+                            }
                         }
                     }
                 }
@@ -127,8 +133,8 @@
         }
         .pagination{
             margin: 0 15px;
-            margin-top: 50px;
-            padding-top: 50px;
+            margin-top: 30px;
+            padding-top: 30px;
             border-top: 1px solid #28234D;
             .el-pagination{
                 text-align: center;

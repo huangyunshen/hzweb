@@ -166,7 +166,7 @@
             return {
                 steps: "1",
                 form: {
-                    to: '0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5',
+                    to: '',
                     value: 2,
                     gas: 21000,
                 },
