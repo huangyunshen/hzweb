@@ -69,125 +69,7 @@
         data() {
             return {
                 form: {},
-                appList: [
-                    {
-                        "id": "94",
-                        "type": "1",
-                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
-                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
-                        "currentCoin": "1000000000000.00000000",
-                        "historyCoin": null,
-                        "time": "2018-05-23 02:51:08"
-                    },
-                    {
-                        "id": "94",
-                        "type": "1",
-                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
-                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
-                        "currentCoin": "1000000000000.00000000",
-                        "historyCoin": null,
-                        "time": "2018-05-23 02:51:08"
-                    },
-                    {
-                        "id": "94",
-                        "type": "1",
-                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
-                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
-                        "currentCoin": "1000000000000.00000000",
-                        "historyCoin": null,
-                        "time": "2018-05-23 02:51:08"
-                    },
-                    {
-                        "id": "94",
-                        "type": "1",
-                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
-                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
-                        "currentCoin": "1000000000000.00000000",
-                        "historyCoin": null,
-                        "time": "2018-05-23 02:51:08"
-                    },
-                    {
-                        "id": "94",
-                        "type": "1",
-                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
-                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
-                        "currentCoin": "1000000000000.00000000",
-                        "historyCoin": null,
-                        "time": "2018-05-23 02:51:08"
-                    },
-                    {
-                        "id": "94",
-                        "type": "1",
-                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
-                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
-                        "currentCoin": "1000000000000.00000000",
-                        "historyCoin": null,
-                        "time": "2018-05-23 02:51:08"
-                    },
-                    {
-                        "id": "94",
-                        "type": "1",
-                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
-                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
-                        "currentCoin": "1000000000000.00000000",
-                        "historyCoin": null,
-                        "time": "2018-05-23 02:51:08"
-                    },
-                    {
-                        "id": "94",
-                        "type": "1",
-                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
-                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
-                        "currentCoin": "1000000000000.00000000",
-                        "historyCoin": null,
-                        "time": "2018-05-23 02:51:08"
-                    },
-                    {
-                        "id": "94",
-                        "type": "1",
-                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
-                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
-                        "currentCoin": "1000000000000.00000000",
-                        "historyCoin": null,
-                        "time": "2018-05-23 02:51:08"
-                    },
-                    {
-                        "id": "94",
-                        "type": "1",
-                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
-                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
-                        "currentCoin": "1000000000000.00000000",
-                        "historyCoin": null,
-                        "time": "2018-05-23 02:51:08"
-                    },
-                    {
-                        "id": "94",
-                        "type": "1",
-                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
-                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
-                        "currentCoin": "1000000000000.00000000",
-                        "historyCoin": null,
-                        "time": "2018-05-23 02:51:08"
-                    },
-                    {
-                        "id": "94",
-                        "type": "1",
-                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
-                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
-                        "currentCoin": "1000000000000.00000000",
-                        "historyCoin": null,
-                        "time": "2018-05-23 02:51:08"
-                    },
-                    {
-                        "id": "94",
-                        "type": "1",
-                        "contractAddr": "0x4c9a9064984b994d1da3eaf956a02c3d3eaa849b",
-                        "createAddr": "0x0649E2046E71eab651e10584dB0090f2e71F8EF1",
-                        "currentCoin": "1000000000000.00000000",
-                        "historyCoin": null,
-                        "time": "2018-05-23 02:51:08"
-                    },
-                ],
+                appList: [],
                 myContractInstance: null,
                 user: '',
                 password: '',
@@ -315,13 +197,25 @@
                         this.prevIsDisabled = true
                     }
                 } else {
-                    if ((-this.left) < (Math.floor(this.appList.length / 8)) * itemW * 8) {
-                        this.left -= itemW * 8
-                        this.prevIsHover = false
-                        this.prevIsDisabled = false
-                        if ((-this.left) >= (Math.floor(this.appList.length / 8)) * itemW * 8) {
-                            this.nextIsHover = false
-                            this.nextIsDisabled = false
+                    if (this.appList.length % 8 === 0) {
+                        if ((-this.left) < (Math.floor(this.appList.length / 8) - 1) * itemW * 8) {
+                            this.left -= itemW * 8
+                            this.prevIsHover = false
+                            this.prevIsDisabled = false
+                            if ((-this.left) >= (Math.floor(this.appList.length / 8) - 1) * itemW * 8) {
+                                this.nextIsHover = false
+                                this.nextIsDisabled = false
+                            }
+                        }
+                    } else {
+                        if ((-this.left) < (Math.floor(this.appList.length / 8)) * itemW * 8) {
+                            this.left -= itemW * 8
+                            this.prevIsHover = false
+                            this.prevIsDisabled = false
+                            if ((-this.left) >= (Math.floor(this.appList.length / 8)) * itemW * 8) {
+                                this.nextIsHover = false
+                                this.nextIsDisabled = false
+                            }
                         }
                     }
                 }
@@ -334,7 +228,11 @@
                 "createAddr": this.user
             }).then((res) => {
                 if (res.status === 200) {
-                    // this.appList = res.data
+                    this.appList = res.data
+                    if (this.appList.length <= 8) {
+                        this.nextIsHover = false
+                        this.nextIsDisabled = false
+                    }
                 }
             }).catch((error) => {
                 this.$message.error(String(error))
