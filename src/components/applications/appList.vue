@@ -1,14 +1,48 @@
 <template>
     <div class="app-list">
         <el-row>
-            <el-col :span="4" v-for="(item,index) in appList" :key="index">
-                <application :item="item"
-                             :index="index"
-                             ref="funcs"
-                             @click.native="goPlay(item)"
-                ></application>
+            <el-col style="padding: 0 15px;"
+                    :span="12" v-for="(item,index) in appList"
+                    :key="index">
+                <div class="panel">
+                    <el-row>
+                        <el-col :span="5">
+                            <application :item="item"
+                                         :index="index"
+                                         @click.native="goPlay(item)"
+                            ></application>
+                        </el-col>
+                        <el-col :span="19">
+                            <ul class="info-list">
+                                <li>
+                                    <span class="label">创建时间：</span>
+                                    <span class="data">{{ item.time }}</span>
+                                </li>
+                                <li>
+                                    <span class="label">创建人地址：</span>
+                                    <span class="data">{{ item.createAddr }}</span>
+                                </li>
+                                <li>
+                                    <span class="label">应用地址：</span>
+                                    <span class="data">{{ item.contractAddr }}</span>
+                                </li>
+                                <li class="current">
+                                    <span class="label">奖金池余额：</span>
+                                    <span class="data">{{ item.currentCoin }}</span>
+                                </li>
+                            </ul>
+                        </el-col>
+                    </el-row>
+                </div>
             </el-col>
         </el-row>
+        <div class="pagination">
+            <el-pagination
+                    background
+                    layout="prev, pager, next"
+                    :total="1000">
+            </el-pagination>
+        </div>
     </div>
 </template>
 
@@ -39,6 +73,7 @@
                     .then((res) => {
                         if (res.status === 200) {
                             this.appList = res.data
+                            console.log(this.appList)
                         }
                     })
                     .catch((error) => {
@@ -64,8 +99,40 @@
         -moz-box-sizing: border-box;
         box-sizing: border-box;
         overflow-y: auto;
-        .el-col{
-            padding:0 5px;
+        .el-col {
+            padding: 0 5px;
+            .panel{
+                background-color: rgba(50, 44, 92, 0.26);
+                border: solid 1px rgba(208, 202, 253, 0.15);
+                margin-bottom: 20px;
+                .info-list{
+                    padding: 10px 0;
+                    li{
+                        height: 35px;
+                        line-height: 45px;
+                        white-space: nowrap;
+                        .label{
+                            display: inline-block;
+                            width: 90px;
+                            color: #cec8ff;
+                            font-size: 15px;
+                        }
+                        .data{
+                            font-size: 17px;
+                            color: #8abdec;
+                        }
+                    }
+                }
+            }
+        }
+        .pagination{
+            margin: 0 15px;
+            margin-top: 50px;
+            padding-top: 50px;
+            border-top: 1px solid #28234D;
+            .el-pagination{
+                text-align: center;
+            }
         }
     }
 </style>
