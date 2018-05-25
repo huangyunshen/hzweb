@@ -14,6 +14,7 @@ const store = new Vuex.Store({
             text: ''
         },
         userPassword: '',
+        passwordOfPlay: ''
     },
     mutations: {
         setGasPrice(state, data) {
@@ -34,6 +35,9 @@ const store = new Vuex.Store({
         },
         setPassword(state, data){
             state.userPassword = data
+        },
+        setPlayPassword(state, data){
+            state.passwordOfPlay = data
         },
     }
 })

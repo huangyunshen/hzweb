@@ -73,7 +73,6 @@
                     .then((res) => {
                         if (res.status === 200) {
                             this.appList = res.data
-                            console.log(this.appList)
                         }
                     })
                     .catch((error) => {

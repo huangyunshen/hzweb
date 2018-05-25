@@ -166,7 +166,7 @@
             return {
                 steps: "1",
                 form: {
-                    to: '0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5',
+                    to: '0x0f34474fF0ec7f18c93618b333315cD4A9d1027c',
                     value: 2,
                     gas: 21000,
                 },
@@ -297,7 +297,7 @@
              * 点击 确认发送交易
              */
             confirmTransaction() {
-                console.log(this.$web3.eth.sendRawTransaction(this.transactionSign, (err, hash) => {
+                this.$web3.eth.sendRawTransaction(this.transactionSign, (err, hash) => {
                     if (err) {
                         this.$message({
                             message: String(err),
@@ -311,7 +311,7 @@
                         this.transactionHash = hash
                         this.steps = '5'
                     }
-                }))
+                })
             },
             finished() {
                 this.steps = '1'
@@ -322,7 +322,7 @@
                     let privateKey = new Buffer(this.privateKey, 'hex')
                     let nonce = this.$web3.eth.getTransactionCount(this.address)
                     let rawTx = {
-                        nonce: this.$web3.toHex(nonce + 1),
+                        nonce: this.$web3.toHex(nonce),
                         gasPrice: this.$web3.toHex(this.$store.state.gasPrice * (Math.pow(10, 9))),
                         gasLimit: this.$web3.toHex(this.form.gas),
                         to: this.form.to,
@@ -362,7 +362,7 @@
                 flex-grow: 1;
                 line-height: 70px;
                 background-color: #221D44;
-                box-shadow: 1px 0px 0px 0px #272345;
+                box-shadow: 1px 0 0 0 #272345;
                 font-size: 20px;
                 color: #d3ceff;
 

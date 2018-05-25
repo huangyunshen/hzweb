@@ -33,7 +33,7 @@ contract PlayGame {
     function PlayGame(uint price1, uint price2, uint price3, uint _type){
         price = [price1, price2, price3, _type];
     }
-
+    // 获取自己设置的下注金额列表
     function getPrice() constant returns (uint []){
         return price;
     }
@@ -52,18 +52,45 @@ contract PlayGame {
             returnBetResult(false);
         } else {
             if (cho == 0) {
-                dragon.push(addr);
-                dragonMap[addr] = coin;
+                bool flag0 = false;
+                for (uint i = 0; i < dragon.length; i++) {
+                    if (dragon[i] == addr) {
+                        flag0 = true;
+                        break;
+                    }
+                }
+                if (!flag0) {
+                    dragon.push(addr);
+                }
+                dragonMap[addr] = dragonMap[addr] == 0 ? (dragonMap[addr] + coin) : coin;
                 dragonCoins += coin;
                 resultHistory.push(0);
             } else if (cho == 1) {
-                tiger.push(addr);
-                tigerMap[addr] = coin;
+                bool flag1 = false;
+                for (uint j = 0; j < tiger.length; j++) {
+                    if (tiger[j] == addr) {
+                        flag1 = true;
+                        break;
+                    }
+                }
+                if (!flag1) {
+                    tiger.push(addr);
+                }
+                tigerMap[addr] = tigerMap[addr] == 0 ? (tigerMap[addr] + coin) : coin;
                 tigerCoins += coin;
                 resultHistory.push(1);
             } else if (cho == 2) {
-                draw.push(addr);
-                drawMap[addr] = coin;
+                bool flag2 = false;
+                for (uint k = 0; k < draw.length; k++) {
+                    if (draw[i] == addr) {
+                        flag2 = true;
+                        break;
+                    }
+                }
+                if (!flag2) {
+                    draw.push(addr);
+                }
+                drawMap[addr] = drawMap[addr] == 0 ? (drawMap[addr] + coin) : coin;
                 drawCoins += coin;
                 resultHistory.push(2);
             }
@@ -118,7 +145,7 @@ contract PlayGame {
         _to.transfer(_coins);
     }
     // 提现函数,只有创建者账户可以提现
-    function drawings(uint coin) payable{
+    function drawings(uint coin) payable {
         if (msg.sender == creator) {
             uint _balance = getCurrentBalance();
             if ((_balance - coin) / 10 > totalCoins) {

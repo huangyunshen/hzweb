@@ -1,6 +1,6 @@
 <template>
     <div class="app-detail no-select-text">
-        <i class="exit"></i>
+        <i class="exit" @click="exit"></i>
         <div class="game-content">
             <div class="game-body">
                 <div class="game-result">
@@ -84,90 +84,6 @@
                 </div>
             </div>
         </div>
-        <!--<el-row>-->
-        <!--<el-col :span="20">-->
-        <!--<div class="table">-->
-        <!--<el-row :gutter="20">-->
-        <!--<el-col :span="8">-->
-        <!--<div class="tc options dragon"-->
-        <!--@click="bet('dragon')"-->
-        <!--:class="{choosed: choosed === 'dragon'}">-->
-        <!--龙-->
-        <!--</div>-->
-        <!--</el-col>-->
-        <!--<el-col :span="8">-->
-        <!--<div class="tc options leopard"-->
-        <!--@click="bet('leopard')"-->
-        <!--:class="{choosed: choosed === 'leopard'}">-->
-        <!--合-->
-        <!--</div>-->
-        <!--</el-col>-->
-        <!--<el-col :span="8">-->
-        <!--<div class="tc options tiger"-->
-        <!--@click="bet('tiger')"-->
-        <!--:class="{choosed: choosed === 'tiger'}">-->
-        <!--虎-->
-        <!--</div>-->
-        <!--</el-col>-->
-        <!--</el-row>-->
-        <!--<el-row :gutter="20">-->
-        <!--<el-col :span="6">-->
-        <!--<div class="tc money"-->
-        <!--@click="betMoney('1')"-->
-        <!--:class="{choosed: betChoosed === '1'}">-->
-        <!--1-->
-        <!--</div>-->
-        <!--</el-col>-->
-        <!--<el-col :span="6">-->
-        <!--<div class="tc money"-->
-        <!--@click="betMoney('2')"-->
-        <!--:class="{choosed: betChoosed === '2'}">-->
-        <!--2-->
-        <!--</div>-->
-        <!--</el-col>-->
-        <!--<el-col :span="6">-->
-        <!--<div class="tc money"-->
-        <!--@click="betMoney('5')"-->
-        <!--:class="{choosed: betChoosed === '5'}">-->
-        <!--5-->
-        <!--</div>-->
-        <!--</el-col>-->
-        <!--<el-col :span="6">-->
-        <!--<div class="tc money"-->
-        <!--@click="betMoney('10')"-->
-        <!--:class="{choosed: betChoosed === '10'}">-->
-        <!--10-->
-        <!--</div>-->
-        <!--</el-col>-->
-        <!--</el-row>-->
-        <!--</div>-->
-        <!--</el-col>-->
-        <!--<el-col :span="4">-->
-        <!--<ul class="menu">-->
-        <!--<li class="tl back">-->
-        <!--<router-link :to='{path: "/mainScreen/applications"}'>返回主页 >></router-link>-->
-        <!--</li>-->
-        <!--<li>本轮"龙"的下注币数为：{{ betCoin[1] }} wei</li>-->
-        <!--<li>本轮"虎"的下注币数为：{{ betCoin[2] }} wei</li>-->
-        <!--<li>本轮"合"的下注币数为：{{ betCoin[3] }} wei</li>-->
-        <!--<li style="margin-bottom: 40px">-->
-        <!--本轮倒计时：还剩-->
-        <!--<span style="color: #f00">{{ countDown }}</span>-->
-        <!--秒-->
-        <!--</li>-->
-        <!--<li v-if="betZh === ''">请先下注！</li>-->
-        <!--<li v-else>你已选中： <span style="color: #f00">“{{ betZh }}”</span></li>-->
-        <!--<li>下注金额为：<span style="color: #f00">“{{ moneyNum }}”</span> * 10 ^ 6 wei</li>-->
-        <!--<li>上轮结果为：-->
-        <!--<span style="color: #f00">“龙”：{{ dragonNum }} </span>-->
-        <!--<span style="color: #f00">“虎”：{{ tigerNum }}</span>-->
-        <!--</li>-->
-        <!--<li>-->
-        <!--<el-button type="primary" @click="callContract" :disabled="betAllowed">下注</el-button>-->
-        <!--</li>-->
-        <!--</ul>-->
-        <!--</el-col>-->
-        <!--</el-row>-->
     </div>
 </template>
 
@@ -180,18 +96,16 @@
         data() {
             return {
                 isSelected: null,
-                amountArr: [1,5,10],
+                amountArr: [1, 5, 10],
                 resultList: ['龙', '龙', '虎', '和', '龙'],
                 amount1: ['0'],
                 amount2: ['0'],
                 amount3: ['0'],
                 betCoin: [0, 0, 0, 0],
                 choosed: null, // 龙虎合选中的标识
-                // betChoosed: '', // 金额选中的标识
                 betZh: '',
                 moneyNum: 0,
                 countDown: 60,
-                betAllowed: false,
                 timer: null, // 页面倒计时定时器
                 getCoinsTimer: null,
                 dragonNum: '0',
@@ -202,7 +116,7 @@
         },
         methods: {
             selectAnItem(i) {
-                if(i === false) {
+                if (i === false) {
                     this.isSelected = null
                     this.moneyNum = 0
                 } else {
@@ -235,16 +149,11 @@
                         return false
                 }
             },
-            // betMoney(num) {
-            //     this.betChoosed = num
-            //     this.moneyNum = num
-            // },
             // 开启监控
             settlement() {
                 this.$store.commit('setCryptPercent', {percent: true, text: '正在结算···'})
                 let event = this.myContractInstance.returnBetPoints()
                 event.watch((err, result) => {
-                    console.log(result);
                     event.stopWatching()
                     this.$store.commit('setCryptPercent', {percent: false, text: '正在结算···'})
                     if (err) {
@@ -255,9 +164,12 @@
                         this.dragonNum = result.args.dragonNum % 13
                         this.tigerNum = result.args.tigerNum % 13
                         console.log(this.dragonNum, this.tigerNum)
+                        this.$message({
+                            message: `结果为 龙：${this.dragonNum} 虎：${this.tigerNum}`,
+                            type: 'success',
+                        })
                         console.log(this.myContractInstance.getCurrentBalance().toString(10))
                         this.getTimerTime()
-                        this.betAllowed = false
                     } else {
                         this.$message.error('节点异常！')
                     }
@@ -271,9 +183,11 @@
                     return false
                 }
                 this.bet(sign)
+                let users = this.$funs.getLocalAddress()
+                let user = users.addresses[users.active]
                 console.log(this.myContractInstance.getCurrentBalance().toString(10))
                 let params = {
-                    addr: this.$store.state.publicKey,
+                    addr: user,
                     cho: this.betZh,
                     ran: parseInt(Math.random() * (10 ** 12)),
                     // coin: this.$web3.toWei(this.moneyNum, 'ether'),
@@ -283,9 +197,43 @@
                     this.$message.error('请选择或输入下注金额！')
                     return false
                 }
+                if (this.$store.state.passwordOfPlay !== '') {
+                    try {
+                        this.$web3.personal.unlockAccount(user, this.$store.state.passwordOfPlay, 6000000)
+                        // this.$web3.personal.unlockAccount("0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5", 'jacky0011')
+                        this.betFun(user, params)
+                    } catch (err) {
+                        this.$message.error(String(err))
+                    }
+                } else {
+                    this.$prompt(`请输入${user}的密码`, '提示', {
+                        inputType: 'password',
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                    }).then(({value}) => {
+                        try {
+                            this.$web3.personal.unlockAccount(user, value, 6000000)
+                            // this.$web3.personal.unlockAccount("0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5", 'jacky0011')
+                            this.$confirm('是否临时保存密码，页面在刷新或者关闭后自动清除', '提示', {
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                                type: 'warning'
+                            }).then(() => {
+                                this.$store.commit("setPlayPassword", value)
+                                this.betFun(user, params)
+                            }).catch(() => {
+                                this.betFun(user, params)
+                            })
+                        } catch (err) {
+                            this.$message.error(String(err))
+                        }
+                    }).catch((error) => {
+                        console.log(error)
+                    })
+                }
+            },
+            betFun(user, params) {
                 this.$store.commit('setCryptPercent', {percent: true, text: '正在下注···'})
-                // this.$web3.personal.unlockAccount("0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5", 'jacky0011')
-                this.$web3.personal.unlockAccount("0x27d024958a6105a5c8cbd95a8ecb1ff35ad91016", 'jacky')
                 // 监听是否下注失败
                 let betResult = this.myContractInstance.returnBetResult()
                 betResult.watch((err, result) => {
@@ -297,14 +245,13 @@
                     }
                     if (result.args._bool) {
                         this.$message.success('下注成功！请等待下注结果！')
-                        this.betAllowed = true
                     } else {
                         this.$message.error('下注失败！本局已封盘（奖池金额不够）')
                     }
                 })
                 this.myContractInstance.sendBetInfo(params.addr, params.cho, params.ran, params.coin, {
                     // from: "0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5",
-                    from: "0x27d024958a6105a5c8cbd95a8ecb1ff35ad91016",
+                    from: user,
                     gasPrice: 200000000000,
                     value: params.coin,
                     gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
@@ -324,8 +271,8 @@
             },
             // 获取服务器定时器时间
             getTimerTime() {
-                axios.get('http://39.104.81.103:8088')
-                // axios.get('http://192.168.1.124:8089')
+                // axios.get('http://39.104.81.103:8088')
+                axios.get('http://192.168.1.124:8089')
                     .then((res) => {
                         this.countDown = res.data
                         this.interval()
@@ -384,12 +331,15 @@
                     })
                     return false
                 }
+            },
+            exit() {
+                this.$router.replace({name: 'applications'})
             }
         },
         mounted() {
             if (this.getContractAddr()) {
                 this.contactContract()
-                if(!this.chargeLegality()){
+                if (!this.chargeLegality()) {
                     return false
                 }
                 // 实时获取下注币数
@@ -417,11 +367,12 @@
 <style lang="scss" type="text/scss" scoped>
     .app-detail {
         width: 100%;
+        min-width: 1050px;
         height: 100%;
         background: url("../../assets/images/longhudou/lhd_bg.jpg") no-repeat;
         background-size: cover;
         position: relative;
-        z-index: 999;
+        z-index: 2;
 
         .exit {
             display: inline-block;

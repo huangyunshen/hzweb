@@ -89,11 +89,10 @@
         name: "unlockAccount",
         props: ['isTranc'],
         data() {
-
             return {
                 form: {
                     decryptType: '4',   //解锁方式,
-                    privateKey: '995e8b48cbe3eae58e404453a6d928b3f566762f33bfbb4e6022d0867b55fc7d',
+                    privateKey: 'b955cd1cd4e7315595e725bbd2e07ba45427561dc124c9b0da9ac1dcd57fd82d',
                     mnemonic: '',
                     address: '',
                     pwd: '',
