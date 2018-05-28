@@ -50,7 +50,14 @@
                 <div class="step-2" v-show="steps==='2'">
                     <unlock-account ref="unlock" isTranc="isTranc"></unlock-account>
 
-                    <el-button class="el-wallet-main-button mt-50" @click="importAccount">解锁钱包</el-button>
+                    <el-row :gutter="40">
+                        <el-col :span="12">
+                            <el-button class="el-wallet-main-button mt-50" @click="steps = '1'">上一步</el-button>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-button class="el-wallet-main-button mt-50" @click="importAccount">解锁钱包</el-button>
+                        </el-col>
+                    </el-row>
                 </div>
             </transition>
             <!--step3-->
@@ -77,7 +84,14 @@
                         </el-form>
                     </div>
                     <div class="step-3-footer">
-                        <el-button class="el-wallet-main-button mt-50" @click="emitTransaction">确认签名</el-button>
+                        <el-row :gutter="40">
+                            <el-col :span="12">
+                                <el-button class="el-wallet-main-button mt-50"  @click="steps = '2'">上一步</el-button>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-button class="el-wallet-main-button mt-50" @click="emitTransaction">确认签名</el-button>
+                            </el-col>
+                        </el-row>
                     </div>
                 </div>
             </transition>

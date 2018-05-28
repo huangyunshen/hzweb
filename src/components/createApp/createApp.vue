@@ -342,7 +342,7 @@
                                 "type": this.selected,
                                 "contractAddr": myContract.address,
                                 "createAddr": user,
-                                "createMoney": this.$web3.toWei(this.rechargeData.value, 'ether')
+                                "createMoney": this.rechargeData.value
                             }).then((res) => {
                                 if (res.status === 200) {
                                     // let data = res.data
@@ -368,8 +368,8 @@
                             sessionStorage.setItem('userContract', myContract.address)
                             this.recharge() // 充值
                             //部署成功！你的合约地址为
-                            let url = "http://localhost:8080/appDetail"
-                            this.contractAddressUrl = `${url}?${myContract.address}`
+                            let host = window.location.host
+                            this.contractAddressUrl = `http://${host}/appDetail?${myContract.address}`
                         }
                     }
                 })

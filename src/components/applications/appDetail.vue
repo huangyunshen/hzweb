@@ -134,7 +134,7 @@
                 this.myContractInstance = MyContract.at(this.ContractAddr)
             },
             bet(sign) {
-                this.choosed = sign
+                // this.choosed = sign
                 switch (sign) {
                     case 'dragon':
                         this.betZh = '0'
@@ -175,27 +175,16 @@
                     }
                 })
             },
-            /**
-             * 下注
-             */
-            callContract(sign) {
-                if (!this.chargeLegality()) {
-                    return false
-                }
+            confirmBet(sign) {
                 this.bet(sign)
                 let users = this.$funs.getLocalAddress()
                 let user = users.addresses[users.active]
-                console.log(this.myContractInstance.getCurrentBalance().toString(10))
                 let params = {
                     addr: user,
                     cho: this.betZh,
                     ran: parseInt(Math.random() * (10 ** 12)),
-                    // coin: this.$web3.toWei(this.moneyNum, 'ether'),
-                    coin: this.moneyNum * Math.pow(10, 6),
-                }
-                if (params.coin === 0) {
-                    this.$message.error('请选择或输入下注金额！')
-                    return false
+                    coin: this.$web3.toWei(this.moneyNum, 'ether'),
+                    // coin: this.moneyNum * Math.pow(10, 6),
                 }
                 if (this.$store.state.passwordOfPlay !== '') {
                     try {
@@ -203,6 +192,7 @@
                         this.betFun(user, params)
                     } catch (err) {
                         this.$message.error(String(err))
+
                     }
                 } else {
                     this.$prompt(`请输入${user}的密码`, '提示', {
@@ -224,12 +214,38 @@
                             })
                         } catch (err) {
                             this.$message.error(String(err))
+                            this.$store.commit('setCryptPercent', {percent: false, text: ''})
                         }
                     }).catch((error) => {
                         console.log(error)
                     })
                 }
             },
+            /**
+             * 下注
+             */
+            callContract(sign) {
+                if(isNaN(this.moneyNum)){
+                    this.$message.error('下注金额不能为非数字！')
+                    return false
+                }
+                if (Number(this.moneyNum) === 0) {
+                    this.$message.error('请选择或输入下注金额！')
+                    return false
+                }
+                if (!this.chargeLegality()) {
+                    return false
+                }
+                this.$confirm('确认下注吗?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.confirmBet(sign)
+                }).catch(() => {
+                })
+            },
+
             betFun(user, params) {
                 this.$store.commit('setCryptPercent', {percent: true, text: '正在下注···'})
                 // 监听是否下注失败
@@ -345,7 +361,9 @@
                     this.betCoin.length = 0
                     let arr = this.myContractInstance.getTotalCoins()
                     if (arr) {
-                        this.betCoin = arr
+                        this.betCoin = arr.map((item) => {
+                            return this.$web3.fromWei(item.toString(10), 'ether')
+                        })
                     }
                 }, 1000)
                 this.getTimerTime()
@@ -405,6 +423,7 @@
                 background: none;
                 border: none;
                 text-align: center;
+                outline: none;
             }
             input:focus {
                 outline: none;
@@ -583,57 +602,4 @@
             }
         }
     }
-
-    /*.table {*/
-    /*width: 90%;*/
-    /*margin: 0 auto;*/
-    /*.el-row {*/
-    /*margin: 80px 0;*/
-    /*&:last-child {*/
-    /*margin-bottom: 0;*/
-    /*}*/
-    /*.el-col {*/
-    /*border-radius: 4px;*/
-    /*.options {*/
-    /*border-radius: 4px;*/
-    /*cursor: pointer;*/
-    /*height: 400px;*/
-    /*line-height: 400px;*/
-    /*font-size: 200px;*/
-    /*background: #d3dce6;*/
-    /*&.choosed {*/
-    /*color: #034D3B;*/
-    /*background: #4DAD95;*/
-    /*}*/
-    /*}*/
-    /*.money {*/
-    /*height: 100px;*/
-    /*line-height: 100px;*/
-    /*font-size: 50px;*/
-    /*width: 60%;*/
-    /*cursor: pointer;*/
-    /*margin: 0 auto;*/
-    /*border-radius: 50px;*/
-    /*background: #D3DCE6;*/
-    /*&.choosed {*/
-    /*color: #034D3B;*/
-    /*background: #4DAD95;*/
-    /*}*/
-    /*}*/
-    /*}*/
-    /*}*/
-    /*}*/
-
-    /*.menu {*/
-    /*margin: 80px 0;*/
-    /*li {*/
-    /*margin: 20px 0;*/
-    /*&.back {*/
-    /*margin-bottom: 40px;*/
-    /*a {*/
-    /*color: #f00;*/
-    /*}*/
-    /*}*/
-    /*}*/
-    /*}*/
 </style>

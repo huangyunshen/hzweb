@@ -233,7 +233,8 @@
                     this.$message.error('请先选泽一个应用！')
                     return
                 }
-                this.contractAddressUrl = `http://localhost:8080/appDetail?${ this.form.contractAddr }`
+                let host = window.location.host
+                this.contractAddressUrl = `http://${host}/appDetail?${ this.form.contractAddr }`
                 let a = document.getElementById('linkToApp')
                 let timer = setTimeout(() => {
                     clearTimeout(timer)
@@ -257,7 +258,6 @@
                         this.nextIsHover = false
                         this.nextIsDisabled = false
                     }
-                    this.showDetail(res.data[0],0)
                 }
             }).catch((error) => {
                 this.$message.error(String(error))
