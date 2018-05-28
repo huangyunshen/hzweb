@@ -378,11 +378,24 @@
                 this.$axios.get('/url/api/requestContract.php')
                     .then((res) => {
                         if (res.status === 200) {
-                            let data = res.data
-                            res.data=[
-                                {type: '1'}
-                            ]
-                            this.appList = [res.data[0]]
+                            let obj = {
+                                contractAddr:
+                                    "0xfe56582a999c5dae6ba4cc9ea84e9f1842e5fb39",
+                                createAddr:
+                                    "0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5",
+                                currentCoin:
+                                    "1000000000000.00000000",
+                                historyCoin:
+                                    null,
+                                id:
+                                    "93",
+                                time:
+                                    "2018-05-23 02:25:30",
+                                type:
+                                    "1"
+                            }
+                            this.appList = [obj]
+                            // this.appList = res.data
                         }
                     })
                     .catch((error) => {

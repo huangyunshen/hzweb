@@ -257,6 +257,7 @@
                         this.nextIsHover = false
                         this.nextIsDisabled = false
                     }
+                    this.showDetail(res.data[0],0)
                 }
             }).catch((error) => {
                 this.$message.error(String(error))
