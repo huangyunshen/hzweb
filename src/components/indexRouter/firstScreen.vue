@@ -16,7 +16,9 @@
                 </div>
 
                 <div class="wallet-body">
-                    <router-view></router-view>
+                    <transition name="fof-fade">
+                        <router-view></router-view>
+                    </transition>
                 </div>
             </div>
         </div>
@@ -37,7 +39,7 @@
 </template>
 
 <script>
-    import language from '../language/language';
+    import language from '../language/language'
 
 
     export default {
@@ -53,20 +55,20 @@
         },
         methods: {
             selectItem(e) {
-                this.isCreate = !this.isCreate;
-                this.walletSelect = this.isCreate ? 'wallet-create' : 'wallet-import';
+                this.isCreate = !this.isCreate
+                this.walletSelect = this.isCreate ? 'wallet-create' : 'wallet-import'
             }
         },
-        mounted(){
+        mounted() {
             switch (this.$route.name) {
                 case 'createWallet':
                     this.isCreate = true
                     this.walletSelect = 'wallet-create'
-                    break;
+                    break
                 case 'importWallet':
                     this.isCreate = false
                     this.walletSelect = 'wallet-import'
-                    break;
+                    break
             }
         }
     }
@@ -80,6 +82,7 @@
 
     .firstScreen {
         height: 100%;
+        min-width: 1400px;
         overflow: hidden;
         .language {
             position: absolute;
@@ -187,7 +190,7 @@
                 width: 30%;
                 img {
                     position: absolute;
-                    top:8px;
+                    top: 8px;
                 }
                 span {
                     display: inline-block;

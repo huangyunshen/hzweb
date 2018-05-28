@@ -13,109 +13,117 @@
 
             <div class="create-body">
                 <!--step-1-->
-                <div class="step-1" v-show="steps===1">
-                    <div class="header">用户协议</div>
-                    <div class="body">
-                        <agreement></agreement>
+                <transition name="fof-fade">
+                    <div class="step-1" v-show="steps===1">
+                        <div class="header">用户协议</div>
+                        <div class="body">
+                            <agreement></agreement>
+                        </div>
+                        <p class="tc" style="margin: 20px;color: #f00">
+                            <el-checkbox v-model="checked">同意以上协议</el-checkbox>
+                        </p>
                     </div>
-                    <p class="tc" style="margin: 20px;color: #f00">
-                        <el-checkbox v-model="checked">同意以上协议</el-checkbox>
-                    </p>
-                </div>
+                </transition>
                 <!--step-2-->
-                <div class="step-2" v-show="steps===2">
-                    <div class="header">选择你想要创建的游戏</div>
-                    <div class="body">
-                        <el-row>
-                            <el-col :span="4" v-for="(item,index) in appList" :key="index">
-                                <application :item="item"
-                                             :index="index"
-                                             ref="funcs"
-                                             @click.native="selectAnApp(item.type,index)"
-                                ></application>
-                            </el-col>
-                        </el-row>
+                <transition name="fof-fade">
+                    <div class="step-2" v-show="steps===2">
+                        <div class="header">选择你想要创建的游戏</div>
+                        <div class="body">
+                            <el-row>
+                                <el-col :span="4" v-for="(item,index) in appList" :key="index">
+                                    <application :item="item"
+                                                 :index="index"
+                                                 ref="funcs"
+                                                 @click.native="selectAnApp(item.type,index)"
+                                    ></application>
+                                </el-col>
+                            </el-row>
+                        </div>
                     </div>
-                </div>
+                </transition>
                 <!--step3-->
-                <div class="step-3" v-show="steps===3">
-                    <div class="header">请配置相关参数</div>
-                    <div class="body">
-                        <div class="content">
-                            <el-form
-                                    label-width="110px"
-                                    label-position="left"
-                                    @submit.native.prevent>
+                <transition name="fof-fade">
+                    <div class="step-3" v-show="steps===3">
+                        <div class="header">请配置相关参数</div>
+                        <div class="body">
+                            <div class="content">
+                                <el-form
+                                        label-width="110px"
+                                        label-position="left"
+                                        @submit.native.prevent>
 
-                                <el-form-item class="el-wallet-style" label="充值金额">
-                                    <el-input
-                                              auto-complete="off"
-                                              v-model="rechargeData.value"
-                                    ></el-input>
-                                </el-form-item>
-                            </el-form>
-                            <el-form class="mt-50"
-                                     label-width="110px"
-                                     label-position="left"
-                                     @submit.native.prevent>
+                                    <el-form-item class="el-wallet-style" label="充值金额">
+                                        <el-input
+                                                auto-complete="off"
+                                                v-model="rechargeData.value"
+                                        ></el-input>
+                                    </el-form-item>
+                                </el-form>
+                                <el-form class="mt-50"
+                                         label-width="110px"
+                                         label-position="left"
+                                         @submit.native.prevent>
 
-                                <el-form-item class="el-wallet-style" label="下注金额">
-                                    <el-row>
-                                        <el-col :span="7">
-                                            <el-input
-                                                      auto-complete="off"
-                                                      v-model="rechargeData.price1"
-                                            ></el-input>
-                                        </el-col>
-                                        <el-col :span="7" :offset="1">
-                                            <el-input
-                                                      auto-complete="off"
-                                                      v-model="rechargeData.price2"
-                                            ></el-input>
-                                        </el-col>
-                                        <el-col :span="7" :offset="1">
-                                            <el-input
-                                                      auto-complete="off"
-                                                      v-model="rechargeData.price3"
-                                            ></el-input>
-                                        </el-col>
-                                    </el-row>
-                                </el-form-item>
-                            </el-form>
+                                    <el-form-item class="el-wallet-style" label="下注金额">
+                                        <el-row>
+                                            <el-col :span="7">
+                                                <el-input
+                                                        auto-complete="off"
+                                                        v-model="rechargeData.price1"
+                                                ></el-input>
+                                            </el-col>
+                                            <el-col :span="7" :offset="1">
+                                                <el-input
+                                                        auto-complete="off"
+                                                        v-model="rechargeData.price2"
+                                                ></el-input>
+                                            </el-col>
+                                            <el-col :span="7" :offset="1">
+                                                <el-input
+                                                        auto-complete="off"
+                                                        v-model="rechargeData.price3"
+                                                ></el-input>
+                                            </el-col>
+                                        </el-row>
+                                    </el-form-item>
+                                </el-form>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </transition>
                 <!--step4-->
-                <div class="step-4" v-show="steps===4">
-                    <div class="body">
-                        <div class="finishe-icon">
-                            <i></i>
-                            <p>创建成功</p>
-                        </div>
-                        <div class="finishe-address">
-                            <el-form
-                                    label-width="110px"
-                                    label-position="left"
-                                    @submit.native.prevent>
+                <transition name="fof-fade">
+                    <div class="step-4" v-show="steps===4">
+                        <div class="body">
+                            <div class="finishe-icon">
+                                <i></i>
+                                <p>创建成功</p>
+                            </div>
+                            <div class="finishe-address">
+                                <el-form
+                                        label-width="110px"
+                                        label-position="left"
+                                        @submit.native.prevent>
 
-                                <el-form-item class="el-wallet-style" label="应用地址">
-                                    <el-row>
-                                        <el-col :span="20">
-                                            <el-input   id="appAddress"
-                                                      auto-complete="off"
-                                                      v-model="contractAddressUrl"
-                                                      readonly
-                                            ></el-input>
-                                        </el-col>
-                                        <el-col :span="4">
-                                            <el-button @click="copyAddress">复制</el-button>
-                                        </el-col>
-                                    </el-row>
-                                </el-form-item>
-                            </el-form>
+                                    <el-form-item class="el-wallet-style" label="应用地址">
+                                        <el-row>
+                                            <el-col :span="20">
+                                                <el-input id="appAddress"
+                                                          auto-complete="off"
+                                                          v-model="contractAddressUrl"
+                                                          readonly
+                                                ></el-input>
+                                            </el-col>
+                                            <el-col :span="4">
+                                                <el-button @click="copyAddress">复制</el-button>
+                                            </el-col>
+                                        </el-row>
+                                    </el-form-item>
+                                </el-form>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </transition>
             </div>
             <div class="create-footer">
                 <el-button class="el-wallet-main-button" @click="preStep" v-show="steps===2 || steps===3">上一步
@@ -351,8 +359,8 @@
                             localStorage.setItem('contractAddress', myContract.address)
                             // 每次部署完合约，需要向定时器合约中注册当前合约地址
                             let myIntContractInstance = MyContract.at(myContract.address)
-                            myIntContractInstance.registerInterval('0x15a5ebc52ff0f1ae8203d3ee2b9b4bdb11e99e20', {
-                            // myIntContractInstance.registerInterval('0x3ab791be88898f1cde361567a930f46574f4005a', {
+                            myIntContractInstance.registerInterval('0xef95d821ad898d39f3a813bd202d50ff1153e487', {
+                                // myIntContractInstance.registerInterval('0x3ab791be88898f1cde361567a930f46574f4005a', {
                                 from: user,
                                 gasPrice: 41000000000,
                                 gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
@@ -371,7 +379,10 @@
                     .then((res) => {
                         if (res.status === 200) {
                             let data = res.data
-                            this.appList = res.data
+                            res.data=[
+                                {type: '1'}
+                            ]
+                            this.appList = [res.data[0]]
                         }
                     })
                     .catch((error) => {

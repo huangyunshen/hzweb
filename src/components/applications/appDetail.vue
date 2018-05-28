@@ -200,7 +200,6 @@
                 if (this.$store.state.passwordOfPlay !== '') {
                     try {
                         this.$web3.personal.unlockAccount(user, this.$store.state.passwordOfPlay, 6000000)
-                        // this.$web3.personal.unlockAccount("0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5", 'jacky0011')
                         this.betFun(user, params)
                     } catch (err) {
                         this.$message.error(String(err))
@@ -213,7 +212,6 @@
                     }).then(({value}) => {
                         try {
                             this.$web3.personal.unlockAccount(user, value, 6000000)
-                            // this.$web3.personal.unlockAccount("0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5", 'jacky0011')
                             this.$confirm('是否临时保存密码，页面在刷新或者关闭后自动清除', '提示', {
                                 confirmButtonText: '确定',
                                 cancelButtonText: '取消',
@@ -272,7 +270,7 @@
             // 获取服务器定时器时间
             getTimerTime() {
                 // axios.get('http://39.104.81.103:8088')
-                axios.get('http://192.168.1.124:8089')
+                axios.get('http://192.168.1.124:8801')
                     .then((res) => {
                         this.countDown = res.data
                         this.interval()

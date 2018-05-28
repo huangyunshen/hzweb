@@ -54,13 +54,15 @@ input:focus,
 textarea:focus {
     background-color: #5A558E;
     box-shadow: 0px 0px 10px 0px rgba(190, 182, 255, 0.3);
-    border: solid 1px rgba(208, 202, 253, 0.54)!important;
+    border: solid 1px rgba(208, 202, 253, 0.54) !important;
 }
+
 input:read-only,
 textarea:read-only {
     color: #97BFEB;
 }
-.el-select input:read-only{
+
+.el-select input:read-only {
     color: #CEC8FF;
 }
 
@@ -163,6 +165,7 @@ textarea:read-only {
         background: rgba(0, 0, 0, 0);
     }
 }
+
 /**     message     **/
 .el-message {
     background-color: #303787;
@@ -213,4 +216,26 @@ textarea:read-only {
 
 .fof-fade-enter-to {
     opacity: 1;
+}
+.fof-fade-leave {
+    opacity: 0;
+}
+
+.fof-fade-leave-active {
+    transition: opacity 0.7s ease-in-out;
+    transition-delay: -1s;
+}
+
+.fof-fade-leave-to {
+    opacity: 1;
+}
+
+/*   my-app   */
+.my-apps {
+    .el-input-group__append, .el-button {
+        border: 0;
+        background: #675DE5;
+        font-size: 16px;
+        color: #bbb3ef;
+    }
 }

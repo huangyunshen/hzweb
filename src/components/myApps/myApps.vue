@@ -249,6 +249,10 @@
             }).then((res) => {
                 if (res.status === 200) {
                     this.appList = res.data
+                    let timer = setTimeout(()=>{
+                        clearTimeout(timer)
+                        this.showDetail(this.appList[0],0)
+                    },1)
                     if (this.appList.length <= 8) {
                         this.nextIsHover = false
                         this.nextIsDisabled = false
