@@ -80,6 +80,7 @@
 
     .firstScreen {
         height: 100%;
+        min-width: 1400px;
         overflow: hidden;
         .language {
             position: absolute;
