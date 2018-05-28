@@ -14,142 +14,152 @@
 
         <div class="tranc-body">
             <!--step-1-->
-            <div class="step-1" v-show="steps==='1'">
-                <div class="step-1-head">
-                    <div class="tranc-balance"><i></i>账户余额 : {{balance}}</div>
-                    <div class="tranc-address"><i></i>账户地址 : {{address}}</div>
+            <transition name="fof-fade">
+                <div class="step-1" v-show="steps==='1'">
+                    <div class="step-1-head">
+                        <div class="tranc-balance"><i></i>账户余额 : {{balance}}</div>
+                        <div class="tranc-address"><i></i>账户地址 : {{address}}</div>
+                    </div>
+                    <div class="step-1-body">
+                        <el-form ref="form" :model="form" label-position="left" label-width="150px">
+                            <el-form-item class="mt-40" label="对方账户">
+                                <el-input
+                                        v-model="form.to"
+                                ></el-input>
+                            </el-form-item>
+                            <el-form-item class="mt-40" label="转账数额">
+                                <el-input
+                                        placeholder="数额"
+                                        v-model="form.value"></el-input>
+                            </el-form-item>
+                            <el-form-item class="mt-40" label="Gas Limit">
+                                <el-input
+                                        v-model="form.gas"
+                                        value="21000"
+                                        placeholder="21000"></el-input>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+                    <div class="step-1-footer">
+                        <el-button class="el-wallet-main-button mt-50" @click="typePwd">生成交易</el-button>
+                    </div>
                 </div>
-                <div class="step-1-body">
-                    <el-form ref="form" :model="form" label-position="left" label-width="150px">
-                        <el-form-item class="mt-40" label="对方账户">
-                            <el-input
-                                      v-model="form.to"
-                                      ></el-input>
-                        </el-form-item>
-                        <el-form-item class="mt-40" label="转账数额">
-                            <el-input
-                                      placeholder="数额"
-                                      v-model="form.value"></el-input>
-                        </el-form-item>
-                        <el-form-item class="mt-40" label="Gas Limit">
-                            <el-input
-                                      v-model="form.gas"
-                                      value="21000"
-                                      placeholder="21000"></el-input>
-                        </el-form-item>
-                    </el-form>
-                </div>
-                <div class="step-1-footer">
-                    <el-button class="el-wallet-main-button mt-50" @click="typePwd">生成交易</el-button>
-                </div>
-            </div>
+            </transition>
             <!--step-2-->
-            <div class="step-2" v-show="steps==='2'">
-                <unlock-account ref="unlock" isTranc="isTranc"></unlock-account>
+            <transition name="fof-fade">
+                <div class="step-2" v-show="steps==='2'">
+                    <unlock-account ref="unlock" isTranc="isTranc"></unlock-account>
 
-                <el-button class="el-wallet-main-button mt-50" @click="importAccount">解锁钱包</el-button>
-            </div>
+                    <el-button class="el-wallet-main-button mt-50" @click="importAccount">解锁钱包</el-button>
+                </div>
+            </transition>
             <!--step3-->
-            <div class="step-3" v-show="steps==='3'">
-                <div class="step-3-content">
-                    <el-form label-position="top" class="emitTransaction">
-                        <el-form-item label="未生效交易" class="el-wallet-style">
-                            <el-input
-                                      type="textarea"
-                                      resize="none"
-                                      readonly
-                                      :value="transactionData"></el-input>
-                        </el-form-item>
-                    </el-form>
-                    <el-form label-position="top" class="emitTransaction">
-                        <el-form-item label="签名交易">
-                            <el-input
-                                      type="textarea"
-                                      resize="none"
-                                      readonly
-                                      :value="transactionSign"></el-input>
-                        </el-form-item>
-                    </el-form>
+            <transition name="fof-fade">
+                <div class="step-3" v-show="steps==='3'">
+                    <div class="step-3-content">
+                        <el-form label-position="top" class="emitTransaction">
+                            <el-form-item label="未生效交易" class="el-wallet-style">
+                                <el-input
+                                        type="textarea"
+                                        resize="none"
+                                        readonly
+                                        :value="transactionData"></el-input>
+                            </el-form-item>
+                        </el-form>
+                        <el-form label-position="top" class="emitTransaction">
+                            <el-form-item label="签名交易">
+                                <el-input
+                                        type="textarea"
+                                        resize="none"
+                                        readonly
+                                        :value="transactionSign"></el-input>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+                    <div class="step-3-footer">
+                        <el-button class="el-wallet-main-button mt-50" @click="emitTransaction">确认签名</el-button>
+                    </div>
                 </div>
-                <div class="step-3-footer">
-                    <el-button class="el-wallet-main-button mt-50" @click="emitTransaction">确认签名</el-button>
-                </div>
-            </div>
+            </transition>
             <!--step4-->
-            <div class="step-4" v-show="steps==='4'">
-                <ul class="transactionMsg">
-                    <li>
-                        <span>To Address:</span>
-                        <b>{{ transactionMsg.to }}</b>
-                    </li>
-                    <li>
-                        <span>From Address:</span>
-                        <b>{{ transactionMsg.from }}</b>
-                    </li>
-                    <li>
-                        <span>Amount to Send:</span>
-                        <b>{{ transactionMsg.value }}</b>
-                    </li>
-                    <li>
-                        <span>Account Balance:</span>
-                        <b>{{ transactionMsg.balance }}</b>
-                    </li>
-                    <li>
-                        <span>Coin:</span>
-                        <b>{{ transactionMsg.coin }}</b>
-                    </li>
-                    <!--<li>-->
-                    <!--<span>Network:</span>-->
-                    <!--<b>{{ transactionMsg.network }}</b>-->
-                    <!--</li>-->
-                    <li>
-                        <span>Gas Limit:</span>
-                        <b>{{ transactionMsg.gasLimit }}</b>
-                    </li>
-                    <li>
-                        <span>Gas Price:</span>
-                        <b>{{ transactionMsg.gasPrice }}</b>
-                    </li>
-                    <li>
-                        <span>Max TX Fee:</span>
-                        <b>{{ transactionMsg.maxTXFee }}</b>
-                    </li>
-                    <li>
-                        <span>Nonce:</span>
-                        <b>{{ transactionMsg.nonce }}</b>
-                    </li>
-                    <li>
-                        <span>Data:</span>
-                        <b>{{ transactionMsg.data }}</b>
-                    </li>
-                </ul>
-                <div class="tc">
-                    你将发送
-                    <span>{{ form.value }} ETH</span>
-                    到地址
-                    <span>{{ form.to }}</span>
-                    <span>，请确认</span>
+            <transition name="fof-fade">
+                <div class="step-4" v-show="steps==='4'">
+                    <ul class="transactionMsg">
+                        <li>
+                            <span>To Address:</span>
+                            <b>{{ transactionMsg.to }}</b>
+                        </li>
+                        <li>
+                            <span>From Address:</span>
+                            <b>{{ transactionMsg.from }}</b>
+                        </li>
+                        <li>
+                            <span>Amount to Send:</span>
+                            <b>{{ transactionMsg.value }}</b>
+                        </li>
+                        <li>
+                            <span>Account Balance:</span>
+                            <b>{{ transactionMsg.balance }}</b>
+                        </li>
+                        <li>
+                            <span>Coin:</span>
+                            <b>{{ transactionMsg.coin }}</b>
+                        </li>
+                        <!--<li>-->
+                        <!--<span>Network:</span>-->
+                        <!--<b>{{ transactionMsg.network }}</b>-->
+                        <!--</li>-->
+                        <li>
+                            <span>Gas Limit:</span>
+                            <b>{{ transactionMsg.gasLimit }}</b>
+                        </li>
+                        <li>
+                            <span>Gas Price:</span>
+                            <b>{{ transactionMsg.gasPrice }}</b>
+                        </li>
+                        <li>
+                            <span>Max TX Fee:</span>
+                            <b>{{ transactionMsg.maxTXFee }}</b>
+                        </li>
+                        <li>
+                            <span>Nonce:</span>
+                            <b>{{ transactionMsg.nonce }}</b>
+                        </li>
+                        <li>
+                            <span>Data:</span>
+                            <b>{{ transactionMsg.data }}</b>
+                        </li>
+                    </ul>
+                    <div class="tc">
+                        你将发送
+                        <span>{{ form.value }} ETH</span>
+                        到地址
+                        <span>{{ form.to }}</span>
+                        <span>，请确认</span>
+                    </div>
+                    <div class="step-4-footer">
+                        <el-button class="abandon" @click="abandon">放弃</el-button>
+                        <el-button class="submit el-wallet-main-button" @click="confirmTransaction">发送交易</el-button>
+                    </div>
                 </div>
-                <div class="step-4-footer">
-                    <el-button class="abandon" @click="abandon">放弃</el-button>
-                    <el-button class="submit el-wallet-main-button" @click="confirmTransaction">发送交易</el-button>
-                </div>
-            </div>
+            </transition>
             <!--step5-->
-            <div class="step-5" v-show="steps==='5'">
-                <div class="step-5-body">
-                    <el-form label-position="top" class="emitTransaction">
-                        <el-form-item label="交易Hash" class="el-wallet-style">
-                            <el-input
-                                      readonly
-                                      :value="transactionHash"></el-input>
-                        </el-form-item>
-                    </el-form>
+            <transition name="fof-fade">
+                <div class="step-5" v-show="steps==='5'">
+                    <div class="step-5-body">
+                        <el-form label-position="top" class="emitTransaction">
+                            <el-form-item label="交易Hash" class="el-wallet-style">
+                                <el-input
+                                        readonly
+                                        :value="transactionHash"></el-input>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+                    <div class="step-5-footer">
+                        <el-button class="el-wallet-main-button mt-50" @click="finished">完成</el-button>
+                    </div>
                 </div>
-                <div class="step-5-footer">
-                    <el-button class="el-wallet-main-button mt-50" @click="finished">完成</el-button>
-                </div>
-            </div>
+            </transition>
         </div>
     </div>
 </template>
@@ -166,13 +176,13 @@
             return {
                 steps: "1",
                 form: {
-                    to: '',
+                    to: '0x0f34474fF0ec7f18c93618b333315cD4A9d1027c',
                     value: 2,
                     gas: 21000,
                 },
                 unit: 'ETH',
                 address: '',
-                privateKey:'',
+                privateKey: '',
                 balance: 0,
                 password: '',
                 transactionHash: '', // 交易hash
@@ -181,14 +191,14 @@
                 transactionMsg: {}
             }
         },
-        computed:{
-            balanceToWei(){
+        computed: {
+            balanceToWei() {
                 return this.$web3.toWei(this.balance)
             },
-            valueToWei(){
-                return this.$web3.toWei(this.form.value,'ether')
+            valueToWei() {
+                return this.$web3.toWei(this.form.value, 'ether')
             },
-            totalPrice(){
+            totalPrice() {
                 let total = ((this.$store.state.gasPrice * Math.pow(10, 9)) * this.form.gas) + Number(this.valueToWei)
                 return total
             }
@@ -213,7 +223,7 @@
                     })
                     return
                 }
-                if(this.balanceToWei<this.totalPrice){
+                if (this.balanceToWei < this.totalPrice) {
                     this.$message({
                         message: this.$msg.balanceNotEnough,
                         type: 'error'
@@ -233,15 +243,15 @@
             importAccount() {
                 this.$refs.unlock.importAccount().then((wallet) => {
                     if (typeof wallet === 'object') {
-                        let balance = this.$web3.eth.getBalance(wallet.address,'latest')
-                        if(balance.toJSON() < this.totalPrice){
+                        let balance = this.$web3.eth.getBalance(wallet.address, 'latest')
+                        if (balance.toJSON() < this.totalPrice) {
                             this.$message({
                                 message: this.$msg.balanceNotEnough,
                                 type: 'error'
                             })
                             return
                         }
-                        if(wallet.address !== this.address){
+                        if (wallet.address !== this.address) {
                             this.$confirm(this.$msg.diffrentAccount, '账户不一致', {
                                 confirmButtonText: '确定',
                                 cancelButtonText: '取消',
@@ -259,7 +269,7 @@
                                 this.getSignMsg().then(() => {
                                     this.steps = '3'
                                 })
-                            });
+                            })
                         } else {
                             this.privateKey = wallet.privateKey.replace('0x', '')
                             this.getSignMsg().then(() => {
@@ -269,7 +279,7 @@
 
                     }
                 }, (err) => {
-                });
+                })
             },
             /**
              * 点击 发送交易
@@ -290,14 +300,14 @@
                 }
                 this.steps = '4'
             },
-            abandon(){
+            abandon() {
                 this.steps = '1'
             },
             /**
              * 点击 确认发送交易
              */
             confirmTransaction() {
-                console.log(this.$web3.eth.sendRawTransaction(this.transactionSign, (err, hash) => {
+                this.$web3.eth.sendRawTransaction(this.transactionSign, (err, hash) => {
                     if (err) {
                         this.$message({
                             message: String(err),
@@ -311,7 +321,7 @@
                         this.transactionHash = hash
                         this.steps = '5'
                     }
-                }))
+                })
             },
             finished() {
                 this.steps = '1'
@@ -322,7 +332,7 @@
                     let privateKey = new Buffer(this.privateKey, 'hex')
                     let nonce = this.$web3.eth.getTransactionCount(this.address)
                     let rawTx = {
-                        nonce: this.$web3.toHex(nonce + 1),
+                        nonce: this.$web3.toHex(nonce),
                         gasPrice: this.$web3.toHex(this.$store.state.gasPrice * (Math.pow(10, 9))),
                         gasLimit: this.$web3.toHex(this.form.gas),
                         to: this.form.to,
@@ -339,11 +349,11 @@
             }
         },
         mounted() {
-            let obj = this.$funs.getLocalAddress();
+            let obj = this.$funs.getLocalAddress()
             this.address = obj.addresses[obj.active]
 
             if (this.address) {
-                let balance = this.$web3.eth.getBalance(this.address);
+                let balance = this.$web3.eth.getBalance(this.address)
                 this.balance = this.$web3.fromWei(this.$web3.toDecimal(balance), 'ether')
             }
         }
@@ -362,7 +372,7 @@
                 flex-grow: 1;
                 line-height: 70px;
                 background-color: #221D44;
-                box-shadow: 1px 0px 0px 0px #272345;
+                box-shadow: 1px 0 0 0 #272345;
                 font-size: 20px;
                 color: #d3ceff;
 
@@ -372,9 +382,9 @@
                 border-bottom-style: solid;
                 border-bottom-width: 2px;
                 border-image-source: linear-gradient(105deg,
-                    #3410f7 0%,
-                    #711bdc 59%,
-                    #ad25c0 100%);
+                        #3410f7 0%,
+                        #711bdc 59%,
+                        #ad25c0 100%);
                 border-image-slice: 1;
                 background-color: #3a346a;
             }

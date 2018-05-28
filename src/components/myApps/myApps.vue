@@ -52,6 +52,10 @@
                         <el-button slot="append" @click="drawing">提现</el-button>
                     </el-input>
                 </el-form-item>
+                <el-form-item style="margin-top: 50px">
+                    <el-button class="el-wallet-main-button" @click="goPlay">Go to play</el-button>
+                    <a id="linkToApp" :href="contractAddressUrl" target="_blank"></a>
+                </el-form-item>
             </el-form>
         </el-main>
     </div>
@@ -78,6 +82,7 @@
                 prevIsDisabled: true,
                 nextIsHover: true,
                 nextIsDisabled: true,
+                contractAddressUrl: ''
             }
         },
         methods: {
@@ -220,6 +225,21 @@
                     }
                 }
             },
+            /**
+             * go play
+             */
+            goPlay() {
+                if (this.form.contractAddr === undefined) {
+                    this.$message.error('请先选泽一个应用！')
+                    return
+                }
+                this.contractAddressUrl = `http://localhost:8080/appDetail?${ this.form.contractAddr }`
+                let a = document.getElementById('linkToApp')
+                let timer = setTimeout(() => {
+                    clearTimeout(timer)
+                    a.click()
+                }, 1)
+            }
         },
         mounted() {
             let users = this.$funs.getLocalAddress()
@@ -229,6 +249,10 @@
             }).then((res) => {
                 if (res.status === 200) {
                     this.appList = res.data
+                    let timer = setTimeout(()=>{
+                        clearTimeout(timer)
+                        this.showDetail(this.appList[0],0)
+                    },1)
                     if (this.appList.length <= 8) {
                         this.nextIsHover = false
                         this.nextIsDisabled = false

@@ -3,17 +3,17 @@
          v-loading="cryptPercent.percent"
          :element-loading-text="cryptPercent.text"
          element-loading-custom-class="full-loading"
-         >
+    >
 
         <img src="./assets/images/logo.png" class="logoImg"></img>
-
-        <router-view name="default"></router-view>
-
+        <transition name="fof-fade">
+            <router-view name="default"></router-view>
+        </transition>
         <!--<el-col :span="8" style="padding-top: 41px;color: white">-->
-            <!--Gas 价格： {{ gasPrice }} Gwei-->
+        <!--Gas 价格： {{ gasPrice }} Gwei-->
         <!--</el-col>-->
         <!--<el-col :span="8" style="padding-top: 30px">-->
-            <!--<el-slider v-model="gasPrice" :min="1" :max="99" @change="gasPriceChange"></el-slider>-->
+        <!--<el-slider v-model="gasPrice" :min="1" :max="99" @change="gasPriceChange"></el-slider>-->
         <!--</el-col>-->
     </div>
 </template>
@@ -25,7 +25,7 @@
         data() {
             return {
                 // gasPrice: 41,
-                cryptPercent:null
+                cryptPercent: null
             }
         },
         methods: {
