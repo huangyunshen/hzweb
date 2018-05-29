@@ -112,6 +112,7 @@
                     return
                 }
                 this.$prompt(`请输入${this.user}的密码`, '提示', {
+                    inputType: 'password',
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                 }).then(({value}) => {
@@ -167,6 +168,7 @@
                     return
                 }
                 this.$prompt(`请输入${this.user}的密码`, '提示', {
+                    inputType: 'password',
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                 }).then(({value}) => {

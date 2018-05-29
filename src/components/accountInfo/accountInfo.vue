@@ -25,7 +25,7 @@
                 <div class="list-body">
                     <ul>
                         <li>
-                            <span>{{balanceCom}}</span>
+                            <span @click="getBalance()" class="get-balance" title="点击刷新余额">{{balanceCom}}</span>
                         </li>
                         <li>
                             <span>{{address}}</span>
@@ -85,6 +85,13 @@
                 }
             }
         },
+        methods:{
+            getBalance(){
+                if (this.address !== '') {
+                    this.balance = this.$web3.eth.getBalance(this.address).toJSON()
+                }
+            }
+        },
         mounted() {
             let obj = this.$funs.getLocalAddress()
             this.address = obj.addresses[obj.active]
@@ -94,10 +101,7 @@
                 this.mnemonic = params.mnemonic || ''
                 this.privateKey = params.privateKey ? params.privateKey.replace('0x', '') : ''
             }
-
-            if (this.address !== '') {
-                this.balance = this.$web3.eth.getBalance(this.address).toJSON()
-            }
+            this.getBalance()
         },
         components: {
             VueQr
@@ -155,6 +159,9 @@
                 font-size: 24px;
                 color: #8abdec;
 
+                .get-balance {
+                    cursor: pointer;
+                }
                 .text-disabled {
                     width: 260px;
                     padding: 10px 70px;

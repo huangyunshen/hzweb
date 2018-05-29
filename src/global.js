@@ -6,7 +6,7 @@ import {Wallet} from 'ethers'
 import axios from './js/api'
 
 const WEB3OBJ = new Web3(new Web3.providers.HttpProvider('http://39.104.81.103:8101'))
-// const WEB3OBJ = new Web3(new Web3.providers.HttpProvider('http://192.168.1.124:8101'))
+// const WEB3OBJ = new Web3(new Web3.providers.HttpProvider('http://192.168.1.113:8101'))
 export default {
     install(Vue, options) {
         Vue.prototype.$web3 = WEB3OBJ
