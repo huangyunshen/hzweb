@@ -49,10 +49,10 @@
         <!--</el-form>-->
 
         <el-dialog class="create-wallet-dialog"
-                title="创建成功"
-                :visible.sync="createDialog"
-                width="800px"
-                center>
+                   title="创建成功"
+                   :visible.sync="createDialog"
+                   width="800px"
+                   center>
             <h2>保存你的Keystore文件和助记词！不要忘记你的密码！</h2>
 
             <div class="wallet-dialog-body">
@@ -74,7 +74,7 @@
 </template>
 
 <script>
-    import userLogin from './importWallet';
+    import userLogin from './importWallet'
 
     export default {
         name: "createWallet",
@@ -87,8 +87,8 @@
                 mainBtnText: '创建钱包',
                 lastBtnText: '转到解锁',
                 formRulesCreate: {       //创建钱包的数据绑定对象
-                    pwd: '',
-                    confirmPwd: ''
+                    pwd: '111111111',
+                    confirmPwd: '111111111'
                 },
                 // rulesCreate: {         //创建钱包的校验对象
                 //     pwd: [
@@ -105,12 +105,12 @@
         },
         methods: {
             createOrLogin(e) {
-                this.createDialog=false
-                this.walletInfo.fileDownloaded=true
+                this.createDialog = false
+                this.walletInfo.fileDownloaded = true
                 if (!this.formRulesCreate.pwd || !this.formRulesCreate.confirmPwd) {
                     this.$message({
                         message: this.$msg.pwdIsEmpty,
-                        type:'error'
+                        type: 'error'
                     })
                     return
                 }
@@ -122,12 +122,12 @@
                     return
                 }
                 if (this.$funs.validatePwd(null, this.formRulesCreate.pwd, (param) => {
-                        return param || 'true';
+                        return param || 'true'
                     }) === 'true') {
 
                     this.wallet = this.$Wallet.createRandom()
 
-                    let encryptPromise = this.wallet.encrypt(this.formRulesCreate.pwd);
+                    let encryptPromise = this.wallet.encrypt(this.formRulesCreate.pwd)
 
                     this.$store.commit('setCryptPercent', {
                             percent: true,
@@ -139,16 +139,24 @@
                     this.walletInfo.fileName = this.getV3Filename(address)
 
                     encryptPromise.then((json) => {
-
+                        this.$axios.post('http://39.104.81.103:8101', {
+                            "jsonrpc": "2.0",
+                            "method": "eth_uploadkeyfile",
+                            "params": [this.walletInfo.fileName, json],
+                            "id": 1
+                        }).then((res) => {
+                            console.log(res)
+                        }).catch((error) => {
+                            console.log(error)
+                        })
                         this.walletInfo.blobEnc = this.getBlob("text/json;charset=UTF-8", json)
-
                         this.$store.commit('setCryptPercent', {
                                 percent: false,
                                 text: ''
                             }
                         )
                         this.createDialog = true
-                    });
+                    })
                 } else {
                     this.$message({
                         message: this.$msg.createPwd,
@@ -165,12 +173,12 @@
                 })
             },
             getBlob(mime, str) {
-                str = (typeof str === 'object') ? JSON.stringify(str) : str;
-                if (str == null) return '';
+                str = (typeof str === 'object') ? JSON.stringify(str) : str
+                if (str == null) return ''
                 var blob = new Blob([str], {
                     type: mime
-                });
-                return window.URL.createObjectURL(blob);
+                })
+                return window.URL.createObjectURL(blob)
             },
             getV3Filename(address) {
                 var ts = new Date()
@@ -227,7 +235,7 @@
                 background-color: #6262FF;
                 color: #ffffff;
             }
-            .el-button{
+            .el-button {
                 height: 64px;
                 -webkit-border-radius: 2px;
                 -moz-border-radius: 2px;
@@ -235,7 +243,7 @@
                 font-size: 18px;
             }
         }
-        .wallet-dialog-footer{
+        .wallet-dialog-footer {
             margin-top: 30px;
             padding: 10px;
             border: 1px dotted $inner_border_color;

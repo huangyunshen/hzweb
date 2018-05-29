@@ -6,7 +6,7 @@
                 <div class="game-result">
                     <p>近 5 局出牌结果</p>
                     <div>
-                        <span v-for="(item,index) in resultList" :key="index">{{item}}</span>
+                        <span v-for="(item,index) in resultList" :key="index">{{item | getBetResHis }}</span>
                     </div>
                 </div>
                 <div class="game-talbe">
@@ -84,6 +84,15 @@
                 </div>
             </div>
         </div>
+        <el-button class="exit show-source" type="button" @click="showSource">智能合约源码</el-button>
+        <el-dialog title="智能合约源码"
+                   :modal="false"
+                   class="create-wallet-dialog app-detail-font"
+                   :visible.sync="showSourceVisible">
+            <div style="height: 500px;overflow: auto">
+                <pre>{{ contractSource }}</pre>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -95,9 +104,10 @@
         name: "app-detail",
         data() {
             return {
+                showSourceVisible: false,
                 isSelected: null,
                 amountArr: [1, 5, 10],
-                resultList: ['龙', '龙', '虎', '和', '龙'],
+                resultList: ['3', '3', '3', '3', '3'],
                 amount1: ['0'],
                 amount2: ['0'],
                 amount3: ['0'],
@@ -111,10 +121,46 @@
                 dragonNum: '0',
                 tigerNum: '0',
                 myContractInstance: null,// 智能合约对象
-                ContractAddr: ''
+                ContractAddr: '',
+                contractSource: ''
+            }
+        },
+        filters: {
+            getBetResHis: function (value) {
+                let res = ""
+                switch (value) {
+                    case '0':
+                        res = "龙"
+                        break
+                    case '1':
+                        res = "虎"
+                        break
+                    case '2':
+                        res = "和"
+                        break
+                    default:
+                        res = "-"
+                }
+                return res
             }
         },
         methods: {
+            // 显示合约源码
+            showSource() {
+                let url = window.location.href.split('?')[1]
+                this.$axios.post('/api/requestContract.php', {
+                    "createAddr": "",
+                    "contractAddr": url
+                }).then((res) => {
+                    if (res.status === 200) {
+                        this.showSourceVisible = true
+                        console.log(res.data[0].txHash)
+                        this.contractSource = this.$web3.eth.getTransaction(res.data[0].txHash).datasourcecode
+                    }
+                }).catch((error) => {
+                    this.$message.error(String(error))
+                })
+            },
             selectAnItem(i) {
                 if (i === false) {
                     this.isSelected = null
@@ -132,6 +178,9 @@
                     playGameContract.abi
                 )
                 this.myContractInstance = MyContract.at(this.ContractAddr)
+                this.resultList = this.myContractInstance.getResultHistory().map((item) => {
+                    return item.toString(10)
+                })
             },
             bet(sign) {
                 // this.choosed = sign
@@ -151,6 +200,7 @@
             },
             // 开启监控
             settlement() {
+                this.showSourceVisible = false
                 this.$store.commit('setCryptPercent', {percent: true, text: '正在结算···'})
                 let event = this.myContractInstance.returnBetPoints()
                 event.watch((err, result) => {
@@ -163,12 +213,13 @@
                     if (result.args) {
                         this.dragonNum = result.args.dragonNum % 13
                         this.tigerNum = result.args.tigerNum % 13
-                        console.log(this.dragonNum, this.tigerNum)
                         this.$message({
                             message: `结果为 龙：${this.dragonNum} 虎：${this.tigerNum}`,
                             type: 'success',
                         })
-                        console.log(this.myContractInstance.getCurrentBalance().toString(10))
+                        this.resultList = this.myContractInstance.getResultHistory().map((item) => {
+                            return item.toString(10)
+                        })
                         this.getTimerTime()
                     } else {
                         this.$message.error('节点异常！')
@@ -225,7 +276,7 @@
              * 下注
              */
             callContract(sign) {
-                if(isNaN(this.moneyNum)){
+                if (isNaN(this.moneyNum)) {
                     this.$message.error('下注金额不能为非数字！')
                     return false
                 }
@@ -263,12 +314,24 @@
                         this.$message.error('下注失败！本局已封盘（奖池金额不够）')
                     }
                 })
-                this.myContractInstance.sendBetInfo(params.addr, params.cho, params.ran, params.coin, {
-                    // from: "0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5",
+                let hash = this.myContractInstance.sendBetInfo(params.addr, params.cho, params.ran, params.coin, {
                     from: user,
                     gasPrice: 200000000000,
                     value: params.coin,
                     gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
+                })
+                let txObj = this.$web3.eth.getTransaction(hash)
+                this.$axios.post('/api/addTx.php', {
+                    "type": "1",
+                    "sendAddr": txObj.from,
+                    "revAddr": txObj.to,
+                    "txHash": txObj.hash,
+                }).then((res) => {
+                    if (res.status === 200) {
+                        // console.log(res)
+                    }
+                }).catch((error) => {
+                    this.$message.error(String(error))
                 })
             },
             /**
@@ -285,8 +348,8 @@
             },
             // 获取服务器定时器时间
             getTimerTime() {
-                // axios.get('http://39.104.81.103:8088')
-                axios.get('http://192.168.1.124:8801')
+                axios.get('http://39.104.81.103:8088')
+                // axios.get('http://192.168.1.124:8801')
                     .then((res) => {
                         this.countDown = res.data
                         this.interval()
@@ -368,6 +431,7 @@
                 }, 1000)
                 this.getTimerTime()
             }
+            console.log(this.myContractInstance.getBlockTime()[3])
         },
         deactivated() {
             clearInterval(this.getCoinsTimer)
@@ -401,6 +465,20 @@
             cursor: pointer;
             &:hover {
                 background: url("../../assets/images/longhudou/close_hover.png") no-repeat;
+            }
+            &.show-source{
+                left: auto;
+                right: 40px;
+                background:none;
+                padding: 8px 14px;
+                width: auto;
+                height: auto;
+                color: rgba(255, 255, 255, 0.3);
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                &:hover {
+                    color: rgba(216, 240, 246, 0.8);
+                    border-color: rgba(216, 240, 246, 0.8);
+                }
             }
         }
         .game-content {

@@ -141,6 +141,15 @@ textarea:read-only {
 }
 
 .create-wallet-dialog {
+    &.app-detail-font{
+        .el-dialog {
+            .el-dialog__header {
+                span {
+                    font-size: 22px;
+                }
+            }
+        }
+    }
     .el-dialog {
         margin-top: 22vh !important;
         padding: 0 45px;

@@ -334,6 +334,19 @@
                         })
                         this.transactionHash = hash
                         this.steps = '5'
+                        let txObj = this.$web3.eth.getTransaction(hash)
+                        this.$axios.post('/api/addTx.php', {
+                            "type": "1",
+                            "sendAddr": txObj.from,
+                            "revAddr": txObj.to,
+                            "txHash": txObj.hash,
+                        }).then((res) => {
+                            if (res.status === 200) {
+                                // console.log(res)
+                            }
+                        }).catch((error) => {
+                            this.$message.error(String(error))
+                        })
                     }
                 })
             },

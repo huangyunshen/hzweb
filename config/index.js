@@ -11,11 +11,11 @@ module.exports = {
         assetsSubDirectory: 'static',
         assetsPublicPath: '/',
         proxyTable: {
-            '/url': {  //使用"/url"来代替"http://192.168.1.112"
-                target: 'http://192.168.1.112', //源地址
+            '/url': {  //使用"/url"来代替"http://120.79.88.105"
+                target: 'http://120.79.88.105', //源地址
                 changeOrigin: true, //改变源
                 pathRewrite: {
-                    '^/url': 'http://192.168.1.112' //路径重写
+                    '^/url': 'http://120.79.88.105' //路径重写
                 }
             }
         },

@@ -154,7 +154,7 @@
                         font-weight: 100;
                         //line-height: $head_height+20px; //100px
                         color: #706bb8;
-                        cursor: default;
+                        cursor: pointer;
                     }
                     .wallet-selected {
                         color: #e0c1ff;

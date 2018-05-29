@@ -13,21 +13,20 @@
                       :cell-style="{'border-bottom':'none'}"
             >
                 <el-table-column
-                        prop="txHash"
+                        prop="hash"
                         label="交易hash"
-                        min-width="100px"
                 >
                     <template slot-scope="scope">
                         <a style="color:#8490c5;"
-                           :title="scope.row.txHash"
-                           :href="scope.row.txHash"
-                           @click.prevent="getTransaction(scope.row.txHash)">{{
-                            scope.row.txHash }}</a>
+                           :title="scope.row.hash"
+                           :href="scope.row.hash"
+                           @click.prevent="getTransaction(scope.row.hash)">{{
+                            scope.row.hash }}</a>
                     </template>
                 </el-table-column>
 
                 <el-table-column
-                        prop="block"
+                        prop="blockNumber"
                         label="区块值">
                 </el-table-column>
                 <el-table-column
@@ -50,9 +49,9 @@
                 </el-table-column>
             </el-table>
             <el-pagination
-                background
-                layout="prev, pager, next"
-                :total="1000">
+                    background
+                    layout="prev, pager, next"
+                    :total="1000">
             </el-pagination>
         </div>
 
@@ -79,56 +78,7 @@
         name: "trade-record",
         data() {
             return {
-                transactionsList: [
-                    {
-                        txHash: '0x1df077c27d039827ac3616551de3b6abf5a4763bb28a20cf14fea11727ad14de',
-                        block: '5455154',
-                        time: '2018-04-06',
-                        from: '0xbbac7526697a187a3ec4201727520fd95be910ea',
-                        to: '0xa2089adde76917463cc4da84ad2c5505fc83d664',
-                        value: '4',
-                    },
-                    {
-                        txHash: '0x1df077c27d039827ac3616551de3b6abf5a4763bb28a20cf14fea11727ad14de',
-                        block: '5455154',
-                        time: '2018-04-06',
-                        from: '0xbbac7526697a187a3ec4201727520fd95be910ea',
-                        to: '0xa2089adde76917463cc4da84ad2c5505fc83d664',
-                        value: '4',
-                    },
-                    {
-                        txHash: '0x1df077c27d039827ac3616551de3b6abf5a4763bb28a20cf14fea11727ad14de',
-                        block: '5455154',
-                        time: '2018-04-06',
-                        from: '0xbbac7526697a187a3ec4201727520fd95be910ea',
-                        to: '0xa2089adde76917463cc4da84ad2c5505fc83d664',
-                        value: '4',
-                    },
-                    {
-                        txHash: '0x1df077c27d039827ac3616551de3b6abf5a4763bb28a20cf14fea11727ad14de',
-                        block: '5455154',
-                        time: '2018-04-06',
-                        from: '0xbbac7526697a187a3ec4201727520fd95be910ea',
-                        to: '0xa2089adde76917463cc4da84ad2c5505fc83d664',
-                        value: '4',
-                    },
-                    {
-                        txHash: '0x1df077c27d039827ac3616551de3b6abf5a4763bb28a20cf14fea11727ad14de',
-                        block: '5455154',
-                        time: '2018-04-06',
-                        from: '0xbbac7526697a187a3ec4201727520fd95be910ea',
-                        to: '0xa2089adde76917463cc4da84ad2c5505fc83d664',
-                        value: '4',
-                    },
-                    {
-                        txHash: '0x1df077c27d039827ac3616551de3b6abf5a4763bb28a20cf14fea11727ad14de',
-                        block: '5455154',
-                        time: '2018-04-06',
-                        from: '0xbbac7526697a187a3ec4201727520fd95be910ea',
-                        to: '0xa2089adde76917463cc4da84ad2c5505fc83d664',
-                        value: '4',
-                    },
-                ],
+                transactionsList: [],
                 transactionsData: null,
                 // searchParams: '', // 搜索参数
                 showSwitch: 'table',// 显示表格还是列表
@@ -143,8 +93,8 @@
                 let connected = this.$web3.isConnected()
                 if (connected) {
                     if (hash) {
-                        let result = this.$web3.eth.getTransaction(hash)
-                        this.transactionsData = result
+                        this.transactionsData = this.$web3.eth.getTransaction(hash)
+                        delete this.transactionsData.datasourcecode
                         this.showSwitch = 'list'
                     } else {
                         this.showSwitch = 'table'
@@ -166,6 +116,25 @@
                     return 'background:#221d44;'
                 }
             }
+        },
+        mounted() {
+            let users = this.$funs.getLocalAddress()
+            let publicKey = users.addresses[users.active]
+            this.$axios.post('/api/requestTx.php', {
+                "addr": publicKey
+            }).then((res) => {
+                if (res.status === 200) {
+                    if(res.data.length){
+                        this.transactionsList = res.data.map((item)=>{
+                            let hashObj=this.$web3.eth.getTransaction(item.txHash)
+                            hashObj.value = this.$web3.fromWei(hashObj.value.toString(10))
+                            return hashObj
+                        })
+                    }
+                }
+            }).catch((error) => {
+                this.$message.error(String(error))
+            })
         }
     }
 </script>
@@ -179,7 +148,7 @@
         .table-list {
             height: 100%;
             position: relative;
-            .el-pagination{
+            .el-pagination {
                 text-align: center;
                 position: absolute;
                 bottom: 40px;

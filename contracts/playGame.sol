@@ -15,7 +15,7 @@ contract PlayGame {
     uint dragonCoins = 0; // 下注龙总币
     uint tigerCoins = 0; // 下注虎总币
     uint drawCoins = 0; // 下注合总币
-    uint [] resultHistory; // 保存历史结果
+    uint [] resultHistory = [3, 3, 3, 3, 3]; // 保存历史结果
     // 在全局获取的msg.sender为创建者的地址
     // 在函数中获取的msg.sender为当前调用者的地址
     // 函数中返回的this指当前合约地址
@@ -38,8 +38,12 @@ contract PlayGame {
         return price;
     }
 
-    function getBlockTime() constant returns (uint, uint, uint){
-        return (time, block.timestamp, xor);
+    function getBlockTime() constant returns (uint, uint, uint, address){
+        return (time, block.timestamp, xor, creator);
+    }
+    // 获取最后五局的结果
+    function getResultHistory() constant returns (uint []){
+        return resultHistory;
     }
 
     // 下注传入信息
@@ -64,7 +68,6 @@ contract PlayGame {
                 }
                 dragonMap[addr] = dragonMap[addr] == 0 ? (dragonMap[addr] + coin) : coin;
                 dragonCoins += coin;
-                resultHistory.push(0);
             } else if (cho == 1) {
                 bool flag1 = false;
                 for (uint j = 0; j < tiger.length; j++) {
@@ -78,7 +81,6 @@ contract PlayGame {
                 }
                 tigerMap[addr] = tigerMap[addr] == 0 ? (tigerMap[addr] + coin) : coin;
                 tigerCoins += coin;
-                resultHistory.push(1);
             } else if (cho == 2) {
                 bool flag2 = false;
                 for (uint k = 0; k < draw.length; k++) {
@@ -92,7 +94,6 @@ contract PlayGame {
                 }
                 drawMap[addr] = drawMap[addr] == 0 ? (drawMap[addr] + coin) : coin;
                 drawCoins += coin;
-                resultHistory.push(2);
             }
             randomNum.push(ran);
             returnBetResult(true);
@@ -128,14 +129,26 @@ contract PlayGame {
             for (uint i = 0; i < dragon.length; i++) {
                 transferCoin(dragon[i], dragonMap[dragon[i]] * 2);
             }
+            for (uint o = 0; o < resultHistory.length - 1; o++) {
+                resultHistory[o] = resultHistory[o + 1];
+            }
+            resultHistory[resultHistory.length - 1] = 0;
         } else if (dNum < tNum) {
             for (uint j = 0; j < tiger.length; j++) {
                 transferCoin(tiger[j], tigerMap[tiger[j]] * 2);
             }
+            for (uint p = 0; p < resultHistory.length - 1; p++) {
+                resultHistory[p] = resultHistory[p + 1];
+            }
+            resultHistory[resultHistory.length - 1] = 1;
         } else {
             for (uint k = 0; k < draw.length; k++) {
                 transferCoin(draw[k], drawMap[draw[k]] * 8);
             }
+            for (uint q = 0; q < resultHistory.length - 1; q++) {
+                resultHistory[q] = resultHistory[q + 1];
+            }
+            resultHistory[resultHistory.length - 1] = 2;
         }
         returnBetPoints(num1, num2);
     }
