@@ -69,6 +69,9 @@
                     </div>
                 </el-col>
             </el-row>
+            <div class="return-back">
+                <el-button @click="showSwitch='table'">返回</el-button>
+            </div>
         </div>
     </div>
 </template>
@@ -142,6 +145,7 @@
 <style lang="scss" type="text/scss" scoped>
     .trade-record {
         height: 100%;
+        overflow-y: auto;
         .el-table::before {
             height: 0; //勿删
         }
@@ -174,6 +178,20 @@
 
                 .el-col:first-child {
                     text-align: right;
+                }
+            }
+            .return-back {
+                text-align: center;
+                margin-top: 10px;
+                .el-button {
+                    background: #5837FF;
+                    color: #fff;
+                    font-size: 16px;
+                    border: none;
+                    &:hover {
+                        background: #6262FF;
+                        color: #fff;
+                    }
                 }
             }
         }

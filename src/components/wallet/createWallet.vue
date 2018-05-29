@@ -87,8 +87,8 @@
                 mainBtnText: '创建钱包',
                 lastBtnText: '转到解锁',
                 formRulesCreate: {       //创建钱包的数据绑定对象
-                    pwd: '111111111',
-                    confirmPwd: '111111111'
+                    pwd: '',
+                    confirmPwd: ''
                 },
                 // rulesCreate: {         //创建钱包的校验对象
                 //     pwd: [

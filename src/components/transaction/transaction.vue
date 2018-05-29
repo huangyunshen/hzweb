@@ -190,8 +190,8 @@
             return {
                 steps: "1",
                 form: {
-                    to: '0x0f34474fF0ec7f18c93618b333315cD4A9d1027c',
-                    value: 2,
+                    to: '0x62f94E9AC9349BCCC61Bfe66ddAdE6292702EcB6',
+                    value: 1,
                     gas: 21000,
                 },
                 unit: 'ETH',
@@ -364,7 +364,8 @@
                         gasLimit: this.$web3.toHex(this.form.gas),
                         to: this.form.to,
                         value: this.$web3.toHex(this.$web3.toWei(this.form.value, 'ether')),
-                        data: "0x"
+                        data: "",
+                        datasourcecode:""
                     }
                     let tx = new Tx(rawTx)
                     tx.sign(privateKey)
