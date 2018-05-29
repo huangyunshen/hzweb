@@ -135,6 +135,19 @@
                     this.$alert(`交易hash为：${hash}`, '充值成功', {
                         confirmButtonText: '确定',
                     })
+                    let txObj = this.$web3.eth.getTransaction(hash)
+                    this.$axios.post('/api/addTx.php', {
+                        "type": "1",
+                        "sendAddr": txObj.from,
+                        "revAddr": txObj.to,
+                        "txHash": txObj.hash,
+                    }).then((res) => {
+                        if (res.status === 200) {
+                            // console.log(res)
+                        }
+                    }).catch((error) => {
+                        this.$message.error(String(error))
+                    })
                 }
             },
             /**
@@ -175,6 +188,19 @@
                     this.$alert(`交易hash为：${hash}`, '提现成功', {
                         confirmButtonText: '确定',
                     })
+                    let txObj = this.$web3.eth.getTransaction(hash)
+                    this.$axios.post('/api/addTx.php', {
+                        "type": "1",
+                        "sendAddr": txObj.from,
+                        "revAddr": txObj.to,
+                        "txHash": txObj.hash,
+                    }).then((res) => {
+                        if (res.status === 200) {
+                            // console.log(res)
+                        }
+                    }).catch((error) => {
+                        this.$message.error(String(error))
+                    })
                 }
             },
             /**
@@ -189,6 +215,9 @@
                 this.form.currentCoin = this.$web3.fromWei(this.myContractInstance.getCurrentBalance().toString(10), 'ether')
             },
             goPage(sign) {
+                if (this.appList.length === 0) {
+                    return
+                }
                 let itemW = this.$refs.item[0].getBoundingClientRect().width
                 if (sign === 'prev') {
                     if (this.left === 0) {
@@ -233,7 +262,8 @@
                     this.$message.error('请先选泽一个应用！')
                     return
                 }
-                this.contractAddressUrl = `http://localhost:8080/appDetail?${ this.form.contractAddr }`
+                let host = window.location.host
+                this.contractAddressUrl = `http://${host}/appDetail?${ this.form.contractAddr }`
                 let a = document.getElementById('linkToApp')
                 let timer = setTimeout(() => {
                     clearTimeout(timer)
@@ -244,20 +274,22 @@
         mounted() {
             let users = this.$funs.getLocalAddress()
             this.user = users.addresses[users.active]
-            this.$axios.post('/url/api/requestContract.php', {
-                "createAddr": this.user
+            this.$axios.post('/api/requestContract.php', {
+                "createAddr": this.user,
+                "contractAddr": ""
             }).then((res) => {
                 if (res.status === 200) {
                     this.appList = res.data
-                    let timer = setTimeout(()=>{
-                        clearTimeout(timer)
-                        this.showDetail(this.appList[0],0)
-                    },1)
-                    if (this.appList.length <= 8) {
-                        this.nextIsHover = false
-                        this.nextIsDisabled = false
+                    if (this.appList !== undefined && this.appList.length !== 0) {
+                        let timer = setTimeout(() => {
+                            clearTimeout(timer)
+                            this.showDetail(this.appList[0], 0)
+                        }, 1)
+                        if (this.appList.length <= 8) {
+                            this.nextIsHover = false
+                            this.nextIsDisabled = false
+                        }
                     }
-                    this.showDetail(res.data[0],0)
                 }
             }).catch((error) => {
                 this.$message.error(String(error))

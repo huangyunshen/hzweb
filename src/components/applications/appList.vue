@@ -70,7 +70,7 @@
              * 获取所有应用
              */
             sendMsgToServer() {
-                this.$axios.get('/url/api/requestContract.php')
+                this.$axios.get('/api/requestContract.php')
                     .then((res) => {
                         if (res.status === 200) {
                             this.appList = res.data

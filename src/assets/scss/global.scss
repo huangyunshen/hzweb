@@ -55,6 +55,7 @@ textarea:focus {
     background-color: #5A558E;
     box-shadow: 0px 0px 10px 0px rgba(190, 182, 255, 0.3);
     border: solid 1px rgba(208, 202, 253, 0.54) !important;
+    outline: none;
 }
 
 input:read-only,
@@ -140,6 +141,15 @@ textarea:read-only {
 }
 
 .create-wallet-dialog {
+    &.app-detail-font{
+        .el-dialog {
+            .el-dialog__header {
+                span {
+                    font-size: 22px;
+                }
+            }
+        }
+    }
     .el-dialog {
         margin-top: 22vh !important;
         padding: 0 45px;

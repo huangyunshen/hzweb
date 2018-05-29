@@ -141,6 +141,7 @@
     // 先部署定时器合约 得到其地址
     import intervalContract from '../../../contracts/interval.json'
     import playGameContract from '../../../contracts/playGame.json'
+    import solSource from '../../../contracts/playGame.sol'
 
     export default {
         name: "create-app",
@@ -152,7 +153,15 @@
             return {
                 steps: 1,
                 selected: '',
-                appList: [],
+                appList: [{
+                    contractAddr: "0xfe56582a999c5dae6ba4cc9ea84e9f1842e5fb39",
+                    createAddr: "0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5",
+                    currentCoin: "1000000000000.00000000",
+                    historyCoin: null,
+                    id: "93",
+                    time: "2018-05-23 02:25:30",
+                    type: "1"
+                }],
                 btnVal: "下一步",
                 setCoin: null,
                 contractAddress: '',
@@ -289,7 +298,7 @@
             recharge() {
                 let users = this.$funs.getLocalAddress()
                 this.publicKey = users.addresses[users.active]
-                this.rechargeFun(this.publicKey, this.password)
+                this.rechargeFun(this.publicKey, this.$store.state.userPassword === "" ? this.password : this.$store.state.userPassword)
             },
             //
             rechargeFun(user, value) {
@@ -306,6 +315,19 @@
                     gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
                 })
                 if (hash) {
+                    let txObj = this.$web3.eth.getTransaction(hash)
+                    this.$axios.post('/api/addTx.php', {
+                        "type": "1",
+                        "sendAddr": txObj.from,
+                        "revAddr": txObj.to,
+                        "txHash": txObj.hash,
+                    }).then((res) => {
+                        if (res.status === 200) {
+                            // console.log(res)
+                        }
+                    }).catch((error) => {
+                        this.$message.error(String(error))
+                    })
                     let timer = setTimeout(() => {
                         clearTimeout(timer)
                         this.$store.commit('setCryptPercent', {percent: false, text: '充值成功！'})
@@ -326,9 +348,11 @@
                 )
                 // 传入设置的下注金额和类型(1 代表是龙虎斗)
                 MyContract.new(Number(this.rechargeData.price1), Number(this.rechargeData.price2), Number(this.rechargeData.price3), Number(this.selected), {
+                    // MyContract.new({
                     data: playGameContract.bytecode,
                     from: user,
                     gasPrice: 41000000000,
+                    datasourcecode: solSource, // 传入sol源码
                     gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode}) * 2
                 }, (err, myContract) => {
                     if (err) {
@@ -338,61 +362,76 @@
                         if (myContract.address) {
                             this.$store.commit('setCryptPercent', {percent: true, text: '创建成功！正在充值···'})
                             console.log(myContract.address)
-                            this.$axios.post('/url/api/addContract.php', {
+                            // return
+                            this.$axios.post('/api/addContract.php', {
                                 "type": this.selected,
                                 "contractAddr": myContract.address,
                                 "createAddr": user,
-                                "createMoney": this.$web3.toWei(this.rechargeData.value, 'ether')
+                                "createMoney": this.rechargeData.value,
+                                "txHash": myContract.transactionHash
                             }).then((res) => {
                                 if (res.status === 200) {
-                                    // let data = res.data
-                                    this.appList = res.data
+                                    // console.log(res)
                                 }
                             }).catch((error) => {
                                 this.$message.error(String(error))
-                                let timer = setTimeout(() => {
-                                    clearTimeout(timer)
-                                    this.$message.error('无法获取应用列表')
-                                }, 3000)
+                            })
+                            let txObj = this.$web3.eth.getTransaction(myContract.transactionHash)
+                            this.$axios.post('/api/addTx.php', {
+                                "type": "1",
+                                "sendAddr": txObj.from,
+                                "revAddr": txObj.to,
+                                "txHash": txObj.hash,
+                            }).then((res) => {
+                                if (res.status === 200) {
+                                    // console.log(res)
+                                }
+                            }).catch((error) => {
+                                this.$message.error(String(error))
                             })
                             this.contractAddress = myContract.address
                             localStorage.setItem('contractAddress', myContract.address)
                             // 每次部署完合约，需要向定时器合约中注册当前合约地址
                             let myIntContractInstance = MyContract.at(myContract.address)
-                            myIntContractInstance.registerInterval('0xef95d821ad898d39f3a813bd202d50ff1153e487', {
-                                // myIntContractInstance.registerInterval('0x3ab791be88898f1cde361567a930f46574f4005a', {
+                            let hash = myIntContractInstance.registerInterval('0x52da6cae67103a0e5522d499d9676f8afacb9437', {
                                 from: user,
                                 gasPrice: 41000000000,
                                 gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
                             })
+                            let tHxObj = this.$web3.eth.getTransaction(hash)
+                            this.$axios.post('/api/addTx.php', {
+                                "type": "1",
+                                "sendAddr": tHxObj.from,
+                                "revAddr": tHxObj.to,
+                                "txHash": tHxObj.hash,
+                            }).then((res) => {
+                                if (res.status === 200) {
+                                    // console.log(res)
+                                }
+                            }).catch((error) => {
+                                this.$message.error(String(error))
+                            })
                             sessionStorage.setItem('userContract', myContract.address)
                             this.recharge() // 充值
                             //部署成功！你的合约地址为
-                            let url = "http://localhost:8080/appDetail"
-                            this.contractAddressUrl = `${url}?${myContract.address}`
+                            let host = window.location.host
+                            this.contractAddressUrl = `http://${host}/appDetail?${myContract.address}`
                         }
                     }
                 })
             },
             sendMsgToServer() {
-                this.$axios.get('/url/api/requestContract.php')
+                this.$axios.get('/api/requestContract.php')
                     .then((res) => {
                         if (res.status === 200) {
                             let obj = {
-                                contractAddr:
-                                    "0xfe56582a999c5dae6ba4cc9ea84e9f1842e5fb39",
-                                createAddr:
-                                    "0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5",
-                                currentCoin:
-                                    "1000000000000.00000000",
-                                historyCoin:
-                                    null,
-                                id:
-                                    "93",
-                                time:
-                                    "2018-05-23 02:25:30",
-                                type:
-                                    "1"
+                                contractAddr: "0xfe56582a999c5dae6ba4cc9ea84e9f1842e5fb39",
+                                createAddr: "0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5",
+                                currentCoin: "1000000000000.00000000",
+                                historyCoin: null,
+                                id: "93",
+                                time: "2018-05-23 02:25:30",
+                                type: "1"
                             }
                             this.appList = [obj]
                             // this.appList = res.data
@@ -413,7 +452,7 @@
             }
         },
         mounted() {
-            this.sendMsgToServer()
+            // this.sendMsgToServer()
         }
     }
 </script>
