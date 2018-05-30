@@ -118,7 +118,8 @@
                 } else {
                     return 'background:#221d44;'
                 }
-            }
+            },
+
         },
         mounted() {
             let users = this.$funs.getLocalAddress()
@@ -127,9 +128,9 @@
                 "addr": publicKey
             }).then((res) => {
                 if (res.status === 200) {
-                    if(res.data.length){
-                        this.transactionsList = res.data.map((item)=>{
-                            let hashObj=this.$web3.eth.getTransaction(item.txHash)
+                    if (res.data.length) {
+                        this.transactionsList = res.data.map((item) => {
+                            let hashObj = this.$web3.eth.getTransaction(item.txHash)
                             hashObj.value = this.$web3.fromWei(hashObj.value.toString(10))
                             return hashObj
                         })

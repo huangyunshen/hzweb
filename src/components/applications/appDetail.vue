@@ -115,14 +115,16 @@
                 choosed: null, // 龙虎合选中的标识
                 betZh: '',
                 moneyNum: 0,
-                countDown: 60,
+                countDown: -1,
                 timer: null, // 页面倒计时定时器
                 getCoinsTimer: null,
                 dragonNum: '0',
                 tigerNum: '0',
                 myContractInstance: null,// 智能合约对象
                 ContractAddr: '',
-                contractSource: ''
+                contractSource: '',
+                settleTime: '',
+                getSettleResTimer: null, //获取下注结果的定时器
             }
         },
         filters: {
@@ -200,31 +202,36 @@
             },
             // 开启监控
             settlement() {
-                this.showSourceVisible = false
-                this.$store.commit('setCryptPercent', {percent: true, text: '正在结算···'})
-                let event = this.myContractInstance.returnBetPoints()
-                event.watch((err, result) => {
-                    event.stopWatching()
-                    this.$store.commit('setCryptPercent', {percent: false, text: '正在结算···'})
-                    if (err) {
-                        this.$message.error('节点异常！')
-                        return
-                    }
-                    if (result.args) {
-                        this.dragonNum = result.args.dragonNum % 13
-                        this.tigerNum = result.args.tigerNum % 13
-                        this.$message({
-                            message: `结果为 龙：${this.dragonNum} 虎：${this.tigerNum}`,
-                            type: 'success',
-                        })
-                        this.resultList = this.myContractInstance.getResultHistory().map((item) => {
-                            return item.toString(10)
-                        })
-                        this.getTimerTime()
-                    } else {
-                        this.$message.error('节点异常！')
-                    }
-                })
+                if(this.countDown === 0){
+                    this.showSourceVisible = false
+                    this.$store.commit('setCryptPercent', {percent: true, text: '正在结算···'})
+                }
+                // let arr = this.myContractInstance.getBlockTime()
+                // console.log(arr[0].toString(10)
+                //     ,arr[1].toString(10),
+                //     arr[2].toString(10)
+                // ,arr[3].toString(10)
+                //     ,arr[4][0].toString(10)
+                //     ,arr[4][1].toString(10)
+                //     ,arr[5].toString(10))
+                let nowTime = this.myContractInstance.getBlockTime()[0].toString(10)
+                if (this.settleTime !== nowTime) { // 说明结算了
+                    //结算逻辑
+                    this.settleTime = nowTime;
+                    this.dragonNum = this.myContractInstance.getBlockTime()[4][0].toString(10)
+                    this.tigerNum = this.myContractInstance.getBlockTime()[4][1].toString(10)
+                    this.$message({
+                        message: `结果为 龙：${this.dragonNum} 虎：${this.tigerNum}`,
+                        type: 'success',
+                    })
+                    this.resultList = this.myContractInstance.getResultHistory().map((item) => {
+                        return item.toString(10)
+                    })
+                    //结算完
+                    this.$store.commit('setCryptPercent', {percent: false, text: ''})
+                    this.getTimerTime()
+                }
+
             },
             confirmBet(sign) {
                 this.bet(sign)
@@ -235,7 +242,6 @@
                     cho: this.betZh,
                     ran: parseInt(Math.random() * (10 ** 12)),
                     coin: this.$web3.toWei(this.moneyNum, 'ether'),
-                    // coin: this.moneyNum * Math.pow(10, 6),
                 }
                 if (this.$store.state.passwordOfPlay !== '') {
                     try {
@@ -334,27 +340,14 @@
                     this.$message.error(String(error))
                 })
             },
-            /**
-             * 页面定时器
-             */
-            interval() {
-                this.timer = setInterval(() => {
-                    this.countDown--
-                    if (this.countDown === 1) {
-                        clearInterval(this.timer)
-                        this.settlement()
-                    }
-                }, 1000)
-            },
+
             // 获取服务器定时器时间
             getTimerTime() {
                 axios.get('http://39.104.81.103:8088')
-                // axios.get('http://192.168.1.124:8801')
                     .then((res) => {
                         this.countDown = res.data
-                        this.interval()
                     })
-                    .catch(function (error) {
+                    .catch(() => {
                         this.$message.error('节点异常，无法获取时间')
                     })
             },
@@ -377,6 +370,10 @@
                     }
                     this.ContractAddr = sessionStorage.getItem('userContract')
                     return true
+                }
+                if (!this.$web3.isAddress(this.ContractAddr)) {
+                    this.$message.error('无效地址，请先创建合约或输入有效地址！')
+                    return false
                 }
                 return true
             },
@@ -419,8 +416,13 @@
                 if (!this.chargeLegality()) {
                     return false
                 }
-                // 实时获取下注币数
+
+                //获取当前时间
+                this.getTimerTime()
+
+                //定时器
                 this.getCoinsTimer = setInterval(() => {
+                    // 实时获取下注币数
                     this.betCoin.length = 0
                     let arr = this.myContractInstance.getTotalCoins()
                     if (arr) {
@@ -428,10 +430,17 @@
                             return this.$web3.fromWei(item.toString(10), 'ether')
                         })
                     }
+                    //倒计时
+                    if (this.countDown <= 5) {
+                        this.settlement()
+                    }
+                    if (this.countDown > 0) {
+                        this.countDown--
+                    }
+
                 }, 1000)
-                this.getTimerTime()
+                this.settleTime = this.myContractInstance.getBlockTime()[0].toString(10)
             }
-            console.log(this.myContractInstance.getBlockTime()[3])
         },
         deactivated() {
             clearInterval(this.getCoinsTimer)
@@ -466,10 +475,10 @@
             &:hover {
                 background: url("../../assets/images/longhudou/close_hover.png") no-repeat;
             }
-            &.show-source{
+            &.show-source {
                 left: auto;
                 right: 40px;
-                background:none;
+                background: none;
                 padding: 8px 14px;
                 width: auto;
                 height: auto;

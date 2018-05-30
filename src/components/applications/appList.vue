@@ -63,7 +63,7 @@
         methods: {
             goPlay(item) {
                 this.$router.replace({
-                    path: '/appDetail?' + item.contractAddr
+                    path: '/#/appDetail?' + item.contractAddr
                 })
             },
             /**
