@@ -87,35 +87,38 @@
                             </p>
                         </div>
                     </div>
-                    <div class="modal" v-show="showResult">
-                        <div class="modal-content">
-                            <div class="modal-result-text"></div>
-                            <div class="modal-result-content">
-                                <div class="modal-result-left">
-                                    <p>
-                                        <span class="modal-result-icon1"></span>
-                                    </p>
-                                    <p>
-                                        <span class="modal-result-winicon"></span>
-                                        <span class="modal-result-icon2"></span>
-                                    </p>
-                                    <p>
-                                        <span class="modal-result-winicon"></span>
-                                        <span class="modal-result-icon3"></span>
-                                    </p>
-                                    <p>
-                                        <span class="modal-result-winicon"></span>
-                                        <span class="modal-result-icon4"></span>
-                                    </p>
-                                </div>
-                                <div class="modal-result-right">
-                                    <p>+1000</p>
-                                    <p class="modal-result-cardicon poker-2"></p>
-                                    <p class="modal-result-cardicon poker-52"></p>
+                    <transition name="fof-fade">
+                        <div class="modal" v-show="showResult">
+                            <div class="modal-content">
+                                <div class="modal-result-text"
+                                     :class="{win: resultBalance>0,lost: resultBalance<0,draw: resultBalance===0}"></div>
+                                <div class="modal-result-content">
+                                    <div class="modal-result-left">
+                                        <p>
+                                            <span class="modal-result-icon1"></span>
+                                        </p>
+                                        <p>
+                                            <span class="modal-result-winicon" v-show="dragonNum>tigerNum"></span>
+                                            <span class="modal-result-icon2"></span>
+                                        </p>
+                                        <p>
+                                            <span class="modal-result-winicon" v-show="dragonNum===tigerNum"></span>
+                                            <span class="modal-result-icon3"></span>
+                                        </p>
+                                        <p>
+                                            <span class="modal-result-winicon" v-show="dragonNum<tigerNum"></span>
+                                            <span class="modal-result-icon4"></span>
+                                        </p>
+                                    </div>
+                                    <div class="modal-result-right">
+                                        <p>{{resultBalance}}</p>
+                                        <p class="modal-result-cardicon" :class="'poker-'+(dragonNum+1)"></p>
+                                        <p class="modal-result-cardicon" :class="'poker-'+(tigerNum+1)"></p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </transition>
                 </div>
             </div>
             <div class="game-record">
@@ -202,7 +205,8 @@
                     hu: 0,
                     he: 0
                 }, // 当前局下注金额对象
-                contractBalance: ''
+                contractBalance: '', // 合约余额
+                resultBalance: 0, // 本局输赢金额
             }
         },
         filters: {
@@ -282,6 +286,7 @@
                 if (this.countDown === 0) {
                     this.showSourceVisible = false
                     this.$store.commit('setCryptPercent', {percent: true, text: '正在结算···'})
+                    this.showResult = false
                 }
                 // let arr = this.myContractInstance.getBlockTime()
                 // console.log(arr[0].toString(10)
@@ -295,12 +300,9 @@
                 if (this.settleTime !== nowTime) { // 说明结算了
                     //结算逻辑
                     this.settleTime = nowTime
+                    this.resultBalance = 0
                     this.dragonNum = this.myContractInstance.getBlockTime()[4][0].toString(10) % 13
                     this.tigerNum = this.myContractInstance.getBlockTime()[4][1].toString(10) % 13
-                    this.$message({
-                        message: `结果为 龙：${this.dragonNum} 虎：${this.tigerNum}`,
-                        type: 'success',
-                    })
                     let result = ''
                     if (this.dragonNum > this.tigerNum) {
                         result = '0'
@@ -310,28 +312,41 @@
                         result = '2'
                     }
                     if (this.prevBet.length > 1) {
+                        this.showResult = true // 显示结果弹窗
                         if (this.betHistory.length === 0) {
                             return
                         }
                         for (let i = this.betHistory.length - 1; i >= this.betHistory.length - this.prevBet[0]; i--) {
                             if (this.betHistory[i].flag === result) {
-                                this.betHistory[i].win = '+ ' + this.betHistory[i].coin
+                                this.betHistory[i].win = '+ ' + (result === '2' ? this.betHistory[i].coin * 8 : this.betHistory[i].coin)
+                                this.resultBalance += (result === '2' ? Number(this.betHistory[i].coin) * 8 : Number(this.betHistory[i].coin))
                             } else {
                                 this.betHistory[i].win = '- ' + this.betHistory[i].coin
+                                this.resultBalance -= Number(this.betHistory[i].coin)
                             }
                         }
+
                         this.prevBet.length = 0
                         this.prevBet[0] = 0
                         this.betArr.long = 0
                         this.betArr.hu = 0
                         this.betArr.he = 0
-                        this.contractBalance = this.$web3.fromWei(this.myContractInstance.getCurrentBalance().toString(10), 'ether')
+                    } else {
+                        this.$message({
+                            message: `结果为 龙：${this.dragonNum} 虎：${this.tigerNum}`,
+                            type: 'success',
+                        })
                     }
                     this.resultList = this.myContractInstance.getResultHistory().map((item) => {
                         return item.toString(10)
                     })
+                    this.contractBalance = this.$web3.fromWei(this.myContractInstance.getCurrentBalance().toString(10), 'ether')
                     //结算完
                     this.$store.commit('setCryptPercent', {percent: false, text: ''})
+                    let timer = setTimeout(() => {
+                        clearTimeout(timer)
+                        this.showResult = false // 显示结果弹窗
+                    }, 3000)
                     this.getTimerTime()
                 }
             },
@@ -345,7 +360,7 @@
                     ran: parseInt(Math.random() * (10 ** 12)),
                     coin: this.$web3.toWei(this.moneyNum, 'ether'),
                 }
-                this.$store.state.passwordOfPlay = '111111111'
+                // this.$store.state.passwordOfPlay = '111111111' // -----------------------------------------------------------------------------------------------
                 if (this.$store.state.passwordOfPlay !== '') {
                     try {
                         this.$web3.personal.unlockAccount(user, this.$store.state.passwordOfPlay, 6000000)
