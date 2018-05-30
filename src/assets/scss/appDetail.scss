@@ -63,27 +63,12 @@
                     display: table;
                 }
 
-                /*.game-result {*/
-                /*width: 152px;*/
-                /*height: 62px;*/
-                /*background: url("../../assets/images/longhudou/results_bg.png") no-repeat;*/
-                /*position: absolute;*/
-                /*top: 20px;*/
-                /*left: 20px;*/
-                /*font-size: 15px;*/
-
-                /*p {*/
-                /*color: #9f7382;*/
-                /*margin-top: 11px;*/
-                /*}*/
-                /*div {*/
-                /*line-height: 30px;*/
-                /*color: #be7953;*/
-                /*span {*/
-                /*padding: 0 5px;*/
-                /*}*/
-                /*}*/
-                /*}*/
+                .pool-balance {
+                    position: absolute;
+                    top: 20px;
+                    right: 20px;
+                    color: #c2a180;
+                }
                 .game-talbe {
                     height: 420px;
                     width: 800px;
@@ -102,14 +87,28 @@
                             margin-top: 10px;
                             padding: 0 30px;
                             p {
-                                i {
+                                .table-unit {
                                     display: inline-block;
                                     width: 120px;
                                     height: 130px;
                                     background: url("../../assets/images/longhudou/bet_bg.png") no-repeat;
+                                    i {
+                                        display: inline-block;
+                                        width: 94px;
+                                        height: 19px;
+                                        background: url("../../assets/images/longhudou/total_bet_bg.png") no-repeat;
+                                        font-size: 12px;
+                                        line-height: 19px;
+                                        color: #c4f7ff;
+                                    }
                                     img {
                                         vertical-align: center;
-                                        margin-top: 35px;
+                                        margin-top: 20px;
+                                    }
+                                    div {
+                                        font-size: 14px;
+                                        color: #387787;
+                                        margin-top: 8px;
                                     }
                                 }
                                 b {
@@ -229,7 +228,7 @@
                 .modal {
                     width: 100%;
                     height: 560px;
-                    background-color: rgba(0, 0, 0, 0.5);
+                    background-color: rgba(0, 0, 0, 0.4);
                     position: absolute;
                     top: 0;
                     left:0;
