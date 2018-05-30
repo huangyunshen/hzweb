@@ -25,17 +25,22 @@
                 <div class="list-body">
                     <ul>
                         <li>
-                            <span @click="getBalance()" class="get-balance" title="点击刷新余额">{{balanceCom | amountUnit}}</span>
+                            <span @click="getBalance()" class="get-balance"
+                                  title="点击刷新余额">{{balanceCom | amountUnit}}</span>
                         </li>
                         <li>
                             <span>{{address}}</span>
                         </li>
-                        <li>
-                            <span v-show="mnemonic">{{mnemonic}}</span>
+                        <li style="padding-right: 25px">
+                            <el-input v-show="mnemonic" v-model="mnemonic" :type="passwordOrTextMnemo" readonly>
+                                <el-button slot="append" icon="el-icon-view" @click="showOrHideMnemo"></el-button>
+                            </el-input>
                             <span v-show="!mnemonic" class="text-disabled no-select-text">{{warningInfo}}</span>
                         </li>
-                        <li>
-                            <span v-show="privateKey">{{privateKey}}</span>
+                        <li style="padding-right: 25px">
+                            <el-input v-show="privateKey" v-model="privateKey" :type="passwordOrTextPriv" readonly>
+                                <el-button slot="append" icon="el-icon-view" @click="showOrHidePriv"></el-button>
+                            </el-input>
                             <span v-show="!privateKey" class="text-disabled no-select-text">{{warningInfo}}</span>
                         </li>
                     </ul>
@@ -51,7 +56,7 @@
                 <div class="qr-item">
                     <p class="qr-title">私钥</p>
                     <div class="qr-body">
-                        <vue-qr :text="privateKeyCom" :margin="8"></vue-qr>
+                        <vue-qr :text="privateKeyQr" :margin="8"></vue-qr>
                     </div>
                 </div>
             </div>
@@ -71,22 +76,41 @@
                 mnemonic: '',
                 privateKey: '',
                 warningInfo: '无相关信息',
+                passwordOrTextPriv: 'password',
+                passwordOrTextMnemo: 'password',
+                privateKeyQr:'无相关信息'
             }
         },
         computed: {
             balanceCom() {
                 return this.$web3.fromWei(this.balance, 'ether')
             },
-            privateKeyCom() {
-                if (this.privateKey) {
-                    return this.privateKey
-                } else {
-                    return this.warningInfo
-                }
-            }
+            // privateKeyCom() {
+            //     if (this.privateKey) {
+            //         return this.privateKey
+            //     } else {
+            //         return this.warningInfo
+            //     }
+            // }
         },
-        methods:{
-            getBalance(){
+        methods: {
+            showOrHideMnemo() {
+                if(this.passwordOrTextMnemo === 'password'){
+                    this.passwordOrTextMnemo = 'text'
+                } else {
+                    this.passwordOrTextMnemo = 'password'
+                }
+            },
+            showOrHidePriv() {
+                if(this.passwordOrTextPriv === 'password'){
+                    this.passwordOrTextPriv = 'text'
+                    this.privateKeyQr = this.privateKey
+                } else {
+                    this.passwordOrTextPriv = 'password'
+                    this.privateKeyQr = this.warningInfo
+                }
+            },
+            getBalance() {
                 if (this.address !== '') {
                     this.balance = this.$web3.eth.getBalance(this.address).toJSON()
                 }
@@ -161,6 +185,9 @@
 
                 .get-balance {
                     cursor: pointer;
+                }
+                .el-input {
+                    font-size: 24px;
                 }
                 .text-disabled {
                     width: 260px;

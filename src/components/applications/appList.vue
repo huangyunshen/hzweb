@@ -5,35 +5,37 @@
                     :span="12"
                     v-for="(item,index) in appList"
                     :key="index">
-                <div class="panel" @click="goPlay(item)">
-                    <el-row>
-                        <el-col :span="5">
-                            <application :item="item"
-                                         :index="index"
-                            ></application>
-                        </el-col>
-                        <el-col :span="19">
-                            <ul class="info-list">
-                                <li>
-                                    <span class="label">创建时间：</span>
-                                    <span class="data">{{ item.time }}</span>
-                                </li>
-                                <li>
-                                    <span class="label">创建人地址：</span>
-                                    <span class="data">{{ item.createAddr }}</span>
-                                </li>
-                                <li>
-                                    <span class="label">应用地址：</span>
-                                    <span class="data">{{ item.contractAddr }}</span>
-                                </li>
-                                <li class="current">
-                                    <span class="label">奖金池余额：</span>
-                                    <span class="data">{{ item.currentCoin }}</span>
-                                </li>
-                            </ul>
-                        </el-col>
-                    </el-row>
-                </div>
+                <a :href="host + item.contractAddr" target="_blank">
+                    <div class="panel">
+                        <el-row>
+                            <el-col :span="5">
+                                <application :item="item"
+                                             :index="index"
+                                ></application>
+                            </el-col>
+                            <el-col :span="19">
+                                <ul class="info-list">
+                                    <li>
+                                        <span class="label">创建时间：</span>
+                                        <span class="data">{{ item.time }}</span>
+                                    </li>
+                                    <li>
+                                        <span class="label">创建人地址：</span>
+                                        <span class="data">{{ item.createAddr }}</span>
+                                    </li>
+                                    <li>
+                                        <span class="label">应用地址：</span>
+                                        <span class="data">{{ item.contractAddr }}</span>
+                                    </li>
+                                    <li class="current">
+                                        <span class="label">奖金池余额：</span>
+                                        <span class="data">{{ item.currentCoin }}</span>
+                                    </li>
+                                </ul>
+                            </el-col>
+                        </el-row>
+                    </div>
+                </a>
             </el-col>
         </el-row>
         <div class="pagination">
@@ -57,15 +59,15 @@
         data() {
             return {
                 appList: [],
-                blankHref:''
+                blankHref: '',
+                host: ''
             }
         },
         methods: {
-            goPlay(item) {
-                let href = location.host.toString() + '/appDetail?' + item.contractAddr.toString()
-                window.open(href)
-                location.reload();
-            },
+            // goPlay(e) {
+            //     // let href = location.host.toString() + '/appDetail?' + item.contractAddr.toString()
+            //     // open(href)
+            // },
             /**
              * 获取所有应用
              */
@@ -87,6 +89,7 @@
         },
         mounted() {
             this.sendMsgToServer()
+            this.host = 'http://' + location.host + '/appDetail?'
         }
     }
 </script>
@@ -107,6 +110,11 @@
                     background-color: rgba(50, 44, 92, 0.26);
                     border: solid 1px rgba(208, 202, 253, 0.15);
                     margin-bottom: 20px;
+                    &:hover {
+                        background: rgba(50, 44, 92, 1);
+                        border: solid 1px rgba(208, 202, 253, 0.5);
+                        box-shadow: 0 0 5px #817BAD;
+                    }
                     .info-list {
                         padding: 10px 0;
                         font-size: 14px;
@@ -130,12 +138,12 @@
                 }
             }
         }
-        .pagination{
+        .pagination {
             margin: 0 15px;
             margin-top: 30px;
             padding-top: 30px;
             border-top: 1px solid #28234D;
-            .el-pagination{
+            .el-pagination {
                 text-align: center;
             }
         }

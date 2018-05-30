@@ -76,7 +76,7 @@
 <style scoped lang="scss" type="text/scss">
     $main_width: 1000px;
     $main_height: 620px;
-    $form_width: 600px; //表单宽度
+    $form_width: 610px; //表单宽度
     $head_height: 100px; //头部高度
 
     .firstScreen {
