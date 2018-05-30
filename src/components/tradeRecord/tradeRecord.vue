@@ -4,50 +4,52 @@
         <!--<el-button slot="append" icon="el-icon-search" @click="getTransaction(searchParams)"></el-button>-->
         <!--</el-input>-->
         <div v-if="showSwitch==='table'" class="table-list">
-            <el-table class="trade-record-table"
-                      :data="transactionsList"
-                      max-height="816px"
-                      style="color:#8490c5;font-size: 16px;background:#221d44;text-align:center;"
-                      :header-cell-style="headerCellStyle"
-                      :row-style="rowStyle"
-                      :cell-style="{'border-bottom':'none'}"
-            >
-                <el-table-column
-                        prop="hash"
-                        label="交易hash"
+            <div class="table-content">
+                <el-table class="trade-record-table"
+                          :data="transactionsList"
+                          height="100%"
+                          style="color:#8490c5;font-size: 16px;background:#221d44;text-align:center;"
+                          :header-cell-style="headerCellStyle"
+                          :row-style="rowStyle"
+                          :cell-style="{'border-bottom':'none'}"
                 >
-                    <template slot-scope="scope">
-                        <a style="color:#8490c5;"
-                           :title="scope.row.hash"
-                           :href="scope.row.hash"
-                           @click.prevent="getTransaction(scope.row.hash)">{{
-                            scope.row.hash }}</a>
-                    </template>
-                </el-table-column>
+                    <el-table-column
+                            prop="hash"
+                            label="交易hash"
+                    >
+                        <template slot-scope="scope">
+                            <a style="color:#8490c5;"
+                               :title="scope.row.hash"
+                               :href="scope.row.hash"
+                               @click.prevent="getTransaction(scope.row.hash)">{{
+                                scope.row.hash }}</a>
+                        </template>
+                    </el-table-column>
 
-                <el-table-column
-                        prop="blockNumber"
-                        label="区块值">
-                </el-table-column>
-                <el-table-column
-                        prop="time"
-                        label="时间">
-                </el-table-column>
-                <el-table-column
-                        prop="from"
-                        label="转出方"
-                        min-width="300px">
-                </el-table-column>
-                <el-table-column
-                        prop="to"
-                        label="转入方"
-                        min-width="300px">
-                </el-table-column>
-                <el-table-column
-                        prop="value"
-                        label="金额">
-                </el-table-column>
-            </el-table>
+                    <el-table-column
+                            prop="blockNumber"
+                            label="区块值">
+                    </el-table-column>
+                    <el-table-column
+                            prop="time"
+                            label="时间">
+                    </el-table-column>
+                    <el-table-column
+                            prop="from"
+                            label="转出方"
+                            min-width="300px">
+                    </el-table-column>
+                    <el-table-column
+                            prop="to"
+                            label="转入方"
+                            min-width="300px">
+                    </el-table-column>
+                    <el-table-column
+                            prop="value"
+                            label="金额">
+                    </el-table-column>
+                </el-table>
+            </div>
             <el-pagination
                     background
                     layout="prev, pager, next"
@@ -151,13 +153,20 @@
         }
         .table-list {
             height: 100%;
-            position: relative;
+            text-align: center;
+            .table-content {
+                height: calc(100% - 70px);
+                position: relative;
+                .el-pagination {
+                    text-align: center;
+                    position: absolute;
+                    bottom: 40px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                }
+            }
             .el-pagination {
-                text-align: center;
-                position: absolute;
-                bottom: 40px;
-                left: 50%;
-                transform: translateX(-50%);
+                margin-top: 20px;
             }
         }
         .tx-list {
