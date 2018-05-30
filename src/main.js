@@ -15,6 +15,12 @@ Vue.use(global)
 
 Vue.config.productionTip = false
 
+//单位过滤器
+Vue.filter('amountUnit',function (value) {
+    if(!value) return '0 FOF'
+    return value.toString() + ' FOF'
+})
+
 new Vue({
     el: '#app',
     router,

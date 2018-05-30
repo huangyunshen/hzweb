@@ -25,14 +25,13 @@
         <div class="wallet-footer">
             <div class="footer-left">
                 <img class="logo-small" src="../../assets/images/firstScreen/logo_small.png">
-                <span>免费的开源客户端界面，用于生成以太坊钱包等等。轻松安全地与以太坊区块链互动。解锁钱包之前请仔细检查网址 myetherwallet.com</span>
+                <span>免费的开源客户端界面，用于生成FOF钱包等等。轻松安全地与FOF区块链互动。解锁钱包之前请仔细检查网址 www.fof.com</span>
             </div>
             <div class="footer-right">
-                <span>MyEtherWallet.com</span>
-                <span>MyEtherWallet团队</span>
-                <span>MyEtherWallet Chrome扩展程序</span>
-                <span>电子邮件支持：support@myetherwallet.com</span>
-                <span>©2018 MyEtherWallet，Inc</span>
+                <span>www.xxx.com</span>
+                <span>FOF团队</span>
+                <span>电子邮件支持：support@fof.com</span>
+                <span>©2018 FOF，Inc</span>
             </div>
         </div>
     </div>

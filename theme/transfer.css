@@ -1332,18 +1332,24 @@
     border-radius: 2px; }
     .el-button--medium.is-round {
       padding: 10px 20px; }
+    .el-button--medium.is-circle {
+      padding: 10px; }
   .el-button--small {
     padding: 9px 15px;
     font-size: 12px;
     border-radius: 1px; }
     .el-button--small.is-round {
       padding: 9px 15px; }
+    .el-button--small.is-circle {
+      padding: 9px; }
   .el-button--mini {
     padding: 7px 15px;
     font-size: 12px;
     border-radius: 1px; }
     .el-button--mini.is-round {
       padding: 7px 15px; }
+    .el-button--mini.is-circle {
+      padding: 7px; }
   .el-button--text {
     border-color: transparent;
     color: #5837FF;
@@ -1921,10 +1927,10 @@
       -webkit-transform: rotate(45deg) scaleY(0);
       transform: rotate(45deg) scaleY(0);
       width: 3px;
-      -webkit-transition: -webkit-transform 0.15s cubic-bezier(0.71, -0.46, 0.88, 0.6) 0.05s;
-      transition: -webkit-transform 0.15s cubic-bezier(0.71, -0.46, 0.88, 0.6) 0.05s;
-      transition: transform 0.15s cubic-bezier(0.71, -0.46, 0.88, 0.6) 0.05s;
-      transition: transform 0.15s cubic-bezier(0.71, -0.46, 0.88, 0.6) 0.05s, -webkit-transform 0.15s cubic-bezier(0.71, -0.46, 0.88, 0.6) 0.05s;
+      -webkit-transition: -webkit-transform .15s ease-in .05s;
+      transition: -webkit-transform .15s ease-in .05s;
+      transition: transform .15s ease-in .05s;
+      transition: transform .15s ease-in .05s, -webkit-transform .15s ease-in .05s;
       -webkit-transform-origin: center;
       transform-origin: center; }
   .el-checkbox__original {

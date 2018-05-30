@@ -5,12 +5,11 @@
                     :span="12"
                     v-for="(item,index) in appList"
                     :key="index">
-                <div class="panel">
+                <div class="panel" @click="goPlay(item)">
                     <el-row>
                         <el-col :span="5">
                             <application :item="item"
                                          :index="index"
-                                         @click.native="goPlay(item)"
                             ></application>
                         </el-col>
                         <el-col :span="19">
@@ -58,13 +57,14 @@
         data() {
             return {
                 appList: [],
+                blankHref:''
             }
         },
         methods: {
             goPlay(item) {
-                this.$router.replace({
-                    path: '/appDetail?' + item.contractAddr
-                })
+                let href = location.host.toString() + '/appDetail?' + item.contractAddr.toString()
+                window.open(href)
+                location.reload();
             },
             /**
              * 获取所有应用

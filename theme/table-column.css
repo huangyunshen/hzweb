@@ -610,10 +610,10 @@
       -webkit-transform: rotate(45deg) scaleY(0);
       transform: rotate(45deg) scaleY(0);
       width: 3px;
-      -webkit-transition: -webkit-transform 0.15s cubic-bezier(0.71, -0.46, 0.88, 0.6) 0.05s;
-      transition: -webkit-transform 0.15s cubic-bezier(0.71, -0.46, 0.88, 0.6) 0.05s;
-      transition: transform 0.15s cubic-bezier(0.71, -0.46, 0.88, 0.6) 0.05s;
-      transition: transform 0.15s cubic-bezier(0.71, -0.46, 0.88, 0.6) 0.05s, -webkit-transform 0.15s cubic-bezier(0.71, -0.46, 0.88, 0.6) 0.05s;
+      -webkit-transition: -webkit-transform .15s ease-in .05s;
+      transition: -webkit-transform .15s ease-in .05s;
+      transition: transform .15s ease-in .05s;
+      transition: transform .15s ease-in .05s, -webkit-transform .15s ease-in .05s;
       -webkit-transform-origin: center;
       transform-origin: center; }
   .el-checkbox__original {
@@ -1210,10 +1210,13 @@
       .el-table-filter__bottom button.is-disabled {
         color: #726bab;
         cursor: not-allowed; }
+  .el-table-filter__wrap {
+    max-height: 280px; }
   .el-table-filter__checkbox-group {
     padding: 10px; }
     .el-table-filter__checkbox-group label.el-checkbox {
       display: block;
+      margin-right: 5px;
       margin-bottom: 8px;
       margin-left: 5px; }
     .el-table-filter__checkbox-group .el-checkbox:last-child {

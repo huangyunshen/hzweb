@@ -847,18 +847,24 @@
     border-radius: 2px; }
     .el-button--medium.is-round {
       padding: 10px 20px; }
+    .el-button--medium.is-circle {
+      padding: 10px; }
   .el-button--small {
     padding: 9px 15px;
     font-size: 12px;
     border-radius: 1px; }
     .el-button--small.is-round {
       padding: 9px 15px; }
+    .el-button--small.is-circle {
+      padding: 9px; }
   .el-button--mini {
     padding: 7px 15px;
     font-size: 12px;
     border-radius: 1px; }
     .el-button--mini.is-round {
       padding: 7px 15px; }
+    .el-button--mini.is-circle {
+      padding: 7px; }
   .el-button--text {
     border-color: transparent;
     color: #5837FF;

@@ -51,16 +51,19 @@
         <el-dialog class="create-wallet-dialog"
                    title="创建成功"
                    :visible.sync="createDialog"
+                   :show-close="false"
+                   :close-on-click-modal="false"
+                   :close-on-press-escape="false"
                    width="800px"
                    center>
-            <h2>保存你的Keystore文件和助记词！不要忘记你的密码！</h2>
+            <h2>保存你的Keystore文件！不要忘记你的密码！</h2>
 
             <div class="wallet-dialog-body">
                 <a class="el-button" :href="walletInfo.blobEnc" :download="walletInfo.fileName"
                    @click="walletInfo.fileDownloaded=false">下载Keystore文件(UTC/JSON)</a>
 
-                <el-button type="danger" @click="unlockNewAccount" :disabled="walletInfo.fileDownloaded">
-                    我已备份好账户信息，点击解锁
+                <el-button type="danger" @click="unlockNewAccount" :disabled="walletInfo.fileDownloaded" style="width: 280px;">
+                    点我登陆
                 </el-button>
             </div>
             <div class="wallet-dialog-footer">
@@ -145,7 +148,7 @@
                             "params": [this.walletInfo.fileName, json],
                             "id": 1
                         }).then((res) => {
-                            console.log(res)
+
                         }).catch((error) => {
                             console.log(error)
                         })

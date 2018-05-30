@@ -17,7 +17,7 @@
             <transition name="fof-fade">
                 <div class="step-1" v-show="steps==='1'">
                     <div class="step-1-head">
-                        <div class="tranc-balance"><i></i>账户余额 : {{balance}}</div>
+                        <div class="tranc-balance"><i></i>账户余额 : {{balance | amountUnit}}</div>
                         <div class="tranc-address"><i></i>账户地址 : {{address}}</div>
                     </div>
                     <div class="step-1-body">
@@ -30,7 +30,9 @@
                             <el-form-item class="mt-40" label="转账数额">
                                 <el-input
                                         placeholder="数额"
-                                        v-model="form.value"></el-input>
+                                        v-model="form.value">
+                                    <template slot="append">FOF</template>
+                                </el-input>
                             </el-form-item>
                             <el-form-item class="mt-40" label="Gas Limit">
                                 <el-input
@@ -146,7 +148,7 @@
                     </ul>
                     <div class="tc">
                         你将发送
-                        <span>{{ form.value }} ETH</span>
+                        <span>{{ form.value | amountUnit}}</span>
                         到地址
                         <span>{{ form.to }}</span>
                         <span>，请确认</span>
@@ -194,7 +196,7 @@
                     value: 1,
                     gas: 21000,
                 },
-                unit: 'ETH',
+                unit: 'FOF',
                 address: '',
                 privateKey: '',
                 balance: 0,
@@ -302,7 +304,7 @@
                 this.transactionMsg = {
                     from: this.address,
                     to: this.form.to,
-                    value: this.form.value + ' ETH',
+                    value: this.form.value + ' FOF',
                     balance: this.balance,
                     coin: this.unit,
                     network: '',

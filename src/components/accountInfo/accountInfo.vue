@@ -25,7 +25,7 @@
                 <div class="list-body">
                     <ul>
                         <li>
-                            <span @click="getBalance()" class="get-balance" title="点击刷新余额">{{balanceCom}}</span>
+                            <span @click="getBalance()" class="get-balance" title="点击刷新余额">{{balanceCom | amountUnit}}</span>
                         </li>
                         <li>
                             <span>{{address}}</span>
