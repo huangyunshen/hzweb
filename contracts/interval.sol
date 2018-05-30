@@ -1,27 +1,41 @@
 pragma solidity ^0.4.0;
 
 contract Interval {
-    address [] addr;
+    address [] intervalAddr;
+    uint nNumTest = 0;
+    uint nNumTestTotal = 0;
+    bool flagSign = false;
 
-    function getAddress(address _addr) {
-        addr.push(_addr);
+    function getAddress(address _getAddr) {
+        intervalAddr.push(_getAddr);
     }
 
     // 后台定时器触发这个函数就可以了
     function trigger(){
-        for (uint i = 0; i < addr.length; i++) {
-            callFeed(addr[i]);
+        flagSign = false;
+        nNumTestTotal++;
+        for (uint i = 0; i < intervalAddr.length; i++) {
+            nNumTest++;
+            callFeed(intervalAddr[i]);
         }
     }
 
-    function getAddrLen() constant returns (uint){
-        return addr.length;
+    function getAddrLen() constant returns (address []){
+        return (intervalAddr);
+    }
+
+    function getTestNum() constant returns (uint, uint){
+        return (nNumTest, nNumTestTotal);
+    }
+
+    function getFlag() constant returns (bool){
+        return flagSign;
     }
 
     function chargeExist(address _addr) returns (bool){
         bool flag = false;
-        for (uint i = 0; i < addr.length; i++) {
-            if (addr[i] == _addr) {
+        for (uint i = 0; i < intervalAddr.length; i++) {
+            if (intervalAddr[i] == _addr) {
                 flag = true;
             }
         }
@@ -29,26 +43,30 @@ contract Interval {
     }
 
     // 传入合约地址
-    function callFeed(address addr) {
-        PlayGame(addr).getResult();
+    function callFeed(address contractAddr) {
+        flagSign = true;
+        PlayGame(contractAddr).getResult();
     }
 }
 
 contract PlayGame {
+    int uNumTest = 0; // test
     uint xor = 0; // 保存异或的值
     uint [] randomNum; // 保存传入的随机数
     address [] dragon;  // 保存选龙的地址
-    mapping(address => uint) dragonMap; // 选龙用户的下注金额
+    mapping(address => uint) dragonMap; // 选龙用户的下注金额 需要清空
     address [] tiger;   // 保存选虎的地址
     mapping(address => uint) tigerMap; // 选虎用户的下注金额
     address [] draw;    // 保存选合的地址
     mapping(address => uint) drawMap; // 选合用户的下注金额
     uint time = 0; // 保存上一次结算时出块时间戳
-    uint totalCoins = 0; // 下注总币
+    uint totalCoins = 0; // 当前局下注总币
+    uint historyTotalCoins = 0; // 历史下注总币
     uint dragonCoins = 0; // 下注龙总币
     uint tigerCoins = 0; // 下注虎总币
     uint drawCoins = 0; // 下注合总币
     uint [] resultHistory; // 保存历史结果
+    uint [] currentResult = [0, 0]; // 保存当前局结算后的龙虎值
     // 在全局获取的msg.sender为创建者的地址
     // 在函数中获取的msg.sender为当前调用者的地址
     // 函数中返回的this指当前合约地址
@@ -57,46 +75,75 @@ contract PlayGame {
     // 返回是否下注成功
     event returnBetResult(bool _bool);
     // 返回最终结果
-    event returnBetPoints(uint dragonNum, uint tigerNum);
 
     function deposit() payable {
 
     }
 
-    function PlayGame(uint price1,uint price2,uint price3){
-        price = [price1,price2,price3];
+    function PlayGame(uint price1, uint price2, uint price3, uint _type){
+        price = [price1, price2, price3, _type];
     }
-    function getPrice() returns (uint []){
+    // 获取自己设置的下注金额列表
+    function getPrice() constant returns (uint []){
         return price;
     }
 
-    function getBlockTime() constant returns (uint, uint,uint){
-        return (time, block.timestamp, xor);
+    function getBlockTime() constant returns (uint, uint, uint, address, uint [],int){
+        return (time, block.timestamp, xor, creator, currentResult,uNumTest);
+    }
+    // 获取最后五局的结果
+    function getResultHistory() constant returns (uint []){
+        return resultHistory;
     }
 
     // 下注传入信息
     // 如果下注金额大于当前奖池金额，返回false，下注失败
     function sendBetInfo(address addr, uint cho, uint ran, uint coin) payable {
         totalCoins += coin;
+        historyTotalCoins += coin;
         deposit();
         if (getCurrentBalance() / 10 < totalCoins) {
             returnBetResult(false);
         } else {
             if (cho == 0) {
-                dragon.push(addr);
-                dragonMap[addr] = coin;
+                bool flag0 = false;
+                for (uint i = 0; i < dragon.length; i++) {
+                    if (dragon[i] == addr) {
+                        flag0 = true;
+                        break;
+                    }
+                }
+                if (!flag0) {
+                    dragon.push(addr);
+                }
+                dragonMap[addr] = dragonMap[addr] == 0 ? (dragonMap[addr] + coin) : coin;
                 dragonCoins += coin;
-                resultHistory.push(0);
             } else if (cho == 1) {
-                tiger.push(addr);
-                tigerMap[addr] = coin;
+                bool flag1 = false;
+                for (uint j = 0; j < tiger.length; j++) {
+                    if (tiger[j] == addr) {
+                        flag1 = true;
+                        break;
+                    }
+                }
+                if (!flag1) {
+                    tiger.push(addr);
+                }
+                tigerMap[addr] = tigerMap[addr] == 0 ? (tigerMap[addr] + coin) : coin;
                 tigerCoins += coin;
-                resultHistory.push(1);
             } else if (cho == 2) {
-                draw.push(addr);
-                drawMap[addr] = coin;
+                bool flag2 = false;
+                for (uint k = 0; k < draw.length; k++) {
+                    if (draw[i] == addr) {
+                        flag2 = true;
+                        break;
+                    }
+                }
+                if (!flag2) {
+                    draw.push(addr);
+                }
+                drawMap[addr] = drawMap[addr] == 0 ? (drawMap[addr] + coin) : coin;
                 drawCoins += coin;
-                resultHistory.push(2);
             }
             randomNum.push(ran);
             returnBetResult(true);
@@ -128,36 +175,75 @@ contract PlayGame {
         uint num2 = getXorPerson(xor, 8, 4) % 52;
         uint dNum = num1 % 13;
         uint tNum = num2 % 13;
+        uint nSize = 50;
         if (dNum > tNum) {
             for (uint i = 0; i < dragon.length; i++) {
                 transferCoin(dragon[i], dragonMap[dragon[i]] * 2);
+            }
+            if (resultHistory.length < nSize) {
+                resultHistory.push(0);
+            } else {
+                for (uint o = 0; o < resultHistory.length - 1; o++) {
+                    resultHistory[o] = resultHistory[o + 1];
+                }
+                resultHistory[resultHistory.length - 1] = 0;
             }
         } else if (dNum < tNum) {
             for (uint j = 0; j < tiger.length; j++) {
                 transferCoin(tiger[j], tigerMap[tiger[j]] * 2);
             }
+            if (resultHistory.length < nSize) {
+                resultHistory.push(1);
+            } else {
+                for (uint p = 0; p < resultHistory.length - 1; p++) {
+                    resultHistory[p] = resultHistory[p + 1];
+                }
+                resultHistory[resultHistory.length - 1] = 1;
+            }
         } else {
             for (uint k = 0; k < draw.length; k++) {
                 transferCoin(draw[k], drawMap[draw[k]] * 8);
             }
+            if (resultHistory.length < nSize) {
+                resultHistory.push(2);
+            } else {
+                for (uint q = 0; q < resultHistory.length - 1; q++) {
+                    resultHistory[q] = resultHistory[q + 1];
+                }
+                resultHistory[resultHistory.length - 1] = 2;
+            }
         }
-        returnBetPoints(num1, num2);
+        currentResult[0] = num1;
+        currentResult[1] = num2;
     }
 
     // 转账函数
     function transferCoin(address _to, uint _coins) {
         _to.transfer(_coins);
     }
-
+    // 提现函数,只有创建者账户可以提现
+    function drawings(uint _coin) payable {
+        if (msg.sender == creator) {
+            uint _balance = getCurrentBalance();
+            if ((_balance - _coin) / 10 > totalCoins) {
+                transferCoin(creator, _coin);
+            }
+        }
+    }
     // 结算函数
     function getResult() {
-        //异或后得到了12位的随机数
-        xorFun();
-        processXor();
-        reset();
+        if(getTimestamp() - time > 10)
+        {
+            uNumTest++;
+            //异或后得到了12位的随机数
+            xorFun();
+            processXor();
+            reset();
+        }
+
     }
     // 重置函数
-    function reset (){
+    function reset(){
         xor = 0;
         time = getTimestamp();
         randomNum.length = 0;
@@ -176,14 +262,14 @@ contract PlayGame {
 
     // 返回下注金额
     function getTotalCoins() constant returns (uint, uint, uint, uint) {
-        return (totalCoins, dragonCoins, tigerCoins, drawCoins);
+        return (historyTotalCoins, dragonCoins, tigerCoins, drawCoins);
     }
 
     function getMsgValue() constant returns (uint) {
         return msg.value;
     }
 
-    function registerInterval(address contractAddr){
-        Interval(contractAddr).getAddress(this);
+    function registerInterval(address rContractAddr){
+        Interval(rContractAddr).getAddress(this);
     }
 }

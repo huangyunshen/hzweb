@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const PRODUCT = 'http://39.104.81.103:8080'
+const PRODUCT = 'http://39.104.81.103'
 const TEST = 'http://120.79.88.105'
 const LOCAL = '/url'
 

@@ -12,10 +12,10 @@ module.exports = {
         assetsPublicPath: '/',
         proxyTable: {
             '/url': {  //使用"/url"来代替"http://120.79.88.105"
-                target: 'http://120.79.88.105', //源地址
+                target: 'http://39.104.81.103', //源地址
                 changeOrigin: true, //改变源
                 pathRewrite: {
-                    '^/url': 'http://120.79.88.105' //路径重写
+                    '^/url': 'http://39.104.81.103' //路径重写
                 }
             }
         },

@@ -119,13 +119,6 @@
                     return 'background:#221d44;'
                 }
             },
-            // getTransactionData(item){
-            //     return new Promise(function (resolve, reject) {
-            //         let hashObj=this.$web3.eth.getTransaction(item.txHash)
-            //         hashObj.value = this.$web3.fromWei(hashObj.value.toString(10))
-            //
-            //     })
-            // }
         },
         mounted() {
             let users = this.$funs.getLocalAddress()
@@ -134,13 +127,9 @@
                 "addr": userAddr
             }).then((res) => {
                 if (res.status === 200) {
-                    let data = res.data
-                    if(data.length){
-                        // for(let i=0;i<data.length;i++){
-                        //
-                        // }
-                        this.transactionsList = res.data.map((item)=>{
-                            let hashObj=this.$web3.eth.getTransaction(item.txHash)
+                    if (res.data.length) {
+                        this.transactionsList = res.data.map((item) => {
+                            let hashObj = this.$web3.eth.getTransaction(item.txHash)
                             hashObj.value = this.$web3.fromWei(hashObj.value.toString(10))
                             return hashObj
                         })

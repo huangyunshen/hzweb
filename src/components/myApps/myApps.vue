@@ -276,7 +276,7 @@
                     return
                 }
                 let host = window.location.host
-                this.contractAddressUrl = `http://${host}/appDetail?${ this.form.contractAddr }`
+                this.contractAddressUrl = `http://${host}/#/appDetail?${ this.form.contractAddr }`
                 let a = document.getElementById('linkToApp')
                 let timer = setTimeout(() => {
                     clearTimeout(timer)

@@ -139,7 +139,7 @@
     import agreement from './agreement'
     import application from './apps'
     // 先部署定时器合约 得到其地址
-    import intervalContract from '../../../contracts/interval.json'
+    import intervalContract from '../../../contracts/Interval.json'
     import playGameContract from '../../../contracts/playGame.json'
     import solSource from '../../../contracts/playGame.sol'
 
@@ -348,7 +348,7 @@
                 )
                 // 传入设置的下注金额和类型(1 代表是龙虎斗)
                 MyContract.new(Number(this.rechargeData.price1), Number(this.rechargeData.price2), Number(this.rechargeData.price3), Number(this.selected), {
-                    // MyContract.new({
+                 // MyContract.new({
                     data: playGameContract.bytecode,
                     from: user,
                     gasPrice: 41000000000,
@@ -393,7 +393,7 @@
                             localStorage.setItem('contractAddress', myContract.address)
                             // 每次部署完合约，需要向定时器合约中注册当前合约地址
                             let myIntContractInstance = MyContract.at(myContract.address)
-                            let hash = myIntContractInstance.registerInterval('0x52da6cae67103a0e5522d499d9676f8afacb9437', {
+                            let hash = myIntContractInstance.registerInterval('0xa25a2ee5eafdafc305adeecae49a3af26114f714', {
                                 from: user,
                                 gasPrice: 41000000000,
                                 gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
@@ -415,7 +415,7 @@
                             this.recharge() // 充值
                             //部署成功！你的合约地址为
                             let host = window.location.host
-                            this.contractAddressUrl = `http://${host}/appDetail?${myContract.address}`
+                            this.contractAddressUrl = `http://${host}/#/appDetail?${myContract.address}`
                         }
                     }
                 })

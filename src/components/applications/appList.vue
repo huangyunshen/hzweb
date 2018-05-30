@@ -64,10 +64,6 @@
             }
         },
         methods: {
-            // goPlay(e) {
-            //     // let href = location.host.toString() + '/appDetail?' + item.contractAddr.toString()
-            //     // open(href)
-            // },
             /**
              * 获取所有应用
              */
@@ -89,7 +85,7 @@
         },
         mounted() {
             this.sendMsgToServer()
-            this.host = 'http://' + location.host + '/appDetail?'
+            this.host = 'http://' + location.host + '/#/appDetail?'
         }
     }
 </script>
