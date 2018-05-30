@@ -1,0 +1,550 @@
+.app-detail {
+    width: 100%;
+    min-width: 1360px;
+    height: 100%;
+    background: url("../../assets/images/longhudou/lhd_bg.jpg") no-repeat;
+    background-size: cover;
+    position: relative;
+    z-index: 2;
+
+    .exit {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        position: absolute;
+        top: 40px;
+        left: 40px;
+        background: url("../../assets/images/longhudou/close.png") no-repeat;
+        cursor: pointer;
+        &:hover {
+            background: url("../../assets/images/longhudou/close_hover.png") no-repeat;
+        }
+        &.show-source {
+            left: auto;
+            right: 40px;
+            background: none;
+            padding: 8px 14px;
+            width: auto;
+            height: auto;
+            color: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            &:hover {
+                color: rgba(216, 240, 246, 0.8);
+                border-color: rgba(216, 240, 246, 0.8);
+            }
+        }
+    }
+    .game-content {
+        width: 1360px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        -moz-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        -o-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        text-align: center;
+        .game-body-background {
+            float: left;
+            width: 996px;
+            height: 560px;
+            padding: 10px;
+            box-shadow: 0px 14px 40px 0px rgba(11, 6, 27, 0.5);
+            border-radius: 5px;
+            border: solid 2px rgba(198, 157, 226, 0.25);
+
+            .game-body {
+                height: 100%;
+                position: relative;
+                background: url("../../assets/images/longhudou/table_bg.jpg") no-repeat;
+                &:before {
+                    content: '';
+                    display: table;
+                }
+
+                /*.game-result {*/
+                /*width: 152px;*/
+                /*height: 62px;*/
+                /*background: url("../../assets/images/longhudou/results_bg.png") no-repeat;*/
+                /*position: absolute;*/
+                /*top: 20px;*/
+                /*left: 20px;*/
+                /*font-size: 15px;*/
+
+                /*p {*/
+                /*color: #9f7382;*/
+                /*margin-top: 11px;*/
+                /*}*/
+                /*div {*/
+                /*line-height: 30px;*/
+                /*color: #be7953;*/
+                /*span {*/
+                /*padding: 0 5px;*/
+                /*}*/
+                /*}*/
+                /*}*/
+                .game-talbe {
+                    height: 420px;
+                    width: 800px;
+                    background: url("../../assets/images/longhudou/table.png") no-repeat;
+                    margin: 35px auto 0;
+
+                    .time-remaining {
+                        padding-top: 84px;
+                        font-size: 16px;
+                        color: rgba(255, 144, 89, 0.73);
+                    }
+
+                    .selectable {
+                        div {
+                            display: inline-block;
+                            margin-top: 10px;
+                            padding: 0 30px;
+                            p {
+                                i {
+                                    display: inline-block;
+                                    width: 120px;
+                                    height: 130px;
+                                    background: url("../../assets/images/longhudou/bet_bg.png") no-repeat;
+                                    img {
+                                        vertical-align: center;
+                                        margin-top: 35px;
+                                    }
+                                }
+                                b {
+                                    display: inline-block;
+                                    background: url("../../assets/images/longhudou/bet_number_bg.png") no-repeat;
+                                    margin-top: 5px;
+                                    width: 122px;
+                                    height: 26px;
+                                    line-height: 26px;
+                                    font-size: 14px;
+                                    color: #cdc075;
+                                }
+                                span {
+                                    display: inline-block;
+                                    width: 99px;
+                                    height: 44px;
+                                    line-height: 36px;
+                                    margin-top: 10px;
+                                    background: url("../../assets/images/longhudou/btn_bet.png") no-repeat;
+                                    /*font-size: 18px;
+                                    color: #fff5e1;
+                                    text-shadow: 2px 0 2px #704C2F, 0 2px 2px #704C2F, -2px 0 2px #704C2F, 0 -2px 2px #704C2F;
+                                    -webkit-text-shadow: 2px 0 2px #704C2F, 0 2px 2px #704C2F, -2px 0 2px #704C2F, 0 -2px 2px #704C2F;
+                                    -moz-text-shadow: 2px 0 2px #704C2F, 0 2px 2px #704C2F, -2px 0 2px #704C2F, 0 -2px 2px #704C2F;*/
+                                    &:hover {
+                                        background: url("../../assets/images/longhudou/btn_bet_hover.png") no-repeat;
+                                    }
+                                    &.selected {
+                                        background: url("../../assets/images/longhudou/btn_bet_active.png") no-repeat;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                .bet-amount {
+                    width: 650px;
+                    margin: -40px auto 0;
+                    height: 150px;
+                    .choose-item {
+                        float: left;
+                        width: 150px;
+                        height: 100%;
+                        position: relative;
+                        background: url("../../assets/images/longhudou/chips.png") no-repeat;
+                        i {
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 150px;
+                            height: 150px;
+                            background: url("../../assets/images/longhudou/chips_xz.png") no-repeat;
+                        }
+                        div {
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            -webkit-transform: translate(-50%, -50%);
+                            -moz-transform: translate(-50%, -50%);
+                            -ms-transform: translate(-50%, -50%);
+                            -o-transform: translate(-50%, -50%);
+                            transform: translate(-50%, -50%);
+                        }
+                    }
+                    .input-item {
+                        float: left;
+                        width: 177px;
+                        height: 100%;
+                        padding-top: 30px;
+                        margin-left: 20px;
+                        font-size: 17px;
+                        color: #be7953;
+                        line-height: 30px;
+                        input {
+                            height: 48px;
+                            background: url("../../assets/images/longhudou/input.png") no-repeat;
+                            color: #be7953;
+                        }
+                    }
+                    .amount {
+                        display: inline-block;
+                        width: 24px;
+                        height: 28px;
+                    }
+                    .amount0 {
+                        background: url("../../assets/images/longhudou/number.png") -5px -5px no-repeat;
+                    }
+                    .amount1 {
+                        background: url("../../assets/images/longhudou/number.png") -39px -5px no-repeat;
+                    }
+                    .amount2 {
+                        background: url("../../assets/images/longhudou/number.png") -75px -5px no-repeat;
+                    }
+                    .amount3 {
+                        background: url("../../assets/images/longhudou/number.png") -111px -5px no-repeat;
+                    }
+                    .amount4 {
+                        background: url("../../assets/images/longhudou/number.png") -145px -5px no-repeat;
+                    }
+                    .amount5 {
+                        background: url("../../assets/images/longhudou/number.png") -181px -5px no-repeat;
+                    }
+                    .amount6 {
+                        background: url("../../assets/images/longhudou/number.png") -215px -5px no-repeat;
+                    }
+                    .amount7 {
+                        background: url("../../assets/images/longhudou/number.png") -251px -5px no-repeat;
+                    }
+                    .amount8 {
+                        background: url("../../assets/images/longhudou/number.png") -285px -5px no-repeat;
+                    }
+                    .amount9 {
+                        background: url("../../assets/images/longhudou/number.png") -321px -5px no-repeat;
+                    }
+                }
+
+                .modal {
+                    width: 100%;
+                    height: 560px;
+                    background-color: rgba(0, 0, 0, 0.5);
+                    position: absolute;
+                    top: 0;
+                    left:0;
+                    z-index: 999;
+                    .modal-content {
+                        width: 708px;
+                        height:266px;
+                        position: absolute;
+                        top: 95px;
+                        left: 135px;
+                        background: url("../../assets/images/longhudou/result_bg.png") no-repeat;
+
+                        .modal-result-text {
+                            width: 72px;
+                            height: 44px;
+                            margin: 0 auto;
+                            margin-top: 32px;
+                            background: url("../../assets/images/longhudou/result_victory.png") no-repeat;
+                        }
+                        .modal-result-content {
+                            width: 210px;
+                            height: 170px;
+                            margin: 0 auto;
+                            .modal-result-left {
+                                float: left;
+                                width: 80px;
+                                text-align: right;
+                                span {
+                                    display: inline-block;
+                                    height: 19px;
+                                }
+                                .modal-result-icon1 {
+                                    width: 67px;
+                                    background: url("../../assets/images/longhudou/title_text_yingdechouma.png") no-repeat;
+                                }
+                                .modal-result-icon2 {
+                                    width: 18px;
+                                    background: url("../../assets/images/longhudou/title_text_long.png") no-repeat;
+                                }
+                                .modal-result-icon3 {
+                                    width: 18px;
+                                    background: url("../../assets/images/longhudou/titile_text_he.png") no-repeat;
+                                }
+                                .modal-result-icon4 {
+                                    width: 18px;
+                                    background: url("../../assets/images/longhudou/title-text_hu.png") no-repeat;
+                                }
+                                .modal-result-winicon {
+                                    width: 33px;
+                                    height: 33px;
+                                    margin-top: 5px;
+                                    position: relative;
+                                    top: 7px;
+                                    background: url("../../assets/images/longhudou/win.png") no-repeat;
+                                }
+                            }
+                            .modal-result-right {
+                                float: right;
+                                text-align: left;
+                                width: 80px;
+                                font-size: 16px;
+                                color: #fff4e5;
+                                .modal-result-cardicon {
+                                    width: 68px;
+                                    height: 57px;
+                                    margin-top: 10px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .game-record {
+            float: left;
+            margin-left: 30px;
+            text-align: left;
+            .game-result-history {
+                width: 280px;
+                height: 180px;
+                background-color: rgba(63, 27, 104, 0.2);
+                box-shadow: 0px 14px 40px 0px rgba(11, 6, 27, 0.5);
+                border-radius: 5px;
+                border: solid 2px rgba(198, 157, 226, 0.25);
+                .game-result-content {
+                    height: 130px;
+                    margin: 5px;
+                    padding-left: 10px;
+                    overflow-y: auto;
+                    span {
+                        display: inline-block;
+                        width: 34px;
+                        height: 34px;
+                        margin: 5px;
+                        background: url("../../assets/images/longhudou/xiazhu_he.png") no-repeat;
+                    }
+                }
+            }
+            .game-pour-history {
+                margin-top: 20px;
+                width: 280px;
+                height: 378px;
+                background-color: rgba(63, 27, 104, 0.2);
+                box-shadow: 0px 14px 40px 0px rgba(11, 6, 27, 0.5);
+                border-radius: 5px;
+                border: solid 2px rgba(198, 157, 226, 0.25);
+                .game-pour-content {
+                    margin: 5px;
+                    text-align: center;
+                    .game-pour-title {
+                        margin-top: 15px;
+                        margin-bottom: 10px;
+                        font-size: 15px;
+                        color: #c2a180;
+                    }
+                    .game-pour-body {
+                        line-height: 30px;
+                        height: 290px;
+                        overflow-y: auto;
+                        .game-pour-icon {
+                            display: inline-block;
+                            width: 34px;
+                            height: 34px;
+                            background: url("../../assets/images/longhudou/xiazhu_he.png") no-repeat;
+                        }
+                        .game-pour-num {
+                            font-size: 14px;
+                            color: #aea7ef;
+                        }
+                        .game-pour-win {
+                            color: #dc4629;
+                        }
+                        .game-pour-win {
+                            color: #3aa188;
+                        }
+                    }
+                }
+            }
+            .game-history-title {
+                font-size: 16px;
+                color: #d8afbd;
+                line-height: 35px;
+                text-align: center;
+            }
+            .game-history-line {
+                height: 4px;
+                background: url("../../assets/images/longhudou/line.png") no-repeat;
+                background-size: 100%;
+            }
+        }
+        input {
+            background: none;
+            border: none;
+            text-align: center;
+            outline: none;
+        }
+        input:focus {
+            outline: none;
+        }
+    }
+}
+
+.poker-1 {
+    background: url("../../assets/images/longhudou/poker/A_heitao.png") no-repeat;
+}
+.poker-2 {
+    background: url("../../assets/images/longhudou/poker/2_heitao.png") no-repeat;
+}
+.poker-3 {
+    background: url("../../assets/images/longhudou/poker/3_heitao.png") no-repeat;
+}
+.poker-4 {
+    background: url("../../assets/images/longhudou/poker/4_heitao.png") no-repeat;
+}
+.poker-5 {
+    background: url("../../assets/images/longhudou/poker/5_heitao.png") no-repeat;
+}
+.poker-6 {
+    background: url("../../assets/images/longhudou/poker/6_heitao.png") no-repeat;
+}
+.poker-7 {
+    background: url("../../assets/images/longhudou/poker/7_heitao.png") no-repeat;
+}
+.poker-8 {
+    background: url("../../assets/images/longhudou/poker/8_heitao.png") no-repeat;
+}
+.poker-9 {
+    background: url("../../assets/images/longhudou/poker/9_heitao.png") no-repeat;
+}
+.poker-10 {
+    background: url("../../assets/images/longhudou/poker/10_heitao.png") no-repeat;
+}
+.poker-11 {
+    background: url("../../assets/images/longhudou/poker/J_heitao.png") no-repeat;
+}
+.poker-12 {
+    background: url("../../assets/images/longhudou/poker/Q_heitao.png") no-repeat;
+}
+.poker-13 {
+    background: url("../../assets/images/longhudou/poker/K_heitao.png") no-repeat;
+}
+.poker-14 {
+    background: url("../../assets/images/longhudou/poker/A_hongtao.png") no-repeat;
+}
+.poker-15 {
+    background: url("../../assets/images/longhudou/poker/2_hongtao.png") no-repeat;
+}
+.poker-16 {
+    background: url("../../assets/images/longhudou/poker/3_hongtao.png") no-repeat;
+}
+.poker-17 {
+    background: url("../../assets/images/longhudou/poker/4_hongtao.png") no-repeat;
+}
+.poker-18 {
+    background: url("../../assets/images/longhudou/poker/5_hongtao.png") no-repeat;
+}
+.poker-19 {
+    background: url("../../assets/images/longhudou/poker/6_hongtao.png") no-repeat;
+}
+.poker-20 {
+    background: url("../../assets/images/longhudou/poker/7_hongtao.png") no-repeat;
+}
+.poker-21 {
+    background: url("../../assets/images/longhudou/poker/8_hongtao.png") no-repeat;
+}
+.poker-22 {
+    background: url("../../assets/images/longhudou/poker/9_hongtao.png") no-repeat;
+}
+.poker-23 {
+    background: url("../../assets/images/longhudou/poker/10_hongtao.png") no-repeat;
+}
+.poker-24 {
+    background: url("../../assets/images/longhudou/poker/J_hongtao.png") no-repeat;
+}
+.poker-25 {
+    background: url("../../assets/images/longhudou/poker/Q_hongtao.png") no-repeat;
+}
+.poker-26 {
+    background: url("../../assets/images/longhudou/poker/K_hongtao.png") no-repeat;
+}
+.poker-27 {
+    background: url("../../assets/images/longhudou/poker/A_meihua.png") no-repeat;
+}
+.poker-28 {
+    background: url("../../assets/images/longhudou/poker/2_meihua.png") no-repeat;
+}
+.poker-29 {
+    background: url("../../assets/images/longhudou/poker/3_meihua.png") no-repeat;
+}
+.poker-30 {
+    background: url("../../assets/images/longhudou/poker/4_meihua.png") no-repeat;
+}
+.poker-31 {
+    background: url("../../assets/images/longhudou/poker/5_meihua.png") no-repeat;
+}
+.poker-32 {
+    background: url("../../assets/images/longhudou/poker/6_meihua.png") no-repeat;
+}
+.poker-33 {
+    background: url("../../assets/images/longhudou/poker/7_meihua.png") no-repeat;
+}
+.poker-34 {
+    background: url("../../assets/images/longhudou/poker/8_meihua.png") no-repeat;
+}
+.poker-35 {
+    background: url("../../assets/images/longhudou/poker/9_meihua.png") no-repeat;
+}
+.poker-36 {
+    background: url("../../assets/images/longhudou/poker/10_meihua.png") no-repeat;
+}
+.poker-37 {
+    background: url("../../assets/images/longhudou/poker/J_meihua.png") no-repeat;
+}
+.poker-38 {
+    background: url("../../assets/images/longhudou/poker/Q_meihua.png") no-repeat;
+}
+.poker-39 {
+    background: url("../../assets/images/longhudou/poker/K_meihua.png") no-repeat;
+}
+.poker-40 {
+    background: url("../../assets/images/longhudou/poker/A_fangkuai.png") no-repeat;
+}
+.poker-41 {
+    background: url("../../assets/images/longhudou/poker/2_fangkuai.png") no-repeat;
+}
+.poker-42 {
+    background: url("../../assets/images/longhudou/poker/3_fangkuai.png") no-repeat;
+}
+.poker-43 {
+    background: url("../../assets/images/longhudou/poker/4_fangkuai.png") no-repeat;
+}
+.poker-44 {
+    background: url("../../assets/images/longhudou/poker/5_fangkuai.png") no-repeat;
+}
+.poker-45 {
+    background: url("../../assets/images/longhudou/poker/6_fangkuai.png") no-repeat;
+}
+.poker-46 {
+    background: url("../../assets/images/longhudou/poker/7_fangkuai.png") no-repeat;
+}
+.poker-47 {
+    background: url("../../assets/images/longhudou/poker/8_fangkuai.png") no-repeat;
+}
+.poker-48 {
+    background: url("../../assets/images/longhudou/poker/9_fangkuai.png") no-repeat;
+}
+.poker-49 {
+    background: url("../../assets/images/longhudou/poker/10_fangkuai.png") no-repeat;
+}
+.poker-50 {
+    background: url("../../assets/images/longhudou/poker/J_fangkuai.png") no-repeat;
+}
+.poker-51 {
+    background: url("../../assets/images/longhudou/poker/Q_fangkuai.png") no-repeat;
+}
+.poker-52 {
+    background: url("../../assets/images/longhudou/poker/K_fangkuai.png") no-repeat;
+}

@@ -2,84 +2,231 @@
     <div class="app-detail no-select-text">
         <i class="exit" @click="exit"></i>
         <div class="game-content">
-            <div class="game-body">
-                <div class="game-result">
-                    <p>近 5 局出牌结果</p>
-                    <div>
-                        <span v-for="(item,index) in resultList" :key="index">{{item | getBetResHis }}</span>
+            <div class="game-body-background">
+                <div class="game-body">
+                    <!--<div class="game-result">-->
+                    <!--<p>近 5 局出牌结果</p>-->
+                    <!--<div>-->
+                    <!--<span v-for="(item,index) in resultList" :key="index">{{item | getBetResHis }}</span>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <div class="game-talbe">
+                        <p class="time-remaining">剩余下注时间 <span>{{countDown}}</span> 秒</p>
+                        <div class="selectable">
+                            <div class="item-1">
+                                <p>
+                                    <i>
+                                        <img src="../../assets/images/longhudou/dragon.png">
+                                    </i>
+                                </p>
+                                <p>
+                                    <b>{{betCoin[1]}}</b>
+                                </p>
+                                <p>
+                                    <span :class="{selected:choosed==='dragon'}" @click="callContract('dragon')"></span>
+                                </p>
+                            </div>
+                            <div class="item-2">
+                                <p>
+                                    <i>
+                                        <img src="../../assets/images/longhudou/with.png">
+                                    </i>
+                                </p>
+                                <p>
+                                    <b>{{betCoin[3]}}</b>
+                                </p>
+                                <p>
+                                    <span :class="{selected:choosed==='leopard'}"
+                                          @click="callContract('leopard')"></span>
+                                </p>
+                            </div>
+                            <div class="item-3">
+                                <p>
+                                    <i>
+                                        <img src="../../assets/images/longhudou/tiger.png">
+                                    </i>
+                                </p>
+                                <p>
+                                    <b>{{betCoin[2]}}</b>
+                                </p>
+                                <p>
+                                    <span :class="{selected:choosed==='tiger'}" @click="callContract('tiger')"></span>
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="game-talbe">
-                    <p class="time-remaining">剩余下注时间 <span>{{countDown}}</span> 秒</p>
-                    <div class="selectable">
-                        <div class="item-1">
-                            <p>
-                                <i>
-                                    <img src="../../assets/images/longhudou/dragon.png">
-                                </i>
-                            </p>
-                            <p>
-                                <input v-model="betCoin[1]" readonly>
-                            </p>
-                            <p>
-                                <span :class="{selected:choosed==='dragon'}" @click="callContract('dragon')"></span>
-                            </p>
-                        </div>
-                        <div class="item-2">
-                            <p>
-                                <i>
-                                    <img src="../../assets/images/longhudou/with.png">
-                                </i>
-                            </p>
-                            <p>
-                                <input v-model="betCoin[3]" readonly>
-                            </p>
-                            <p>
-                                <span :class="{selected:choosed==='leopard'}" @click="callContract('leopard')"></span>
-                            </p>
-                        </div>
-                        <div class="item-3">
-                            <p>
-                                <i>
-                                    <img src="../../assets/images/longhudou/tiger.png">
-                                </i>
-                            </p>
-                            <p>
-                                <input v-model="betCoin[2]" readonly>
-                            </p>
-                            <p>
-                                <span :class="{selected:choosed==='tiger'}" @click="callContract('tiger')"></span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="bet-amount">
-                    <div class="choose-item" @click="selectAnItem(0)">
-                        <i v-show="isSelected === 0"></i>
-                        <div>
+                    <div class="bet-amount">
+                        <div class="choose-item" @click="selectAnItem(0)">
+                            <i v-show="isSelected === 0"></i>
+                            <div>
                             <span class="amount" v-for="(item,index) in amount1" :key="index"
                                   :class="'amount'+item"></span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="choose-item" @click="selectAnItem(1)">
-                        <i v-show="isSelected === 1"></i>
-                        <div>
+                        <div class="choose-item" @click="selectAnItem(1)">
+                            <i v-show="isSelected === 1"></i>
+                            <div>
                             <span class="amount" v-for="(item,index) in amount2" :key="index"
                                   :class="'amount'+item"></span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="choose-item" @click="selectAnItem(2)">
-                        <i v-show="isSelected === 2"></i>
-                        <div>
+                        <div class="choose-item" @click="selectAnItem(2)">
+                            <i v-show="isSelected === 2"></i>
+                            <div>
                             <span class="amount" v-for="(item,index) in amount3" :key="index"
                                   :class="'amount'+item"></span>
+                            </div>
+                        </div>
+                        <div class="input-item">
+                            <p>下注金额</p>
+                            <p>
+                                <input maxlength="15" v-model="moneyNum">
+                            </p>
                         </div>
                     </div>
-                    <div class="input-item">
-                        <p>下注金额</p>
-                        <p>
-                            <input maxlength="15" v-model="moneyNum">
-                        </p>
+                    <div class="modal" v-show="false">
+                        <div class="modal-content">
+                            <div class="modal-result-text"></div>
+                            <div class="modal-result-content">
+                                <div class="modal-result-left">
+                                    <p>
+                                        <span class="modal-result-icon1"></span>
+                                    </p>
+                                    <p>
+                                        <span class="modal-result-winicon"></span>
+                                        <span class="modal-result-icon2"></span>
+                                    </p>
+                                    <p>
+                                        <span class="modal-result-winicon"></span>
+                                        <span class="modal-result-icon3"></span>
+                                    </p>
+                                    <p>
+                                        <span class="modal-result-winicon"></span>
+                                        <span class="modal-result-icon4"></span>
+                                    </p>
+                                </div>
+                                <div class="modal-result-right">
+                                    <p>+1000</p>
+                                    <p class="modal-result-cardicon poker-2"></p>
+                                    <p class="modal-result-cardicon poker-52"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="game-record">
+                <div class="game-result-history">
+                    <div class="game-history-title">历史出牌结果</div>
+                    <p class="game-history-line"></p>
+                    <div class="game-result-content">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+                <div class="game-pour-history">
+                    <div class="game-history-title">下注记录</div>
+                    <p class="game-history-line"></p>
+                    <div class="game-pour-content">
+                        <el-row class="game-pour-title">
+                            <el-col :span="8">下注对象</el-col>
+                            <el-col :span="8">下注金额</el-col>
+                            <el-col :span="8">输赢金额</el-col>
+                        </el-row>
+                        <div class="game-pour-body">
+                            <el-row>
+                                <el-col :span="8"><span class="game-pour-icon"></span></el-col>
+                                <el-col :span="8"><span class="game-pour-num">500</span></el-col>
+                                <el-col :span="8"><span class="game-pour-win">+100</span></el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="8"><span class="game-pour-icon"></span></el-col>
+                                <el-col :span="8"><span class="game-pour-num">500</span></el-col>
+                                <el-col :span="8"><span class="game-pour-win">+100</span></el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="8"><span class="game-pour-icon"></span></el-col>
+                                <el-col :span="8"><span class="game-pour-num">500</span></el-col>
+                                <el-col :span="8"><span class="game-pour-win">+100</span></el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="8"><span class="game-pour-icon"></span></el-col>
+                                <el-col :span="8"><span class="game-pour-num">500</span></el-col>
+                                <el-col :span="8"><span class="game-pour-win">+100</span></el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="8"><span class="game-pour-icon"></span></el-col>
+                                <el-col :span="8"><span class="game-pour-num">500</span></el-col>
+                                <el-col :span="8"><span class="game-pour-win">+100</span></el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="8"><span class="game-pour-icon"></span></el-col>
+                                <el-col :span="8"><span class="game-pour-num">500</span></el-col>
+                                <el-col :span="8"><span class="game-pour-win">+100</span></el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="8"><span class="game-pour-icon"></span></el-col>
+                                <el-col :span="8"><span class="game-pour-num">500</span></el-col>
+                                <el-col :span="8"><span class="game-pour-win">+100</span></el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="8"><span class="game-pour-icon"></span></el-col>
+                                <el-col :span="8"><span class="game-pour-num">500</span></el-col>
+                                <el-col :span="8"><span class="game-pour-win">+100</span></el-col>
+                            </el-row>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -156,7 +303,6 @@
                 }).then((res) => {
                     if (res.status === 200) {
                         this.showSourceVisible = true
-                        console.log(res.data[0].txHash)
                         this.contractSource = this.$web3.eth.getTransaction(res.data[0].txHash).datasourcecode
                     }
                 }).catch((error) => {
@@ -454,239 +600,5 @@
 </script>
 
 <style lang="scss" type="text/scss" scoped>
-    .app-detail {
-        width: 100%;
-        min-width: 1050px;
-        height: 100%;
-        background: url("../../assets/images/longhudou/lhd_bg.jpg") no-repeat;
-        background-size: cover;
-        position: relative;
-        z-index: 2;
-
-        .exit {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            position: absolute;
-            top: 40px;
-            left: 40px;
-            background: url("../../assets/images/longhudou/close.png") no-repeat;
-            cursor: pointer;
-            &:hover {
-                background: url("../../assets/images/longhudou/close_hover.png") no-repeat;
-            }
-            &.show-source {
-                left: auto;
-                right: 40px;
-                background: none;
-                padding: 8px 14px;
-                width: auto;
-                height: auto;
-                color: rgba(255, 255, 255, 0.3);
-                border: 1px solid rgba(255, 255, 255, 0.3);
-                &:hover {
-                    color: rgba(216, 240, 246, 0.8);
-                    border-color: rgba(216, 240, 246, 0.8);
-                }
-            }
-        }
-        .game-content {
-            width: 996px;
-            height: 560px;
-            padding: 10px;
-            box-shadow: 0px 14px 40px 0px rgba(11, 6, 27, 0.5);
-            border-radius: 5px;
-            border: solid 2px rgba(198, 157, 226, 0.25);
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            -webkit-transform: translate(-50%, -50%);
-            -moz-transform: translate(-50%, -50%);
-            -ms-transform: translate(-50%, -50%);
-            -o-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%);
-            text-align: center;
-            input {
-                background: none;
-                border: none;
-                text-align: center;
-                outline: none;
-            }
-            input:focus {
-                outline: none;
-            }
-
-            .game-body {
-                height: 100%;
-                position: relative;
-                background: url("../../assets/images/longhudou/table_bg.jpg") no-repeat;
-                &:before {
-                    content: '';
-                    display: table;
-                }
-
-                .game-result {
-                    width: 152px;
-                    height: 62px;
-                    background: url("../../assets/images/longhudou/results_bg.png") no-repeat;
-                    position: absolute;
-                    top: 20px;
-                    left: 20px;
-                    font-size: 15px;
-
-                    p {
-                        color: #9f7382;
-                        margin-top: 11px;
-                    }
-                    div {
-                        line-height: 30px;
-                        color: #be7953;
-                        span {
-                            padding: 0 5px;
-                        }
-                    }
-                }
-                .game-talbe {
-                    height: 420px;
-                    width: 800px;
-                    background: url("../../assets/images/longhudou/table.png") no-repeat;
-                    margin: 35px auto 0;
-
-                    .time-remaining {
-                        padding-top: 84px;
-                        font-size: 16px;
-                        color: rgba(255, 144, 89, 0.73);
-                    }
-
-                    .selectable {
-                        div {
-                            display: inline-block;
-                            margin-top: 10px;
-                            padding: 0 30px;
-                            p {
-                                i {
-                                    display: inline-block;
-                                    width: 120px;
-                                    height: 130px;
-                                    background: url("../../assets/images/longhudou/bet_bg.png") no-repeat;
-                                    img {
-                                        vertical-align: center;
-                                        margin-top: 35px;
-                                    }
-                                }
-                                input {
-                                    background: url("../../assets/images/longhudou/bet_number_bg.png") no-repeat;
-                                    margin-top: 5px;
-                                    width: 122px;
-                                    height: 26px;
-                                    font-size: 14px;
-                                    color: #cdc075;
-                                }
-                                span {
-                                    display: inline-block;
-                                    width: 99px;
-                                    height: 44px;
-                                    line-height: 36px;
-                                    margin-top: 10px;
-                                    background: url("../../assets/images/longhudou/btn_bet.png") no-repeat;
-                                    /*font-size: 18px;
-                                    color: #fff5e1;
-                                    text-shadow: 2px 0 2px #704C2F, 0 2px 2px #704C2F, -2px 0 2px #704C2F, 0 -2px 2px #704C2F;
-                                    -webkit-text-shadow: 2px 0 2px #704C2F, 0 2px 2px #704C2F, -2px 0 2px #704C2F, 0 -2px 2px #704C2F;
-                                    -moz-text-shadow: 2px 0 2px #704C2F, 0 2px 2px #704C2F, -2px 0 2px #704C2F, 0 -2px 2px #704C2F;*/
-                                    &:hover {
-                                        background: url("../../assets/images/longhudou/btn_bet_hover.png") no-repeat;
-                                    }
-                                    &.selected {
-                                        background: url("../../assets/images/longhudou/btn_bet_active.png") no-repeat;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                .bet-amount {
-                    width: 650px;
-                    margin: -40px auto 0;
-                    height: 150px;
-                    .choose-item {
-                        float: left;
-                        width: 150px;
-                        height: 100%;
-                        position: relative;
-                        background: url("../../assets/images/longhudou/chips.png") no-repeat;
-                        i {
-                            position: absolute;
-                            top: 0;
-                            left: 0;
-                            width: 150px;
-                            height: 150px;
-                            background: url("../../assets/images/longhudou/chips_xz.png") no-repeat;
-                        }
-                        div {
-                            position: absolute;
-                            top: 50%;
-                            left: 50%;
-                            -webkit-transform: translate(-50%, -50%);
-                            -moz-transform: translate(-50%, -50%);
-                            -ms-transform: translate(-50%, -50%);
-                            -o-transform: translate(-50%, -50%);
-                            transform: translate(-50%, -50%);
-                        }
-                    }
-                    .input-item {
-                        float: left;
-                        width: 177px;
-                        height: 100%;
-                        padding-top: 30px;
-                        margin-left: 20px;
-                        font-size: 17px;
-                        color: #be7953;
-                        line-height: 30px;
-                        input {
-                            height: 48px;
-                            background: url("../../assets/images/longhudou/input.png") no-repeat;
-                            color: #be7953;
-                        }
-                    }
-                    .amount {
-                        display: inline-block;
-                        width: 24px;
-                        height: 28px;
-                    }
-                    .amount0 {
-                        background: url("../../assets/images/longhudou/number.png") -5px -5px no-repeat;
-                    }
-                    .amount1 {
-                        background: url("../../assets/images/longhudou/number.png") -39px -5px no-repeat;
-                    }
-                    .amount2 {
-                        background: url("../../assets/images/longhudou/number.png") -75px -5px no-repeat;
-                    }
-                    .amount3 {
-                        background: url("../../assets/images/longhudou/number.png") -111px -5px no-repeat;
-                    }
-                    .amount4 {
-                        background: url("../../assets/images/longhudou/number.png") -145px -5px no-repeat;
-                    }
-                    .amount5 {
-                        background: url("../../assets/images/longhudou/number.png") -181px -5px no-repeat;
-                    }
-                    .amount6 {
-                        background: url("../../assets/images/longhudou/number.png") -215px -5px no-repeat;
-                    }
-                    .amount7 {
-                        background: url("../../assets/images/longhudou/number.png") -251px -5px no-repeat;
-                    }
-                    .amount8 {
-                        background: url("../../assets/images/longhudou/number.png") -285px -5px no-repeat;
-                    }
-                    .amount9 {
-                        background: url("../../assets/images/longhudou/number.png") -321px -5px no-repeat;
-                    }
-                }
-            }
-        }
-    }
+    @import "../../assets/scss/appDetail";
 </style>
