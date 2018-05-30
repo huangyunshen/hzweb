@@ -561,36 +561,36 @@
             }
         },
         mounted() {
-            // if (this.getContractAddr()) {
-            //     this.contactContract()
-            //     if (!this.chargeLegality()) {
-            //         return false
-            //     }
-            //
-            //     //获取当前时间
-            //     this.getTimerTime()
-            //
-            //     //定时器
-            //     this.getCoinsTimer = setInterval(() => {
-            //         // 实时获取下注币数
-            //         this.betCoin.length = 0
-            //         let arr = this.myContractInstance.getTotalCoins()
-            //         if (arr) {
-            //             this.betCoin = arr.map((item) => {
-            //                 return this.$web3.fromWei(item.toString(10), 'ether')
-            //             })
-            //         }
-            //         //倒计时
-            //         if (this.countDown <= 5) {
-            //             this.settlement()
-            //         }
-            //         if (this.countDown > 0) {
-            //             this.countDown--
-            //         }
-            //
-            //     }, 1000)
-            //     this.settleTime = this.myContractInstance.getBlockTime()[0].toString(10)
-            // }
+            if (this.getContractAddr()) {
+                this.contactContract()
+                if (!this.chargeLegality()) {
+                    return false
+                }
+
+                //获取当前时间
+                this.getTimerTime()
+
+                //定时器
+                this.getCoinsTimer = setInterval(() => {
+                    // 实时获取下注币数
+                    this.betCoin.length = 0
+                    let arr = this.myContractInstance.getTotalCoins()
+                    if (arr) {
+                        this.betCoin = arr.map((item) => {
+                            return this.$web3.fromWei(item.toString(10), 'ether')
+                        })
+                    }
+                    //倒计时
+                    if (this.countDown <= 5) {
+                        this.settlement()
+                    }
+                    if (this.countDown > 0) {
+                        this.countDown--
+                    }
+
+                }, 1000)
+                this.settleTime = this.myContractInstance.getBlockTime()[0].toString(10)
+            }
         },
         deactivated() {
             clearInterval(this.getCoinsTimer)
