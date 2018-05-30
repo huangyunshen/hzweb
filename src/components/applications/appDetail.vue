@@ -5,7 +5,7 @@
             <div class="game-body-background">
                 <div class="game-body">
                     <div class="pool-balance">
-                        奖池余额：96535 FOF
+                        奖池余额：{{ contractBalance }} FOF
                     </div>
                     <div class="game-talbe">
                         <p class="time-remaining">剩余下注时间 <span>{{countDown}}</span> 秒</p>
@@ -13,13 +13,13 @@
                             <div class="item-1">
                                 <p>
                                     <i class="table-unit">
-                                        <i>总1000</i>
+                                        <i>总{{betCoin[1]}}</i>
                                         <img src="../../assets/images/longhudou/dragon.png">
                                         <div>2倍</div>
                                     </i>
                                 </p>
                                 <p>
-                                    <b>{{betCoin[1]}}</b>
+                                    <b>{{betArr.long}}</b>
                                 </p>
                                 <p>
                                     <span :class="{selected:choosed==='dragon'}" @click="callContract('dragon')"></span>
@@ -28,13 +28,13 @@
                             <div class="item-2">
                                 <p>
                                     <i class="table-unit">
-                                        <i>总1000</i>
+                                        <i>总{{betCoin[3]}}</i>
                                         <img src="../../assets/images/longhudou/with.png">
                                         <div>8倍</div>
                                     </i>
                                 </p>
                                 <p>
-                                    <b>{{betCoin[3]}}</b>
+                                    <b>{{betArr.he}}</b>
                                 </p>
                                 <p>
                                     <span :class="{selected:choosed==='leopard'}"
@@ -44,13 +44,13 @@
                             <div class="item-3">
                                 <p>
                                     <i class="table-unit">
-                                        <i>总1000</i>
+                                        <i>总{{betCoin[2]}}</i>
                                         <img src="../../assets/images/longhudou/tiger.png">
                                         <div>2倍</div>
                                     </i>
                                 </p>
                                 <p>
-                                    <b>{{betCoin[2]}}</b>
+                                    <b>{{betArr.hu}}</b>
                                 </p>
                                 <p>
                                     <span :class="{selected:choosed==='tiger'}" @click="callContract('tiger')"></span>
@@ -141,7 +141,8 @@
                             <el-row v-for="(item,index) in betHistory"
                                     :key="index">
                                 <el-col :span="8">
-                                    <span class="game-pour-icon" :class="{'record-long': item.flag === '0','record-hu': item.flag === '1','record-he': item.flag === '2'}"></span>
+                                    <span class="game-pour-icon"
+                                          :class="{'record-long': item.flag === '0','record-hu': item.flag === '1','record-he': item.flag === '2'}"></span>
                                 </el-col>
                                 <el-col :span="8"><span class="game-pour-num">{{ item.coin }}</span></el-col>
                                 <el-col :span="8"><span
@@ -173,7 +174,7 @@
         name: "app-detail",
         data() {
             return {
-                showResult:false,
+                showResult: false,
                 showSourceVisible: false,
                 isSelected: null,
                 amountArr: [1, 5, 10],
@@ -194,8 +195,14 @@
                 contractSource: '',
                 settleTime: '',
                 getSettleResTimer: null, //获取下注结果的定时器
-                prevBet: [], //保存上一局下注的操作
+                prevBet: [0], //保存上一局下注的操作
                 betHistory: [], // 当前玩家这一局下注的历史记录
+                betArr: {
+                    long: 0,
+                    hu: 0,
+                    he: 0
+                }, // 当前局下注金额对象
+                contractBalance: ''
             }
         },
         filters: {
@@ -302,16 +309,23 @@
                     } else {
                         result = '2'
                     }
-                    if (this.prevBet.length > 0) {
+                    if (this.prevBet.length > 1) {
                         if (this.betHistory.length === 0) {
                             return
                         }
-                        if (result === this.prevBet[0]) {
-                            this.betHistory[this.betHistory.length - 1].win = '+ ' + this.prevBet[1]
-                        } else {
-                            this.betHistory[this.betHistory.length - 1].win = '- ' + this.prevBet[1]
+                        for (let i = this.betHistory.length - 1; i >= this.betHistory.length - this.prevBet[0]; i--) {
+                            if (this.betHistory[i].flag === result) {
+                                this.betHistory[i].win = '+ ' + this.betHistory[i].coin
+                            } else {
+                                this.betHistory[i].win = '- ' + this.betHistory[i].coin
+                            }
                         }
                         this.prevBet.length = 0
+                        this.prevBet[0] = 0
+                        this.betArr.long = 0
+                        this.betArr.hu = 0
+                        this.betArr.he = 0
+                        this.contractBalance = this.$web3.fromWei(this.myContractInstance.getCurrentBalance().toString(10), 'ether')
                     }
                     this.resultList = this.myContractInstance.getResultHistory().map((item) => {
                         return item.toString(10)
@@ -331,6 +345,7 @@
                     ran: parseInt(Math.random() * (10 ** 12)),
                     coin: this.$web3.toWei(this.moneyNum, 'ether'),
                 }
+                this.$store.state.passwordOfPlay = '111111111'
                 if (this.$store.state.passwordOfPlay !== '') {
                     try {
                         this.$web3.personal.unlockAccount(user, this.$store.state.passwordOfPlay, 6000000)
@@ -403,11 +418,26 @@
                         return
                     }
                     if (result.args._bool) {
-                        this.prevBet.push(params.cho)
-                        this.prevBet.push(this.$web3.fromWei(params.coin, 'ether'))
+                        switch (params.cho) {
+                            case "0":
+                                this.betArr.long += Number(this.$web3.fromWei(params.coin, 'ether'))
+                                break
+                            case "1":
+                                this.betArr.hu += Number(this.$web3.fromWei(params.coin, 'ether'))
+                                break
+                            case "2":
+                                this.betArr.he += Number(this.$web3.fromWei(params.coin, 'ether'))
+                                break
+                            default:
+                                break
+
+                        }
+                        this.prevBet[0]++
+                        this.prevBet[1] = params.cho
+                        this.prevBet[2] = this.$web3.fromWei(params.coin, 'ether')
                         this.betHistory.push({
-                            flag: this.prevBet[0],
-                            coin: this.prevBet[1],
+                            flag: this.prevBet[1],
+                            coin: this.prevBet[2],
                             win: ''
                         })
                         this.$message.success('下注成功！请等待下注结果！')
@@ -506,36 +536,36 @@
             }
         },
         mounted() {
-            // if (this.getContractAddr()) {
-            //     this.contactContract()
-            //     if (!this.chargeLegality()) {
-            //         return false
-            //     }
-            //
-            //     //获取当前时间
-            //     this.getTimerTime()
-            //
-            //     //定时器
-            //     this.getCoinsTimer = setInterval(() => {
-            //         // 实时获取下注币数
-            //         this.betCoin.length = 0
-            //         let arr = this.myContractInstance.getTotalCoins()
-            //         if (arr) {
-            //             this.betCoin = arr.map((item) => {
-            //                 return this.$web3.fromWei(item.toString(10), 'ether')
-            //             })
-            //         }
-            //         //倒计时
-            //         if (this.countDown <= 5) {
-            //             this.settlement()
-            //         }
-            //         if (this.countDown > 0) {
-            //             this.countDown--
-            //         }
-            //
-            //     }, 1000)
-            //     this.settleTime = this.myContractInstance.getBlockTime()[0].toString(10)
-            // }
+            if (this.getContractAddr()) {
+                this.contactContract()
+                if (!this.chargeLegality()) {
+                    return false
+                }
+
+                //获取当前时间
+                this.getTimerTime()
+
+                //定时器
+                this.getCoinsTimer = setInterval(() => {
+                    // 实时获取下注币数
+                    this.betCoin.length = 0
+                    let arr = this.myContractInstance.getTotalCoins()
+                    if (arr) {
+                        this.betCoin = arr.map((item) => {
+                            return this.$web3.fromWei(item.toString(10), 'ether')
+                        })
+                    }
+                    //倒计时
+                    if (this.countDown <= 5) {
+                        this.settlement()
+                    }
+                    if (this.countDown > 0) {
+                        this.countDown--
+                    }
+                }, 1000)
+                this.settleTime = this.myContractInstance.getBlockTime()[0].toString(10)
+                this.contractBalance = this.$web3.fromWei(this.myContractInstance.getCurrentBalance().toString(10), 'ether')
+            }
         },
         deactivated() {
             clearInterval(this.getCoinsTimer)
