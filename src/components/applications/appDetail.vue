@@ -4,19 +4,18 @@
         <div class="game-content">
             <div class="game-body-background">
                 <div class="game-body">
-                    <!--<div class="game-result">-->
-                    <!--<p>近 5 局出牌结果</p>-->
-                    <!--<div>-->
-                    <!--<span v-for="(item,index) in resultList" :key="index">{{item | getBetResHis }}</span>-->
-                    <!--</div>-->
-                    <!--</div>-->
+                    <div class="pool-balance">
+                        奖池余额：96535 FOF
+                    </div>
                     <div class="game-talbe">
                         <p class="time-remaining">剩余下注时间 <span>{{countDown}}</span> 秒</p>
                         <div class="selectable">
                             <div class="item-1">
                                 <p>
-                                    <i>
+                                    <i class="table-unit">
+                                        <i>总1000</i>
                                         <img src="../../assets/images/longhudou/dragon.png">
+                                        <div>2倍</div>
                                     </i>
                                 </p>
                                 <p>
@@ -28,8 +27,10 @@
                             </div>
                             <div class="item-2">
                                 <p>
-                                    <i>
+                                    <i class="table-unit">
+                                        <i>总1000</i>
                                         <img src="../../assets/images/longhudou/with.png">
+                                        <div>8倍</div>
                                     </i>
                                 </p>
                                 <p>
@@ -42,8 +43,10 @@
                             </div>
                             <div class="item-3">
                                 <p>
-                                    <i>
+                                    <i class="table-unit">
+                                        <i>总1000</i>
                                         <img src="../../assets/images/longhudou/tiger.png">
+                                        <div>2倍</div>
                                     </i>
                                 </p>
                                 <p>
@@ -84,7 +87,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="modal" v-show="false">
+                    <div class="modal" v-show="showResult">
                         <div class="modal-content">
                             <div class="modal-result-text"></div>
                             <div class="modal-result-content">
@@ -170,6 +173,7 @@
         name: "app-detail",
         data() {
             return {
+                showResult:false,
                 showSourceVisible: false,
                 isSelected: null,
                 amountArr: [1, 5, 10],
@@ -502,36 +506,36 @@
             }
         },
         mounted() {
-            if (this.getContractAddr()) {
-                this.contactContract()
-                if (!this.chargeLegality()) {
-                    return false
-                }
-
-                //获取当前时间
-                this.getTimerTime()
-
-                //定时器
-                this.getCoinsTimer = setInterval(() => {
-                    // 实时获取下注币数
-                    this.betCoin.length = 0
-                    let arr = this.myContractInstance.getTotalCoins()
-                    if (arr) {
-                        this.betCoin = arr.map((item) => {
-                            return this.$web3.fromWei(item.toString(10), 'ether')
-                        })
-                    }
-                    //倒计时
-                    if (this.countDown <= 5) {
-                        this.settlement()
-                    }
-                    if (this.countDown > 0) {
-                        this.countDown--
-                    }
-
-                }, 1000)
-                this.settleTime = this.myContractInstance.getBlockTime()[0].toString(10)
-            }
+            // if (this.getContractAddr()) {
+            //     this.contactContract()
+            //     if (!this.chargeLegality()) {
+            //         return false
+            //     }
+            //
+            //     //获取当前时间
+            //     this.getTimerTime()
+            //
+            //     //定时器
+            //     this.getCoinsTimer = setInterval(() => {
+            //         // 实时获取下注币数
+            //         this.betCoin.length = 0
+            //         let arr = this.myContractInstance.getTotalCoins()
+            //         if (arr) {
+            //             this.betCoin = arr.map((item) => {
+            //                 return this.$web3.fromWei(item.toString(10), 'ether')
+            //             })
+            //         }
+            //         //倒计时
+            //         if (this.countDown <= 5) {
+            //             this.settlement()
+            //         }
+            //         if (this.countDown > 0) {
+            //             this.countDown--
+            //         }
+            //
+            //     }, 1000)
+            //     this.settleTime = this.myContractInstance.getBlockTime()[0].toString(10)
+            // }
         },
         deactivated() {
             clearInterval(this.getCoinsTimer)
