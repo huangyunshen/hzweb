@@ -610,10 +610,10 @@
       -webkit-transform: rotate(45deg) scaleY(0);
       transform: rotate(45deg) scaleY(0);
       width: 3px;
-      -webkit-transition: -webkit-transform 0.15s cubic-bezier(0.71, -0.46, 0.88, 0.6) 0.05s;
-      transition: -webkit-transform 0.15s cubic-bezier(0.71, -0.46, 0.88, 0.6) 0.05s;
-      transition: transform 0.15s cubic-bezier(0.71, -0.46, 0.88, 0.6) 0.05s;
-      transition: transform 0.15s cubic-bezier(0.71, -0.46, 0.88, 0.6) 0.05s, -webkit-transform 0.15s cubic-bezier(0.71, -0.46, 0.88, 0.6) 0.05s;
+      -webkit-transition: -webkit-transform .15s ease-in .05s;
+      transition: -webkit-transform .15s ease-in .05s;
+      transition: transform .15s ease-in .05s;
+      transition: transform .15s ease-in .05s, -webkit-transform .15s ease-in .05s;
       -webkit-transform-origin: center;
       transform-origin: center; }
   .el-checkbox__original {
@@ -1290,7 +1290,8 @@
   padding: 10px;
   z-index: 2000;
   font-size: 12px;
-  line-height: 1.2; }
+  line-height: 1.2;
+  min-width: 10px; }
   .el-tooltip__popper .popper__arrow,
   .el-tooltip__popper .popper__arrow::after {
     position: absolute;

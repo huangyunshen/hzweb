@@ -85,9 +85,14 @@ textarea:read-only {
 .el-wallet-style .el-wallet-input input,
 .el-wallet-style .el-wallet-input textarea {
     font-size: 18px;
-    //background-color: #7a99be;
-    //color: #182f4a;
+    background-color: #7a99be;
+    color: #182f4a;
+    &:focus {
+        border:none;
+        background-color: #9DC1F0;
+    }
 }
+
 
 .transaction textarea {
     height: 300px;
@@ -103,10 +108,6 @@ textarea:read-only {
     }
 }
 
-//.el-wallet-style .el-wallet-input input:focus,
-//.el-wallet-style .el-wallet-input textarea:focus {
-//    background-color: #ADCEF7;
-//}
 
 #app .el-wallet-main-button {
     width: 100%;
@@ -141,7 +142,7 @@ textarea:read-only {
 }
 
 .create-wallet-dialog {
-    &.app-detail-font{
+    &.app-detail-font {
         .el-dialog {
             .el-dialog__header {
                 span {
@@ -227,6 +228,7 @@ textarea:read-only {
 .fof-fade-enter-to {
     opacity: 1;
 }
+
 .fof-fade-leave {
     opacity: 0;
 }
@@ -242,10 +244,24 @@ textarea:read-only {
 
 /*   my-app   */
 .my-apps {
-    .el-input-group__append, .el-button {
-        border: 0;
-        background: #675DE5;
-        font-size: 16px;
-        color: #bbb3ef;
+    .el-input-group__append {
+        .el-button {
+            background: #675DE5;
+            border: 2px solid #675DE5;
+            border-radius: 0;
+            padding:12px 18px;
+            &:hover {
+                background: #7E74FF;
+                border-color: #7E74FF;
+            }
+        }
     }
+}
+
+/*  el-input-group__append  */
+.el-input-group__append {
+    border: 0;
+    background: #5A529D;
+    color: #E9F4FF;
+    font-size: 16px;
 }

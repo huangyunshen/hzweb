@@ -56,7 +56,7 @@
                                         <el-input
                                                 auto-complete="off"
                                                 v-model="rechargeData.value"
-                                        ></el-input>
+                                        ><template slot="append">FOF</template></el-input>
                                     </el-form-item>
                                 </el-form>
                                 <el-form class="mt-50"
@@ -70,19 +70,19 @@
                                                 <el-input
                                                         auto-complete="off"
                                                         v-model="rechargeData.price1"
-                                                ></el-input>
+                                                ><template slot="append">FOF</template></el-input>
                                             </el-col>
                                             <el-col :span="7" :offset="1">
                                                 <el-input
                                                         auto-complete="off"
                                                         v-model="rechargeData.price2"
-                                                ></el-input>
+                                                ><template slot="append">FOF</template></el-input>
                                             </el-col>
                                             <el-col :span="7" :offset="1">
                                                 <el-input
                                                         auto-complete="off"
                                                         v-model="rechargeData.price3"
-                                                ></el-input>
+                                                ><template slot="append">FOF</template></el-input>
                                             </el-col>
                                         </el-row>
                                     </el-form-item>

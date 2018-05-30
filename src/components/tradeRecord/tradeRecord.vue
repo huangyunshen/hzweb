@@ -119,13 +119,12 @@
                     return 'background:#221d44;'
                 }
             },
-
         },
         mounted() {
             let users = this.$funs.getLocalAddress()
-            let publicKey = users.addresses[users.active]
+            let userAddr = users.addresses[users.active]
             this.$axios.post('/api/requestTx.php', {
-                "addr": publicKey
+                "addr": userAddr
             }).then((res) => {
                 if (res.status === 200) {
                     if (res.data.length) {

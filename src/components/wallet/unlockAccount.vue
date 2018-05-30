@@ -7,6 +7,11 @@
 
             <el-form-item class="el-wallet-style" label="解锁方式">
                 <div class="wallet-decrypt-type no-select-text">
+                    <span class="wallet-decrypt-item" :class="{active:form.decryptType==='4'}"
+                          @click="selectDecryptType('4')" v-show="isTrancCom">
+                        <i class="wallet-decrypt-type-icon icon3" :class="{'icon3-active':form.decryptType==='4'}"></i>
+                        账户地址
+                    </span>
                     <span class="wallet-decrypt-item" :class="{active:form.decryptType==='1'}"
                           @click="selectDecryptType('1')">
                         <i class="wallet-decrypt-type-icon icon1" :class="{'icon1-active':form.decryptType==='1'}"></i>
@@ -21,11 +26,6 @@
                           @click="selectDecryptType('3')">
                         <i class="wallet-decrypt-type-icon icon3" :class="{'icon3-active':form.decryptType==='3'}"></i>
                         助记词
-                    </span>
-                    <span class="wallet-decrypt-item" :class="{active:form.decryptType==='4'}"
-                          @click="selectDecryptType('4')" v-show="isTrancCom">
-                        <i class="wallet-decrypt-type-icon icon3" :class="{'icon3-active':form.decryptType==='4'}"></i>
-                        账户地址
                     </span>
                 </div>
                 <p>{{decryptInfo}}</p>
@@ -94,7 +94,7 @@
                     decryptType: '4',   //解锁方式,
                     privateKey: '9ccbd47ccbff97aeb95f304a0702baecdca5e7d59ddba2f5b21dfada35b1d67e',
                     mnemonic: '',
-                    address: '',
+                    address: '0xD65b3515338F2cbb0FBA328beF4c62b291E0b75e',
                     pwd: '',
                     keystore: {},
                     // fileName: '请选择keystore钱包文件',
@@ -259,11 +259,11 @@
             decryptInfo() {
                 switch (this.form.decryptType) {
                     case '1':
-                        return '使用您的私钥访问您的帐户'
+                        return '使用您的私钥访问您的帐户(不推荐)'
                     case '2':
-                        return '使用您的密钥存储文件(UTC)访问您的帐户'
+                        return '使用您的密钥存储文件(UTC)访问您的帐户(不推荐)'
                     case '3':
-                        return '使用助记符短语访问您的帐户'
+                        return '使用助记符短语访问您的帐户(不推荐)'
                     case '4':
                         return '使用账户地址访问您的帐户'
                 }
@@ -273,7 +273,7 @@
             if (this.isTranc === 'isTranc') {
                 this.form.decryptType = '1'
             } else {
-                this.form.decryptType = '1'
+                this.form.decryptType = '4'
             }
 
         }

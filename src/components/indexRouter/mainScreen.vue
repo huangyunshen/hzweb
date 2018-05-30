@@ -115,9 +115,9 @@
 
         /**  侧边栏   **/
         .left-nav {
-            width: 400px;
+            width: 380px;
             float: left;
-            padding-top: 150px;
+            padding-top: 160px;
             height: $height;
             -webkit-box-sizing: border-box;
             -moz-box-sizing: border-box;
@@ -141,12 +141,12 @@
 
                 ul {
                     li {
-                        height: 90px;
+                        height: 70px;
                         background: url("../../assets/images/mainScreen/btn.png") no-repeat;
-                        margin-top: 30px;
+                        margin-top: 25px;
                         text-align: center;
-                        line-height: 90px;
-                        font-size: 24px;
+                        line-height: 70px;
+                        font-size: 22px;
                         color: #8abdec;
                         cursor: pointer;
                         position: relative;
@@ -173,9 +173,8 @@
                             animation-duration: 1s;
                         }
                         &:hover {
-                            background: url("../../assets/images/mainScreen/btn_xz.png") no-repeat;
-                            font-size: 26px;
-                            color: #e9f4ff;
+                            background: url("../../assets/images/mainScreen/btn_hover.png") no-repeat;
+                            color: #8abdec;
                         }
                         span {
                             cursor: default;
@@ -183,9 +182,10 @@
                         }
                         i {
                             display: inline-block;
-                            width: 30px;
-                            height: 30px;
+                            width: 28px;
+                            height: 28px;
                             margin-right: 5px;
+                            margin-top: 1px;
                             vertical-align: text-top;
                             cursor: pointer;
                         }
@@ -193,55 +193,46 @@
                             background: url("../../assets/images/mainScreen/icon_zhxx.png") no-repeat;
                         }
                         .nav-icon1-active {
-                            width: 34px;
-                            height: 35px;
                             background: url("../../assets/images/mainScreen/icon_zhxx_xz.png") no-repeat;
                         }
                         .nav-icon2 {
                             background: url("../../assets/images/mainScreen/icon_jyjl.png") no-repeat;
                         }
                         .nav-icon2-active {
-                            width: 34px;
-                            height: 35px;
                             background: url("../../assets/images/mainScreen/icon_jyjl_xz.png") no-repeat;
                         }
                         .nav-icon3 {
                             background: url("../../assets/images/mainScreen/icon_dwzz.png") no-repeat;
                         }
                         .nav-icon3-active {
-                            width: 34px;
-                            height: 35px;
                             background: url("../../assets/images/mainScreen/icon_dwzz_xz.png") no-repeat;
                         }
                         .nav-icon4 {
                             background: url("../../assets/images/mainScreen/icon_yysc.png") no-repeat;
                         }
                         .nav-icon4-active {
-                            width: 34px;
-                            height: 35px;
                             background: url("../../assets/images/mainScreen/icon_yysc_xz.png") no-repeat;
                         }
                         .nav-icon5 {
                             background: url("../../assets/images/mainScreen/icon_cjyy.png") no-repeat;
                         }
                         .nav-icon5-active {
-                            width: 34px;
-                            height: 35px;
                             background: url("../../assets/images/mainScreen/icon_cjyy_xz.png") no-repeat;
                         }
                         .nav-icon6 {
-                            background: url("../../assets/images/mainScreen/icon_cjyy.png") no-repeat;
+                            background: url("../../assets/images/mainScreen/icon_wdyy.png") no-repeat;
                         }
                         .nav-icon6-active {
-                            width: 34px;
-                            height: 35px;
-                            background: url("../../assets/images/mainScreen/icon_cjyy_xz.png") no-repeat;
+                            background: url("../../assets/images/mainScreen/icon_wdyy_xz.png") no-repeat;
                         }
                     }
                     .active {
                         background: url("../../assets/images/mainScreen/btn_xz.png") no-repeat;
-                        font-size: 26px;
                         color: #e9f4ff;
+                        &:hover {
+                            background: url("../../assets/images/mainScreen/btn_xz.png") no-repeat;
+                            color: #e9f4ff;
+                        }
                     }
                 }
             }

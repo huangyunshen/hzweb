@@ -23,18 +23,20 @@
         <el-main class="app-info">
             <el-form ref="form" :model="form" label-position="left" label-width="150px">
                 <el-form-item class="mt-40" label="应用地址">
-                    <el-input
+                    <el-input id="copyAppAddr"
                             v-model="form.contractAddr"
                             placeholder="请选中一个应用"
                             readonly
-                    ></el-input>
+                    >
+                        <el-button slot="append" @click="copyAddress">复制</el-button>
+                    </el-input>
                 </el-form-item>
                 <el-form-item class="mt-40" label="奖池余额">
                     <el-input
                             readonly
                             v-model="form.currentCoin"
                             placeholder="请选中一个应用"
-                    ></el-input>
+                    ><template slot="append">FOF</template></el-input>
                 </el-form-item>
                 <el-form-item class="mt-40" label="奖池充值">
                     <el-input
@@ -94,6 +96,15 @@
                     playGameContract.abi
                 )
                 this.myContractInstance = MyContract.at(addr)
+            },
+            // 复制地址
+            copyAddress(){
+                let host = location.host
+                let addr = host + '/appDetail?' + this.form.contractAddr
+                let input = document.getElementById('copyAppAddr')
+                input.value = addr
+                input.select()
+                document.execCommand('copy')
             },
             /**
              * 充值

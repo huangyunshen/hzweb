@@ -33,7 +33,7 @@
                 let result = ''
                 switch (value){
                     case "1":
-                        result = require('../../assets/images/apps/longhudou.png')
+                        result = require('../../assets/images/apps/longhudou.jpg')
                         break;
                 }
                 return result
