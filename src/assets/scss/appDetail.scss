@@ -63,27 +63,6 @@
                     display: table;
                 }
 
-                /*.game-result {*/
-                /*width: 152px;*/
-                /*height: 62px;*/
-                /*background: url("../../assets/images/longhudou/results_bg.png") no-repeat;*/
-                /*position: absolute;*/
-                /*top: 20px;*/
-                /*left: 20px;*/
-                /*font-size: 15px;*/
-
-                /*p {*/
-                /*color: #9f7382;*/
-                /*margin-top: 11px;*/
-                /*}*/
-                /*div {*/
-                /*line-height: 30px;*/
-                /*color: #be7953;*/
-                /*span {*/
-                /*padding: 0 5px;*/
-                /*}*/
-                /*}*/
-                /*}*/
                 .game-talbe {
                     height: 420px;
                     width: 800px;
@@ -324,7 +303,15 @@
                         width: 34px;
                         height: 34px;
                         margin: 5px;
+                    }
+                    .record-long{
+                        background: url("../../assets/images/longhudou/xiazhu_long.png") no-repeat;
+                    }
+                    .record-he{
                         background: url("../../assets/images/longhudou/xiazhu_he.png") no-repeat;
+                    }
+                    .record-hu{
+                        background: url("../../assets/images/longhudou/xiazhu_hu.png") no-repeat;
                     }
                 }
             }
@@ -353,7 +340,15 @@
                             display: inline-block;
                             width: 34px;
                             height: 34px;
-                            background: url("../../assets/images/longhudou/xiazhu_he.png") no-repeat;
+                            &.record-long{
+                                background: url("../../assets/images/longhudou/xiazhu_long.png") no-repeat;
+                            }
+                            &.record-he{
+                                background: url("../../assets/images/longhudou/xiazhu_he.png") no-repeat;
+                            }
+                            &.record-hu{
+                                background: url("../../assets/images/longhudou/xiazhu_hu.png") no-repeat;
+                            }
                         }
                         .game-pour-num {
                             font-size: 14px;
@@ -362,7 +357,7 @@
                         .game-pour-win {
                             color: #dc4629;
                         }
-                        .game-pour-win {
+                        .game-pour-lost {
                             color: #3aa188;
                         }
                     }

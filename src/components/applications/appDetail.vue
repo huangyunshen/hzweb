@@ -120,60 +120,9 @@
                     <div class="game-history-title">历史出牌结果</div>
                     <p class="game-history-line"></p>
                     <div class="game-result-content">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
+                        <span v-for="(item,index) in resultList"
+                              :key="index"
+                              :class="{'record-long': item === '0','record-hu': item === '1','record-he': item === '2'}"></span>
                     </div>
                 </div>
                 <div class="game-pour-history">
@@ -186,45 +135,15 @@
                             <el-col :span="8">输赢金额</el-col>
                         </el-row>
                         <div class="game-pour-body">
-                            <el-row>
-                                <el-col :span="8"><span class="game-pour-icon"></span></el-col>
-                                <el-col :span="8"><span class="game-pour-num">500</span></el-col>
-                                <el-col :span="8"><span class="game-pour-win">+100</span></el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="8"><span class="game-pour-icon"></span></el-col>
-                                <el-col :span="8"><span class="game-pour-num">500</span></el-col>
-                                <el-col :span="8"><span class="game-pour-win">+100</span></el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="8"><span class="game-pour-icon"></span></el-col>
-                                <el-col :span="8"><span class="game-pour-num">500</span></el-col>
-                                <el-col :span="8"><span class="game-pour-win">+100</span></el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="8"><span class="game-pour-icon"></span></el-col>
-                                <el-col :span="8"><span class="game-pour-num">500</span></el-col>
-                                <el-col :span="8"><span class="game-pour-win">+100</span></el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="8"><span class="game-pour-icon"></span></el-col>
-                                <el-col :span="8"><span class="game-pour-num">500</span></el-col>
-                                <el-col :span="8"><span class="game-pour-win">+100</span></el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="8"><span class="game-pour-icon"></span></el-col>
-                                <el-col :span="8"><span class="game-pour-num">500</span></el-col>
-                                <el-col :span="8"><span class="game-pour-win">+100</span></el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="8"><span class="game-pour-icon"></span></el-col>
-                                <el-col :span="8"><span class="game-pour-num">500</span></el-col>
-                                <el-col :span="8"><span class="game-pour-win">+100</span></el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="8"><span class="game-pour-icon"></span></el-col>
-                                <el-col :span="8"><span class="game-pour-num">500</span></el-col>
-                                <el-col :span="8"><span class="game-pour-win">+100</span></el-col>
+                            <el-row v-for="(item,index) in betHistory"
+                                    :key="index">
+                                <el-col :span="8">
+                                    <span class="game-pour-icon" :class="{'record-long': item.flag === '0','record-hu': item.flag === '1','record-he': item.flag === '2'}"></span>
+                                </el-col>
+                                <el-col :span="8"><span class="game-pour-num">{{ item.coin }}</span></el-col>
+                                <el-col :span="8"><span
+                                        :class="{'game-pour-win': item.win.indexOf('+') !== -1,'game-pour-lost': item.win.indexOf('-') !== -1}">
+                                    {{ item.win }}</span></el-col>
                             </el-row>
                         </div>
                     </div>
@@ -254,7 +173,7 @@
                 showSourceVisible: false,
                 isSelected: null,
                 amountArr: [1, 5, 10],
-                resultList: ['3', '3', '3', '3', '3'],
+                resultList: [],
                 amount1: ['0'],
                 amount2: ['0'],
                 amount3: ['0'],
@@ -263,7 +182,6 @@
                 betZh: '',
                 moneyNum: 0,
                 countDown: -1,
-                timer: null, // 页面倒计时定时器
                 getCoinsTimer: null,
                 dragonNum: '0',
                 tigerNum: '0',
@@ -272,6 +190,8 @@
                 contractSource: '',
                 settleTime: '',
                 getSettleResTimer: null, //获取下注结果的定时器
+                prevBet: [], //保存上一局下注的操作
+                betHistory: [], // 当前玩家这一局下注的历史记录
             }
         },
         filters: {
@@ -348,7 +268,7 @@
             },
             // 开启监控
             settlement() {
-                if(this.countDown === 0){
+                if (this.countDown === 0) {
                     this.showSourceVisible = false
                     this.$store.commit('setCryptPercent', {percent: true, text: '正在结算···'})
                 }
@@ -363,13 +283,32 @@
                 let nowTime = this.myContractInstance.getBlockTime()[0].toString(10)
                 if (this.settleTime !== nowTime) { // 说明结算了
                     //结算逻辑
-                    this.settleTime = nowTime;
-                    this.dragonNum = this.myContractInstance.getBlockTime()[4][0].toString(10)
-                    this.tigerNum = this.myContractInstance.getBlockTime()[4][1].toString(10)
+                    this.settleTime = nowTime
+                    this.dragonNum = this.myContractInstance.getBlockTime()[4][0].toString(10) % 13
+                    this.tigerNum = this.myContractInstance.getBlockTime()[4][1].toString(10) % 13
                     this.$message({
                         message: `结果为 龙：${this.dragonNum} 虎：${this.tigerNum}`,
                         type: 'success',
                     })
+                    let result = ''
+                    if (this.dragonNum > this.tigerNum) {
+                        result = '0'
+                    } else if (this.dragonNum < this.tigerNum) {
+                        result = '1'
+                    } else {
+                        result = '2'
+                    }
+                    if (this.prevBet.length > 0) {
+                        if (this.betHistory.length === 0) {
+                            return
+                        }
+                        if (result === this.prevBet[0]) {
+                            this.betHistory[this.betHistory.length - 1].win = '+ ' + this.prevBet[1]
+                        } else {
+                            this.betHistory[this.betHistory.length - 1].win = '- ' + this.prevBet[1]
+                        }
+                        this.prevBet.length = 0
+                    }
                     this.resultList = this.myContractInstance.getResultHistory().map((item) => {
                         return item.toString(10)
                     })
@@ -377,7 +316,6 @@
                     this.$store.commit('setCryptPercent', {percent: false, text: ''})
                     this.getTimerTime()
                 }
-
             },
             confirmBet(sign) {
                 this.bet(sign)
@@ -428,12 +366,8 @@
              * 下注
              */
             callContract(sign) {
-                if (isNaN(this.moneyNum)) {
-                    this.$message.error('下注金额不能为非数字！')
-                    return false
-                }
-                if (Number(this.moneyNum) === 0) {
-                    this.$message.error('请选择或输入下注金额！')
+                if (!this.$funs.validateFloatNum(this.moneyNum)) {
+                    this.$message.error('下注金额只能为正数！')
                     return false
                 }
                 if (!this.chargeLegality()) {
@@ -450,6 +384,10 @@
             },
 
             betFun(user, params) {
+                if (this.countDown < 5) {
+                    this.$message.error('下注失败！剩余时间小于5s不能下注！')
+                    return
+                }
                 this.$store.commit('setCryptPercent', {percent: true, text: '正在下注···'})
                 // 监听是否下注失败
                 let betResult = this.myContractInstance.returnBetResult()
@@ -461,6 +399,13 @@
                         return
                     }
                     if (result.args._bool) {
+                        this.prevBet.push(params.cho)
+                        this.prevBet.push(this.$web3.fromWei(params.coin, 'ether'))
+                        this.betHistory.push({
+                            flag: this.prevBet[0],
+                            coin: this.prevBet[1],
+                            win: ''
+                        })
                         this.$message.success('下注成功！请等待下注结果！')
                     } else {
                         this.$message.error('下注失败！本局已封盘（奖池金额不够）')
@@ -590,11 +535,9 @@
         },
         deactivated() {
             clearInterval(this.getCoinsTimer)
-            clearInterval(this.timer)
         },
         beforeDestroy() {
             clearInterval(this.getCoinsTimer)
-            clearInterval(this.timer)
         }
     }
 </script>
