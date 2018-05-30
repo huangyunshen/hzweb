@@ -106,6 +106,7 @@ contract PlayGame {
         for (uint i = 0; i < randomNum.length; i++) {
             xor = xor ^ randomNum[i];
         }
+        xor = xor ^ now;
     }
 
     // 获取当前出块时间戳 (单位是秒)

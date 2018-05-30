@@ -62,7 +62,6 @@
                     content: '';
                     display: table;
                 }
-
                 .pool-balance {
                     position: absolute;
                     top: 20px;
@@ -246,7 +245,15 @@
                             height: 44px;
                             margin: 0 auto;
                             margin-top: 32px;
-                            background: url("../../assets/images/longhudou/result_victory.png") no-repeat;
+                            &.win{
+                                background: url("../../assets/images/longhudou/result_victory.png") no-repeat;
+                            }
+                            &.lost{
+                                background: url("../../assets/images/longhudou/result_fail.png") no-repeat;
+                            }
+                            &.draw{
+                                background: url("../../assets/images/longhudou/result_pinju.png") no-repeat;
+                            }
                         }
                         .modal-result-content {
                             width: 210px;
@@ -258,7 +265,7 @@
                                 text-align: right;
                                 span {
                                     display: inline-block;
-                                    height: 19px;
+                                    height: 33px;
                                 }
                                 .modal-result-icon1 {
                                     width: 67px;
@@ -266,25 +273,23 @@
                                 }
                                 .modal-result-icon2 {
                                     width: 18px;
-                                    background: url("../../assets/images/longhudou/title_text_long.png") no-repeat;
+                                    background: url("../../assets/images/longhudou/title_text_long.png") 0 6px no-repeat;
                                 }
                                 .modal-result-icon3 {
                                     width: 18px;
-                                    background: url("../../assets/images/longhudou/titile_text_he.png") no-repeat;
+                                    background: url("../../assets/images/longhudou/titile_text_he.png") 0 6px no-repeat;
                                 }
                                 .modal-result-icon4 {
                                     width: 18px;
-                                    background: url("../../assets/images/longhudou/title-text_hu.png") no-repeat;
+                                    background: url("../../assets/images/longhudou/title-text_hu.png") 0 6px no-repeat;
                                 }
                                 .modal-result-winicon {
                                     width: 33px;
                                     height: 33px;
-                                    margin-top: 5px;
-                                    position: relative;
-                                    top: 7px;
                                     background: url("../../assets/images/longhudou/win.png") no-repeat;
                                 }
                             }
+
                             .modal-result-right {
                                 float: right;
                                 text-align: left;
@@ -323,7 +328,15 @@
                         width: 34px;
                         height: 34px;
                         margin: 5px;
+                    }
+                    .record-long{
+                        background: url("../../assets/images/longhudou/xiazhu_long.png") no-repeat;
+                    }
+                    .record-he{
                         background: url("../../assets/images/longhudou/xiazhu_he.png") no-repeat;
+                    }
+                    .record-hu{
+                        background: url("../../assets/images/longhudou/xiazhu_hu.png") no-repeat;
                     }
                 }
             }
@@ -352,7 +365,15 @@
                             display: inline-block;
                             width: 34px;
                             height: 34px;
-                            background: url("../../assets/images/longhudou/xiazhu_he.png") no-repeat;
+                            &.record-long{
+                                background: url("../../assets/images/longhudou/xiazhu_long.png") no-repeat;
+                            }
+                            &.record-he{
+                                background: url("../../assets/images/longhudou/xiazhu_he.png") no-repeat;
+                            }
+                            &.record-hu{
+                                background: url("../../assets/images/longhudou/xiazhu_hu.png") no-repeat;
+                            }
                         }
                         .game-pour-num {
                             font-size: 14px;
@@ -361,7 +382,7 @@
                         .game-pour-win {
                             color: #dc4629;
                         }
-                        .game-pour-win {
+                        .game-pour-lost {
                             color: #3aa188;
                         }
                     }

@@ -92,9 +92,9 @@
             return {
                 form: {
                     decryptType: '4',   //解锁方式,
-                    privateKey: '9ccbd47ccbff97aeb95f304a0702baecdca5e7d59ddba2f5b21dfada35b1d67e',
+                    privateKey: '',
                     mnemonic: '',
-                    address: '0xD65b3515338F2cbb0FBA328beF4c62b291E0b75e',
+                    address: '',
                     pwd: '',
                     keystore: {},
                     // fileName: '请选择keystore钱包文件',
