@@ -230,12 +230,72 @@
                     background-color: rgba(0, 0, 0, 0.6);
                     position: absolute;
                     top: 0;
-                    left:0;
+                    left: 0;
                     z-index: 999;
+                    .modal-loading-confirm {
+                        width: 410px;
+                        height: 192px;
+                        box-shadow: inset 0 0 8px 0 rgba(15, 5, 10, 0.15);
+                        background: url("../../assets/images/longhudou/bg.png") no-repeat;
+                        margin: 0 auto;
+                        margin-top: 192px;
+                        .modal-confirm-text {
+                            font-size: 16px;
+                            color: #af867e;
+                            padding: 50px 0;
+                            span {
+                                color: #fff4e5;
+                            }
+                        }
+                        .modal-confirm-btn {
+                            white-space: nowrap;
+                            .btn {
+                                border: 0;
+                                outline: none;
+                                cursor: pointer;
+                                width: 100px;
+                                height: 45px;
+                                &.cancel {
+                                    margin-right: 90px;
+                                    background: url("../../assets/images/longhudou/btn_cancle.png") no-repeat;
+                                }
+                                &.confirm {
+                                    background: url("../../assets/images/longhudou/btn_sure.png") no-repeat;
+                                }
+                            }
+                        }
+                        &.modal-prompt {
+                            background-size: cover;
+                            width: 520px;
+                            height: 230px;
+                            margin-top: 175px;
+                            .modal-prompt-text {
+                                font-size: 14px;
+                                color: #af867e;
+                                padding-top: 50px;
+                                span {
+                                    color: #fff4e5;
+                                    font-size: 14px;
+                                }
+                            }
+                            .modal-prompt-input {
+                                margin-top: 20px;
+                                input {
+                                    width: 440px;
+                                    height: 44px;
+                                    color: #be7953;
+                                    background: url("../../assets/images/longhudou/tanchuang_input.png") no-repeat;
+                                }
+                            }
+                            .modal-confirm-btn {
+                                margin-top: 20px;
+                            }
+                        }
+                    }
                 }
                 .modal-content {
                     width: 708px;
-                    height:266px;
+                    height: 266px;
                     position: absolute;
                     top: 95px;
                     left: 135px;
@@ -246,13 +306,13 @@
                         height: 44px;
                         margin: 0 auto;
                         margin-top: 32px;
-                        &.win{
+                        &.win {
                             background: url("../../assets/images/longhudou/result_victory.png") no-repeat;
                         }
-                        &.lost{
+                        &.lost {
                             background: url("../../assets/images/longhudou/result_fail.png") no-repeat;
                         }
-                        &.draw{
+                        &.draw {
                             background: url("../../assets/images/longhudou/result_pinju.png") no-repeat;
                         }
                     }
@@ -349,13 +409,13 @@
                         height: 34px;
                         margin: 5px;
                     }
-                    .record-long{
+                    .record-long {
                         background: url("../../assets/images/longhudou/xiazhu_long.png") no-repeat;
                     }
-                    .record-he{
+                    .record-he {
                         background: url("../../assets/images/longhudou/xiazhu_he.png") no-repeat;
                     }
-                    .record-hu{
+                    .record-hu {
                         background: url("../../assets/images/longhudou/xiazhu_hu.png") no-repeat;
                     }
                 }
@@ -385,13 +445,13 @@
                             display: inline-block;
                             width: 34px;
                             height: 34px;
-                            &.record-long{
+                            &.record-long {
                                 background: url("../../assets/images/longhudou/xiazhu_long.png") no-repeat;
                             }
-                            &.record-he{
+                            &.record-he {
                                 background: url("../../assets/images/longhudou/xiazhu_he.png") no-repeat;
                             }
-                            &.record-hu{
+                            &.record-hu {
                                 background: url("../../assets/images/longhudou/xiazhu_hu.png") no-repeat;
                             }
                         }
@@ -435,156 +495,207 @@
 .poker-1 {
     background: url("../../assets/images/longhudou/poker/A_heitao.png") no-repeat;
 }
+
 .poker-2 {
     background: url("../../assets/images/longhudou/poker/2_heitao.png") no-repeat;
 }
+
 .poker-3 {
     background: url("../../assets/images/longhudou/poker/3_heitao.png") no-repeat;
 }
+
 .poker-4 {
     background: url("../../assets/images/longhudou/poker/4_heitao.png") no-repeat;
 }
+
 .poker-5 {
     background: url("../../assets/images/longhudou/poker/5_heitao.png") no-repeat;
 }
+
 .poker-6 {
     background: url("../../assets/images/longhudou/poker/6_heitao.png") no-repeat;
 }
+
 .poker-7 {
     background: url("../../assets/images/longhudou/poker/7_heitao.png") no-repeat;
 }
+
 .poker-8 {
     background: url("../../assets/images/longhudou/poker/8_heitao.png") no-repeat;
 }
+
 .poker-9 {
     background: url("../../assets/images/longhudou/poker/9_heitao.png") no-repeat;
 }
+
 .poker-10 {
     background: url("../../assets/images/longhudou/poker/10_heitao.png") no-repeat;
 }
+
 .poker-11 {
     background: url("../../assets/images/longhudou/poker/J_heitao.png") no-repeat;
 }
+
 .poker-12 {
     background: url("../../assets/images/longhudou/poker/Q_heitao.png") no-repeat;
 }
+
 .poker-13 {
     background: url("../../assets/images/longhudou/poker/K_heitao.png") no-repeat;
 }
+
 .poker-14 {
     background: url("../../assets/images/longhudou/poker/A_hongtao.png") no-repeat;
 }
+
 .poker-15 {
     background: url("../../assets/images/longhudou/poker/2_hongtao.png") no-repeat;
 }
+
 .poker-16 {
     background: url("../../assets/images/longhudou/poker/3_hongtao.png") no-repeat;
 }
+
 .poker-17 {
     background: url("../../assets/images/longhudou/poker/4_hongtao.png") no-repeat;
 }
+
 .poker-18 {
     background: url("../../assets/images/longhudou/poker/5_hongtao.png") no-repeat;
 }
+
 .poker-19 {
     background: url("../../assets/images/longhudou/poker/6_hongtao.png") no-repeat;
 }
+
 .poker-20 {
     background: url("../../assets/images/longhudou/poker/7_hongtao.png") no-repeat;
 }
+
 .poker-21 {
     background: url("../../assets/images/longhudou/poker/8_hongtao.png") no-repeat;
 }
+
 .poker-22 {
     background: url("../../assets/images/longhudou/poker/9_hongtao.png") no-repeat;
 }
+
 .poker-23 {
     background: url("../../assets/images/longhudou/poker/10_hongtao.png") no-repeat;
 }
+
 .poker-24 {
     background: url("../../assets/images/longhudou/poker/J_hongtao.png") no-repeat;
 }
+
 .poker-25 {
     background: url("../../assets/images/longhudou/poker/Q_hongtao.png") no-repeat;
 }
+
 .poker-26 {
     background: url("../../assets/images/longhudou/poker/K_hongtao.png") no-repeat;
 }
+
 .poker-27 {
     background: url("../../assets/images/longhudou/poker/A_meihua.png") no-repeat;
 }
+
 .poker-28 {
     background: url("../../assets/images/longhudou/poker/2_meihua.png") no-repeat;
 }
+
 .poker-29 {
     background: url("../../assets/images/longhudou/poker/3_meihua.png") no-repeat;
 }
+
 .poker-30 {
     background: url("../../assets/images/longhudou/poker/4_meihua.png") no-repeat;
 }
+
 .poker-31 {
     background: url("../../assets/images/longhudou/poker/5_meihua.png") no-repeat;
 }
+
 .poker-32 {
     background: url("../../assets/images/longhudou/poker/6_meihua.png") no-repeat;
 }
+
 .poker-33 {
     background: url("../../assets/images/longhudou/poker/7_meihua.png") no-repeat;
 }
+
 .poker-34 {
     background: url("../../assets/images/longhudou/poker/8_meihua.png") no-repeat;
 }
+
 .poker-35 {
     background: url("../../assets/images/longhudou/poker/9_meihua.png") no-repeat;
 }
+
 .poker-36 {
     background: url("../../assets/images/longhudou/poker/10_meihua.png") no-repeat;
 }
+
 .poker-37 {
     background: url("../../assets/images/longhudou/poker/J_meihua.png") no-repeat;
 }
+
 .poker-38 {
     background: url("../../assets/images/longhudou/poker/Q_meihua.png") no-repeat;
 }
+
 .poker-39 {
     background: url("../../assets/images/longhudou/poker/K_meihua.png") no-repeat;
 }
+
 .poker-40 {
     background: url("../../assets/images/longhudou/poker/A_fangkuai.png") no-repeat;
 }
+
 .poker-41 {
     background: url("../../assets/images/longhudou/poker/2_fangkuai.png") no-repeat;
 }
+
 .poker-42 {
     background: url("../../assets/images/longhudou/poker/3_fangkuai.png") no-repeat;
 }
+
 .poker-43 {
     background: url("../../assets/images/longhudou/poker/4_fangkuai.png") no-repeat;
 }
+
 .poker-44 {
     background: url("../../assets/images/longhudou/poker/5_fangkuai.png") no-repeat;
 }
+
 .poker-45 {
     background: url("../../assets/images/longhudou/poker/6_fangkuai.png") no-repeat;
 }
+
 .poker-46 {
     background: url("../../assets/images/longhudou/poker/7_fangkuai.png") no-repeat;
 }
+
 .poker-47 {
     background: url("../../assets/images/longhudou/poker/8_fangkuai.png") no-repeat;
 }
+
 .poker-48 {
     background: url("../../assets/images/longhudou/poker/9_fangkuai.png") no-repeat;
 }
+
 .poker-49 {
     background: url("../../assets/images/longhudou/poker/10_fangkuai.png") no-repeat;
 }
+
 .poker-50 {
     background: url("../../assets/images/longhudou/poker/J_fangkuai.png") no-repeat;
 }
+
 .poker-51 {
     background: url("../../assets/images/longhudou/poker/Q_fangkuai.png") no-repeat;
 }
+
 .poker-52 {
     background: url("../../assets/images/longhudou/poker/K_fangkuai.png") no-repeat;
 }

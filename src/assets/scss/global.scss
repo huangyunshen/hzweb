@@ -242,6 +242,35 @@ textarea:read-only {
     opacity: 1;
 }
 
+
+
+
+.fof-fade-2-enter {
+    opacity: 0;
+}
+
+.fof-fade-2-enter-active {
+    transition: opacity 0.3s ease-in-out;
+}
+
+.fof-fade-2-enter-to {
+    opacity: 1;
+}
+
+.fof-fade-2-leave {
+    opacity: 0;
+}
+
+.fof-fade-2-leave-active {
+    transition: opacity 0.3s ease-in-out;
+    transition-delay: -1s;
+}
+
+.fof-fade-2-leave-to {
+    opacity: 1;
+}
+
+
 /*   my-app   */
 .my-apps {
     .el-input-group__append {

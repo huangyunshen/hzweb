@@ -133,6 +133,7 @@
                         this.transactionsList = res.data.map((item) => {
                             let hashObj = this.$web3.eth.getTransaction(item.txHash)
                             hashObj.value = this.$web3.fromWei(hashObj.value.toString(10))
+                            hashObj.time = item.time
                             return hashObj
                         })
                     }
