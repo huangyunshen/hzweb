@@ -7,6 +7,9 @@
                     <div class="pool-balance">
                         奖池余额：{{ contractBalance }} FOF
                     </div>
+                    <div class="pool-balance" style="left: 20px;right: auto">
+                        我的余额：{{ Number(myBalance).toFixed(4) }} FOF
+                    </div>
                     <div class="game-talbe">
                         <p class="time-remaining">剩余下注时间 <span>{{countDown}}</span> 秒</p>
                         <div class="selectable">
@@ -177,6 +180,8 @@
         name: "app-detail",
         data() {
             return {
+                myAddress: '',// 我的地址
+                myBalance: '', // 我的余额
                 showResult: false,
                 showSourceVisible: false,
                 isSelected: null,
@@ -311,8 +316,8 @@
                     } else {
                         result = '2'
                     }
+                    this.showResult = true // 显示结果弹窗
                     if (this.prevBet.length > 1) {
-                        this.showResult = true // 显示结果弹窗
                         if (this.betHistory.length === 0) {
                             return
                         }
@@ -332,15 +337,13 @@
                         this.betArr.hu = 0
                         this.betArr.he = 0
                     } else {
-                        this.$message({
-                            message: `结果为 龙：${this.dragonNum} 虎：${this.tigerNum}`,
-                            type: 'success',
-                        })
+                        this.resultBalance = 0
                     }
                     this.resultList = this.myContractInstance.getResultHistory().map((item) => {
                         return item.toString(10)
                     })
                     this.contractBalance = this.$web3.fromWei(this.myContractInstance.getCurrentBalance().toString(10), 'ether')
+                    this.myBalance = this.$web3.fromWei(this.$web3.eth.getBalance(this.myAddress)).toJSON()
                     //结算完
                     this.$store.commit('setCryptPercent', {percent: false, text: ''})
                     let timer = setTimeout(() => {
@@ -352,15 +355,13 @@
             },
             confirmBet(sign) {
                 this.bet(sign)
-                let users = this.$funs.getLocalAddress()
-                let user = users.addresses[users.active]
+                let user = this.myAddress
                 let params = {
                     addr: user,
                     cho: this.betZh,
                     ran: parseInt(Math.random() * (10 ** 12)),
                     coin: this.$web3.toWei(this.moneyNum, 'ether'),
                 }
-                // this.$store.state.passwordOfPlay = '111111111' // -----------------------------------------------------------------------------------------------
                 if (this.$store.state.passwordOfPlay !== '') {
                     try {
                         this.$web3.personal.unlockAccount(user, this.$store.state.passwordOfPlay, 6000000)
@@ -580,6 +581,9 @@
                 }, 1000)
                 this.settleTime = this.myContractInstance.getBlockTime()[0].toString(10)
                 this.contractBalance = this.$web3.fromWei(this.myContractInstance.getCurrentBalance().toString(10), 'ether')
+                let users = this.$funs.getLocalAddress()
+                this.myAddress = users.addresses[users.active]
+                this.myBalance = this.$web3.fromWei(this.$web3.eth.getBalance(this.myAddress)).toJSON()
             }
         },
         deactivated() {
