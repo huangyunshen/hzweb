@@ -374,6 +374,7 @@
                     this.savePwdConfirm.flag = false
                     this.loading = {flag: true, text: '正在发牌···'}
                     this.showResult = false
+                    this.countDown = 1
                 }
                 // let arr = this.myContractInstance.getBlockTime()
                 // console.log(arr[0].toString(10)
@@ -401,6 +402,7 @@
                     this.confirm.flag = false
                     this.prompt.flag = false
                     this.savePwdConfirm.flag = false
+                    this.loading = {flag: false, text: ''}
                     this.showResult = true // 显示结果弹窗
                     if (this.prevBet.length > 1) {
                         if (this.betHistory.length === 0) {
@@ -428,12 +430,11 @@
                     this.resultList = this.myContractInstance.getResultHistory().map((item) => {
                         return item.toString(10)
                     })
-                    this.contractBalance = this.$web3.fromWei(this.myContractInstance.getCurrentBalance().toString(10), 'ether')
-                    this.myBalance = this.$web3.fromWei(this.$web3.eth.getBalance(this.myAddress)).toJSON()
                     //结算完
-                    this.loading = {flag: false, text: ''}
                     let timer = setTimeout(() => {
                         clearTimeout(timer)
+                        this.contractBalance = this.$web3.fromWei(this.myContractInstance.getCurrentBalance().toString(10), 'ether')
+                        this.myBalance = this.$web3.fromWei(this.$web3.eth.getBalance(this.myAddress)).toJSON()
                         this.showResult = false // 显示结果弹窗
                     }, 6000)
                     this.getTimerTime()
