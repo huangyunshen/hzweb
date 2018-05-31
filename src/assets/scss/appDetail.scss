@@ -1,6 +1,6 @@
 .app-detail {
     width: 100%;
-    min-width: 1360px;
+    min-width: 1400px;
     height: 100%;
     background: url("../../assets/images/longhudou/lhd_bg.jpg") no-repeat;
     background-size: cover;
@@ -35,7 +35,7 @@
         }
     }
     .game-content {
-        width: 1360px;
+        width: 1400px;
         position: absolute;
         top: 50%;
         left: 50%;
@@ -353,10 +353,12 @@
 
                         .modal-result-right {
                             float: right;
-                            text-align: left;
                             width: 80px;
                             font-size: 16px;
                             color: #fff4e5;
+                            p:first-child {
+                                width: 60px;
+                            }
                             .modal-result-cardicon {
                                 width: 68px;
                                 height: 57px;
@@ -392,7 +394,7 @@
             margin-left: 30px;
             text-align: left;
             .game-result-history {
-                width: 280px;
+                width: 320px;
                 height: 180px;
                 background-color: rgba(63, 27, 104, 0.2);
                 box-shadow: 0px 14px 40px 0px rgba(11, 6, 27, 0.5);
@@ -401,13 +403,12 @@
                 .game-result-content {
                     height: 130px;
                     margin: 5px;
-                    padding-left: 10px;
                     overflow-y: auto;
                     span {
                         display: inline-block;
                         width: 34px;
                         height: 34px;
-                        margin: 5px;
+                        margin: 4px;
                     }
                     .record-long {
                         background: url("../../assets/images/longhudou/xiazhu_long.png") no-repeat;
@@ -422,7 +423,7 @@
             }
             .game-pour-history {
                 margin-top: 20px;
-                width: 280px;
+                width: 320px;
                 height: 378px;
                 background-color: rgba(63, 27, 104, 0.2);
                 box-shadow: 0px 14px 40px 0px rgba(11, 6, 27, 0.5);

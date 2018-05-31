@@ -86,7 +86,7 @@
                         <div class="input-item">
                             <p>下注金额</p>
                             <p>
-                                <input maxlength="15" v-model="moneyNum">
+                                <input maxlength="15" v-model="moneyNum" autocomplete="off">
                             </p>
                         </div>
                     </div>
@@ -181,7 +181,8 @@
                     <div class="game-result-content">
                         <span v-for="(item,index) in resultList"
                               :key="index"
-                              :class="{'record-long': item === '0','record-hu': item === '1','record-he': item === '2'}"></span>
+                              :class="{'record-long': item === '0','record-hu': item === '1','record-he': item === '2'}">
+                        </span>
                     </div>
                 </div>
                 <div class="game-pour-history">
@@ -189,21 +190,30 @@
                     <p class="game-history-line"></p>
                     <div class="game-pour-content">
                         <el-row class="game-pour-title">
-                            <el-col :span="8">下注对象</el-col>
-                            <el-col :span="8">下注金额</el-col>
-                            <el-col :span="8">输赢金额</el-col>
+                            <el-col :span="6">下注对象</el-col>
+                            <el-col :span="6">下注金额</el-col>
+                            <el-col :span="6">输赢金额</el-col>
+                            <el-col :span="6">出牌结果</el-col>
                         </el-row>
                         <div class="game-pour-body">
                             <el-row v-for="(item,index) in betHistory"
                                     :key="index">
-                                <el-col :span="8">
+                                <el-col :span="6">
                                     <span class="game-pour-icon"
-                                          :class="{'record-long': item.flag === '0','record-hu': item.flag === '1','record-he': item.flag === '2'}"></span>
+                                          :class="{'record-long': item.flag === '0','record-hu': item.flag === '1','record-he': item.flag === '2'}">
+                                    </span>
                                 </el-col>
-                                <el-col :span="8"><span class="game-pour-num">{{ item.coin }}</span></el-col>
-                                <el-col :span="8"><span
-                                        :class="{'game-pour-win': item.win.indexOf('+') !== -1,'game-pour-lost': item.win.indexOf('-') !== -1}">
-                                    {{ item.win }}</span></el-col>
+                                <el-col :span="6"><span class="game-pour-num">{{ item.coin }}</span></el-col>
+                                <el-col :span="6">
+                                    <span :class="{'game-pour-win': item.win.indexOf('+') !== -1,'game-pour-lost': item.win.indexOf('-') !== -1}">
+                                        &nbsp;{{ item.win }}&nbsp;
+                                    </span>
+                                </el-col>
+                                <el-col :span="6">
+                                    <span class="game-pour-icon"
+                                          :class="{'record-long': item.result === '0','record-hu': item.result === '1','record-he': item.result === '2'}">
+                                    </span>
+                                </el-col>
                             </el-row>
                         </div>
                     </div>
@@ -404,6 +414,7 @@
                                 this.betHistory[i].win = '- ' + this.betHistory[i].coin
                                 this.resultBalance -= Number(this.betHistory[i].coin)
                             }
+                            this.betHistory[i].result = result
                         }
 
                         this.prevBet.length = 0
@@ -534,7 +545,8 @@
                         this.betHistory.push({
                             flag: this.prevBet[1],
                             coin: this.prevBet[2],
-                            win: ''
+                            win: '',
+                            result:''
                         })
                         this.$message.success('下注成功！请等待出牌结果！')
                     } else {
