@@ -388,6 +388,9 @@
                     } else {
                         result = '2'
                     }
+                    this.confirm.flag = false
+                    this.prompt.flag = false
+                    this.savePwdConfirm.flag = false
                     this.showResult = true // 显示结果弹窗
                     if (this.prevBet.length > 1) {
                         if (this.betHistory.length === 0) {
