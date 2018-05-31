@@ -7,6 +7,9 @@
                     <div class="pool-balance">
                         奖池余额：{{ contractBalance }} FOF
                     </div>
+                    <div class="pool-balance" style="left: 20px;right: auto">
+                        我的余额：{{ Number(myBalance).toFixed(4) }} FOF
+                    </div>
                     <div class="game-talbe">
                         <p class="time-remaining">剩余下注时间 <span>{{countDown}}</span> 秒</p>
                         <div class="selectable">
@@ -127,6 +130,48 @@
                             <span class="modal-loading-text">{{loading.text}}</span>
                         </p>
                     </div>
+                    <transition name="fof-fade-2">
+                        <div class="modal" v-show="confirm.flag">
+                            <div class="modal-loading-confirm">
+                                <p class="modal-confirm-text tc">确认下注 <span>{{ confirm.text }}</span> FOF</p>
+                                <p class="modal-confirm-btn">
+                                    <button type="button" class="btn cancel" @click="confirm.flag = false"></button>
+                                    <button type="button" class="btn confirm" @click="confirmBet(betSign)"></button>
+                                </p>
+                            </div>
+                        </div>
+                    </transition>
+                    <transition name="fof-fade-2">
+                        <div class="modal" v-show="savePwdConfirm.flag">
+                            <div class="modal-loading-confirm">
+                                <p class="modal-confirm-text tc">{{ savePwdConfirm.text }}</p>
+                                <p class="modal-confirm-btn">
+                                    <button type="button" class="btn cancel"
+                                            @click="savePwdConfirmFun('cancel')"></button>
+                                    <button type="button" class="btn confirm"
+                                            @click="savePwdConfirmFun('confirm')"></button>
+                                </p>
+                            </div>
+                        </div>
+                    </transition>
+                    <transition name="fof-fade-2">
+                        <div class="modal" v-show="prompt.flag">
+                            <div class="modal-loading-confirm modal-prompt">
+                                <p class="modal-prompt-text tc">
+                                    请输入
+                                    <span>{{ prompt.text }}</span>
+                                    的密码
+                                </p>
+                                <p class="modal-prompt-input tc">
+                                    <input type="password" autocomplete="off" v-model="promptPwd">
+                                </p>
+                                <p class="modal-confirm-btn">
+                                    <button type="button" class="btn cancel" @click="prompt.flag = false"></button>
+                                    <button type="button" class="btn confirm" @click="promptFun"></button>
+                                </p>
+                            </div>
+                        </div>
+                    </transition>
                 </div>
             </div>
             <div class="game-record">
@@ -195,6 +240,10 @@
         name: "app-detail",
         data() {
             return {
+                temporaryParams: {},
+                promptPwd:'',
+                myAddress: '',// 我的地址
+                myBalance: '', // 我的余额
                 showResult: false,
                 showSourceVisible: false,
                 isSelected: null,
@@ -225,9 +274,22 @@
                 }, // 当前局下注金额对象
                 contractBalance: '', // 合约余额
                 resultBalance: 0, // 本局输赢金额
-                loading: {
+                loading: { // 模态框
                     flag: false,
                     text: ''
+                },
+                confirm: { // 确认框
+                    flag: false,
+                    text: '',
+                },
+                betSign: '', // 下注的对象
+                prompt: { // 输入框
+                    flag: false,
+                    text: ''
+                },
+                savePwdConfirm: {
+                    flag: false,
+                    text: '',
                 }
             }
         },
@@ -307,8 +369,12 @@
             settlement() {
                 if (this.countDown === 0) {
                     this.showSourceVisible = false
+                    this.confirm.flag = false
+                    this.prompt.flag = false
+                    this.savePwdConfirm.flag = false
                     this.loading = {flag: true, text: '正在发牌···'}
                     this.showResult = false
+                    this.countDown = 1
                 }
                 // let arr = this.myContractInstance.getBlockTime()
                 // console.log(arr[0].toString(10)
@@ -333,8 +399,12 @@
                     } else {
                         result = '2'
                     }
+                    this.confirm.flag = false
+                    this.prompt.flag = false
+                    this.savePwdConfirm.flag = false
+                    this.loading = {flag: false, text: ''}
+                    this.showResult = true // 显示结果弹窗
                     if (this.prevBet.length > 1) {
-                        this.showResult = true // 显示结果弹窗
                         if (this.betHistory.length === 0) {
                             return
                         }
@@ -355,92 +425,93 @@
                         this.betArr.hu = 0
                         this.betArr.he = 0
                     } else {
-                        this.$message({
-                            message: `结果为 龙：${this.dragonNum} 虎：${this.tigerNum}`,
-                            type: 'success',
-                        })
+                        this.resultBalance = 0
                     }
                     this.resultList = this.myContractInstance.getResultHistory().map((item) => {
                         return item.toString(10)
                     })
-                    this.contractBalance = this.$web3.fromWei(this.myContractInstance.getCurrentBalance().toString(10), 'ether')
                     //结算完
-                    this.loading = {flag: false, text: ''}
                     let timer = setTimeout(() => {
                         clearTimeout(timer)
+                        this.contractBalance = this.$web3.fromWei(this.myContractInstance.getCurrentBalance().toString(10), 'ether')
+                        this.myBalance = this.$web3.fromWei(this.$web3.eth.getBalance(this.myAddress)).toJSON()
                         this.showResult = false // 显示结果弹窗
-                    }, 3000)
+                    }, 6000)
                     this.getTimerTime()
                 }
             },
             confirmBet(sign) {
+                this.confirm.flag = false
                 this.bet(sign)
-                let users = this.$funs.getLocalAddress()
-                let user = users.addresses[users.active]
+                let user = this.myAddress
                 let params = {
                     addr: user,
                     cho: this.betZh,
                     ran: parseInt(Math.random() * (10 ** 12)),
                     coin: this.$web3.toWei(this.moneyNum, 'ether'),
                 }
-                // this.$store.state.passwordOfPlay = '111111111' // -----------------------------------------------------------------------------------------------
                 if (this.$store.state.passwordOfPlay !== '') {
                     try {
                         this.$web3.personal.unlockAccount(user, this.$store.state.passwordOfPlay, 6000000)
                         this.betFun(user, params)
                     } catch (err) {
                         this.$message.error(String(err))
-
                     }
                 } else {
-                    this.$prompt(`请输入${user}的密码`, '提示', {
-                        inputType: 'password',
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                    }).then(({value}) => {
-                        try {
-                            this.$web3.personal.unlockAccount(user, value, 6000000)
-                            this.$confirm('是否临时保存密码，页面在刷新或者关闭后自动清除', '提示', {
-                                confirmButtonText: '确定',
-                                cancelButtonText: '取消',
-                                type: 'warning'
-                            }).then(() => {
-                                this.$store.commit("setPlayPassword", value)
-                                this.betFun(user, params)
-                            }).catch(() => {
-                                this.betFun(user, params)
-                            })
-                        } catch (err) {
-                            this.$message.error(String(err))
-                            this.loading = {flag: false, text: ''}
-                        }
-                    }).catch((error) => {
-                        console.log(error)
-                    })
+                    this.prompt.flag = true
+                    this.prompt.text = user
+                    this.temporaryParams = params
+                }
+            },
+            promptFun(){
+                this.prompt.flag = false
+                try {
+                    this.$web3.personal.unlockAccount(this.myAddress, this.promptPwd, 6000000)
+                    this.savePwdConfirm.flag = true
+                    this.savePwdConfirm.text = "是否临时保存密码，页面在刷新或者关闭后自动清除"
+                    this.temporaryParams.value = this.promptPwd
+                } catch (err) {
+                    this.$message.error(String(err))
+                    this.loading = {flag: false, text: ''}
+                }
+            },
+            // 是否保存密码confirm
+            savePwdConfirmFun(sign) {
+                if (sign === "confirm") {
+                    this.$store.commit("setPlayPassword", this.temporaryParams.value)
+                    this.betFun(this.myAddress, this.temporaryParams)
+                    this.savePwdConfirm.flag = false
+                } else {
+                    this.savePwdConfirm.flag = false
+                    this.betFun(this.myAddress, this.temporaryParams)
                 }
             },
             /**
              * 下注
              */
             callContract(sign) {
+                if (!this.chargeLegality()) {
+                    return false
+                }
+                if (Number(this.$web3.fromWei(this.$web3.eth.getBalance(this.myAddress)).toJSON()) === 0) {
+                    this.$message.error('余额不足，不能下注！')
+                    return false
+                }
                 if (!this.$funs.validateFloatNum(this.moneyNum)) {
                     this.$message.error('下注金额只能为正数！')
                     return false
                 }
-                if (!this.chargeLegality()) {
+                if (this.$web3.fromWei(this.$web3.eth.getBalance(this.myAddress)).toJSON() < this.moneyNum) {
+                    this.$message.error('您的余额小于下注金额，下注失败！')
                     return false
                 }
-                this.$confirm('确认下注吗?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    this.confirmBet(sign)
-                }).catch(() => {
-                })
+                this.betSign = sign
+                this.confirm.flag = true
+                this.confirm.text = this.moneyNum
             },
 
             betFun(user, params) {
+                this.savePwdConfirm.flag = false
                 if (this.countDown < 5) {
                     this.$message.error('下注失败！剩余时间小于5s不能下注！')
                     return
@@ -468,7 +539,6 @@
                                 break
                             default:
                                 break
-
                         }
                         this.prevBet[0]++
                         this.prevBet[1] = params.cho
@@ -604,6 +674,9 @@
                 }, 1000)
                 this.settleTime = this.myContractInstance.getBlockTime()[0].toString(10)
                 this.contractBalance = this.$web3.fromWei(this.myContractInstance.getCurrentBalance().toString(10), 'ether')
+                let users = this.$funs.getLocalAddress()
+                this.myAddress = users.addresses[users.active]
+                this.myBalance = this.$web3.fromWei(this.$web3.eth.getBalance(this.myAddress)).toJSON()
             }
         },
         deactivated() {
