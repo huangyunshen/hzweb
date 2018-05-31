@@ -24,9 +24,9 @@
             <el-form ref="form" :model="form" label-position="left" label-width="150px">
                 <el-form-item class="mt-40" label="应用地址">
                     <el-input id="copyAppAddr"
-                            v-model="form.contractAddr"
-                            placeholder="请选中一个应用"
-                            readonly
+                              v-model="form.contractAddr"
+                              placeholder="请选中一个应用"
+                              readonly
                     >
                         <el-button slot="append" @click="copyAddress">复制</el-button>
                     </el-input>
@@ -36,7 +36,9 @@
                             readonly
                             v-model="form.currentCoin"
                             placeholder="请选中一个应用"
-                    ><template slot="append">FOF</template></el-input>
+                    >
+                        <template slot="append">FOF</template>
+                    </el-input>
                 </el-form-item>
                 <el-form-item class="mt-40" label="奖池充值">
                     <el-input
@@ -98,7 +100,7 @@
                 this.myContractInstance = MyContract.at(addr)
             },
             // 复制地址
-            copyAddress(){
+            copyAddress() {
                 let host = location.host
                 let addr = host + '/appDetail?' + this.form.contractAddr
                 let input = document.getElementById('copyAppAddr')
@@ -147,6 +149,10 @@
                     this.$alert(`交易hash为：${hash}`, '充值成功', {
                         confirmButtonText: '确定',
                     })
+                    let timer = setTimeout(() => {
+                        clearTimeout(timer)
+                        this.form.currentCoin = this.$web3.fromWei(this.myContractInstance.getCurrentBalance().toString(10), 'ether')
+                    }, 5000)
                     let txObj = this.$web3.eth.getTransaction(hash)
                     this.$axios.post('/api/addTx.php', {
                         "type": "1",
@@ -202,6 +208,10 @@
                         confirmButtonText: '确定',
                     })
                     let txObj = this.$web3.eth.getTransaction(hash)
+                    let timer = setTimeout(() => {
+                        clearTimeout(timer)
+                        this.form.currentCoin = this.$web3.fromWei(this.myContractInstance.getCurrentBalance().toString(10), 'ether')
+                    }, 5000)
                     this.$axios.post('/api/addTx.php', {
                         "type": "1",
                         "sendAddr": txObj.from,

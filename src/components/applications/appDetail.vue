@@ -401,11 +401,19 @@
              * 下注
              */
             callContract(sign) {
+                if (!this.chargeLegality()) {
+                    return false
+                }
+                if(Number(this.$web3.fromWei(this.$web3.eth.getBalance(this.myAddress)).toJSON()) === 0){
+                    this.$message.error('余额不足，不能下注！')
+                    return false
+                }
                 if (!this.$funs.validateFloatNum(this.moneyNum)) {
                     this.$message.error('下注金额只能为正数！')
                     return false
                 }
-                if (!this.chargeLegality()) {
+                if(this.$web3.fromWei(this.$web3.eth.getBalance(this.myAddress)).toJSON() < this.moneyNum){
+                    this.$message.error('您的余额小于下注金额，下注失败！')
                     return false
                 }
                 this.$confirm('确认下注吗?', '提示', {

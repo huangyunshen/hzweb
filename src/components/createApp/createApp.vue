@@ -56,7 +56,9 @@
                                         <el-input
                                                 auto-complete="off"
                                                 v-model="rechargeData.value"
-                                        ><template slot="append">FOF</template></el-input>
+                                        >
+                                            <template slot="append">FOF</template>
+                                        </el-input>
                                     </el-form-item>
                                 </el-form>
                                 <el-form class="mt-50"
@@ -70,19 +72,25 @@
                                                 <el-input
                                                         auto-complete="off"
                                                         v-model="rechargeData.price1"
-                                                ><template slot="append">FOF</template></el-input>
+                                                >
+                                                    <template slot="append">FOF</template>
+                                                </el-input>
                                             </el-col>
                                             <el-col :span="7" :offset="1">
                                                 <el-input
                                                         auto-complete="off"
                                                         v-model="rechargeData.price2"
-                                                ><template slot="append">FOF</template></el-input>
+                                                >
+                                                    <template slot="append">FOF</template>
+                                                </el-input>
                                             </el-col>
                                             <el-col :span="7" :offset="1">
                                                 <el-input
                                                         auto-complete="off"
                                                         v-model="rechargeData.price3"
-                                                ><template slot="append">FOF</template></el-input>
+                                                >
+                                                    <template slot="append">FOF</template>
+                                                </el-input>
                                             </el-col>
                                         </el-row>
                                     </el-form-item>
@@ -211,6 +219,11 @@
                             this.$message.error('请输入正确的充值数额！')
                             return
                         }
+                        let reg = /^\d+.\d{0,9}$/g
+                        if (!reg.test(this.rechargeData.value)) {
+                            this.$message.error('充值数额小数点后不能超过9位！')
+                            return
+                        }
                         if (this.rechargeData.value === '' || Number(this.rechargeData.value) === 0) {
                             this.$message.error('充值数量不能为空和不能为0！')
                             return
@@ -235,7 +248,13 @@
                             || Number(this.rechargeData.price1) === 0
                             || Number(this.rechargeData.price2) === 0
                             || Number(this.rechargeData.price3) === 0) {
-                            this.$message.error('充值数量不能为空和不能为0！')
+                            this.$message.error('下注金额不能为空和不能为0！')
+                            return
+                        }
+                        if (this.rechargeData.price1.length > 2
+                            || this.rechargeData.price2.length > 2
+                            || this.rechargeData.price3.length > 2) {
+                            this.$message.error('每个下注金额不能大于99！')
                             return
                         }
                         this.steps--
@@ -348,7 +367,7 @@
                 )
                 // 传入设置的下注金额和类型(1 代表是龙虎斗)
                 MyContract.new(Number(this.rechargeData.price1), Number(this.rechargeData.price2), Number(this.rechargeData.price3), Number(this.selected), {
-                 // MyContract.new({
+                    // MyContract.new({
                     data: playGameContract.bytecode,
                     from: user,
                     gasPrice: 41000000000,
@@ -393,7 +412,7 @@
                             localStorage.setItem('contractAddress', myContract.address)
                             // 每次部署完合约，需要向定时器合约中注册当前合约地址
                             let myIntContractInstance = MyContract.at(myContract.address)
-                            let hash = myIntContractInstance.registerInterval('0xa25a2ee5eafdafc305adeecae49a3af26114f714', {
+                            let hash = myIntContractInstance.registerInterval('0xb8b79c001bb81134d851cce81ffd8f189f8a8d25', {
                                 from: user,
                                 gasPrice: 41000000000,
                                 gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
