@@ -122,6 +122,14 @@
                             </div>
                         </div>
                     </transition>
+                    <div class="modal" v-show="loading.flag">
+                        <span class="modal-loading-content">
+                            <span class="modal-loading-icon"></span>
+                        </span>
+                        <p>
+                            <span class="modal-loading-text">{{loading.text}}</span>
+                        </p>
+                    </div>
                 </div>
             </div>
             <div class="game-record">
@@ -212,6 +220,10 @@
                 }, // 当前局下注金额对象
                 contractBalance: '', // 合约余额
                 resultBalance: 0, // 本局输赢金额
+                loading:{
+                    flag:false,
+                    text:''
+                }
             }
         },
         filters: {
@@ -290,7 +302,7 @@
             settlement() {
                 if (this.countDown === 0) {
                     this.showSourceVisible = false
-                    this.$store.commit('setCryptPercent', {percent: true, text: '正在结算···'})
+                    this.loading = {flag: true, text: '正在发牌···'}
                     this.showResult = false
                 }
                 // let arr = this.myContractInstance.getBlockTime()
@@ -345,7 +357,7 @@
                     this.contractBalance = this.$web3.fromWei(this.myContractInstance.getCurrentBalance().toString(10), 'ether')
                     this.myBalance = this.$web3.fromWei(this.$web3.eth.getBalance(this.myAddress)).toJSON()
                     //结算完
-                    this.$store.commit('setCryptPercent', {percent: false, text: ''})
+                    this.loading = {flag: false, text: ''}
                     let timer = setTimeout(() => {
                         clearTimeout(timer)
                         this.showResult = false // 显示结果弹窗
@@ -390,7 +402,7 @@
                             })
                         } catch (err) {
                             this.$message.error(String(err))
-                            this.$store.commit('setCryptPercent', {percent: false, text: ''})
+                            this.loading = {flag: false, text: ''}
                         }
                     }).catch((error) => {
                         console.log(error)
@@ -431,12 +443,12 @@
                     this.$message.error('下注失败！剩余时间小于5s不能下注！')
                     return
                 }
-                this.$store.commit('setCryptPercent', {percent: true, text: '正在下注···'})
+                this.loading= {flag: true, text: '正在下注···'}
                 // 监听是否下注失败
                 let betResult = this.myContractInstance.returnBetResult()
                 betResult.watch((err, result) => {
                     betResult.stopWatching()
-                    this.$store.commit('setCryptPercent', {percent: false, text: ''})
+                    this.loading = {flag: false, text: ''}
                     if (err) {
                         this.$message.error('下注失败！')
                         return
@@ -464,7 +476,7 @@
                             coin: this.prevBet[2],
                             win: ''
                         })
-                        this.$message.success('下注成功！请等待下注结果！')
+                        this.$message.success('下注成功！请等待出牌结果！')
                     } else {
                         this.$message.error('下注失败！本局已封盘（奖池金额不够）')
                     }
