@@ -354,6 +354,9 @@
             },
             finished() {
                 this.steps = '1'
+                setTimeout(() => {
+                    this.getBalance()
+                },3000)
             },
             getSignMsg() {
                 return new Promise((resolve, reject) => {
@@ -376,16 +379,18 @@
                     this.transactionData = JSON.stringify(rawTx)
                     resolve()
                 })
+            },
+            getBalance(){
+                if (this.address) {
+                    let balance = this.$web3.eth.getBalance(this.address)
+                    this.balance = this.$web3.fromWei(this.$web3.toDecimal(balance), 'ether')
+                }
             }
         },
         mounted() {
             let obj = this.$funs.getLocalAddress()
             this.address = obj.addresses[obj.active]
-
-            if (this.address) {
-                let balance = this.$web3.eth.getBalance(this.address)
-                this.balance = this.$web3.fromWei(this.$web3.toDecimal(balance), 'ether')
-            }
+            this.getBalance()
         }
     }
 </script>
