@@ -25,8 +25,9 @@
                 <div class="list-body">
                     <ul>
                         <li>
-                            <span @click="getBalance()" class="get-balance"
+                            <span class="get-balance"
                                   title="点击刷新余额">{{balanceCom | amountUnit}}</span>
+                            <i class="el-icon-refresh" @click="getBalance()"></i>
                         </li>
                         <li>
                             <span>{{address}}</span>
@@ -183,8 +184,12 @@
                 font-size: 24px;
                 color: #8abdec;
 
-                .get-balance {
+                .el-icon-refresh {
+                    margin-left: 20px;
                     cursor: pointer;
+                    &:hover {
+                        color : #A0CBF5;
+                    }
                 }
                 .el-input {
                     font-size: 24px;
