@@ -196,12 +196,12 @@
             },
             nextStep() {
                 if (this.steps < 4) {
+                    let users = this.$funs.getLocalAddress()
+                    let balance = this.$funs.getBalance(users.addresses[users.active])
                     if (this.steps === 1) {
-                        let users = this.$funs.getLocalAddress()
-                        let balance = this.$web3.eth.getBalance(users.addresses[users.active]).toString(10)
-                        if (Number(balance) === 0) {
+                        if (balance < 1) {
                             this.$message({
-                                message: "余额不足，无法创建！",
+                                message: this.$msg.balanceNotEnough,
                                 type: 'error'
                             })
                             return
@@ -226,6 +226,10 @@
                         }
                         if (this.rechargeData.value === '' || Number(this.rechargeData.value) === 0) {
                             this.$message.error('充值数量不能为空和不能为0！')
+                            return
+                        }
+                        if (balance < (Number(this.rechargeData.value) + 1)) {
+                            this.$message.error('余额不足以支付充值金额！')
                             return
                         }
                         if (isNaN(this.rechargeData.gasPrice)) {

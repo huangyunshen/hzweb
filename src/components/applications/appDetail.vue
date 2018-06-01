@@ -8,7 +8,7 @@
                         奖池余额：{{ contractBalance }} FOF
                     </div>
                     <div class="pool-balance" style="left: 20px;right: auto">
-                        我的余额：{{ Number(myBalance).toFixed(4) }} FOF
+                        我的余额：{{ myBalance.toFixed(4) }} FOF
                     </div>
                     <div class="game-talbe">
                         <p class="time-remaining">剩余下注时间 <span>{{countDown}}</span> 秒</p>
@@ -83,7 +83,7 @@
                                   :class="'amount'+item"></span>
                             </div>
                         </div>
-                        <div class="input-item">
+                        <div class="input-item" @click="selectAnItem(false)">
                             <p>下注金额</p>
                             <p>
                                 <input maxlength="15" v-model="moneyNum" autocomplete="off">
@@ -243,7 +243,7 @@
                 temporaryParams: {},
                 promptPwd:'',
                 myAddress: '',// 我的地址
-                myBalance: '', // 我的余额
+                myBalance: 0, // 我的余额
                 showResult: false,
                 showSourceVisible: false,
                 isSelected: null,
@@ -331,7 +331,7 @@
             selectAnItem(i) {
                 if (i === false) {
                     this.isSelected = null
-                    this.moneyNum = 0
+                    // this.moneyNum = 0
                 } else {
                     this.isSelected = i
                     this.moneyNum = this.amountArr[i]
@@ -410,10 +410,10 @@
                         }
                         for (let i = this.betHistory.length - 1; i >= this.betHistory.length - this.prevBet[0]; i--) {
                             if (this.betHistory[i].flag === result) {
-                                this.betHistory[i].win = '+ ' + (result === '2' ? this.betHistory[i].coin * 8 : this.betHistory[i].coin)
+                                this.betHistory[i].win = '+' + (result === '2' ? this.betHistory[i].coin * 8 : this.betHistory[i].coin)
                                 this.resultBalance += (result === '2' ? Number(this.betHistory[i].coin) * 8 : Number(this.betHistory[i].coin))
                             } else {
-                                this.betHistory[i].win = '- ' + this.betHistory[i].coin
+                                this.betHistory[i].win = '-' + this.betHistory[i].coin
                                 this.resultBalance -= Number(this.betHistory[i].coin)
                             }
                             this.betHistory[i].result = result
@@ -434,7 +434,7 @@
                     let timer = setTimeout(() => {
                         clearTimeout(timer)
                         this.contractBalance = this.$web3.fromWei(this.myContractInstance.getCurrentBalance().toString(10), 'ether')
-                        this.myBalance = this.$web3.fromWei(this.$web3.eth.getBalance(this.myAddress)).toJSON()
+                        this.myBalance = this.$funs.getBalance(this.myAddress)
                         this.showResult = false // 显示结果弹窗
                     }, 6000)
                     this.getTimerTime()
@@ -493,7 +493,7 @@
                 if (!this.chargeLegality()) {
                     return false
                 }
-                if (Number(this.$web3.fromWei(this.$web3.eth.getBalance(this.myAddress)).toJSON()) === 0) {
+                if (this.$funs.getBalance(this.myAddress) < 1) {
                     this.$message.error('余额不足，不能下注！')
                     return false
                 }
@@ -501,7 +501,7 @@
                     this.$message.error('下注金额只能为正数！')
                     return false
                 }
-                if (this.$web3.fromWei(this.$web3.eth.getBalance(this.myAddress)).toJSON() < this.moneyNum) {
+                if (this.$funs.getBalance(this.myAddress) < Number(this.moneyNum)) {
                     this.$message.error('您的余额小于下注金额，下注失败！')
                     return false
                 }
@@ -676,7 +676,7 @@
                 this.contractBalance = this.$web3.fromWei(this.myContractInstance.getCurrentBalance().toString(10), 'ether')
                 let users = this.$funs.getLocalAddress()
                 this.myAddress = users.addresses[users.active]
-                this.myBalance = this.$web3.fromWei(this.$web3.eth.getBalance(this.myAddress)).toJSON()
+                this.myBalance = this.$funs.getBalance(this.myAddress)
             }
         },
         deactivated() {
