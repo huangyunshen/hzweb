@@ -309,6 +309,7 @@
                     isThree: false,
                     isFour: false,
                     isOther: false,
+                    isBet: false
                 },
             }
         },
@@ -568,7 +569,7 @@
                         this.animateChips.isFour = true
                     }
                 }
-                if(isOther){
+                if (isOther) {
                     this.animateChips.isOther = true
                     this.animateChips.isOne = false
                     this.animateChips.isTwo = false
@@ -591,14 +592,14 @@
                 let timer = setTimeout(() => {
                     clearTimeout(timer)
                     this.$nextTick(() => {
-
                         this.$refs.chipsItem.forEach((item) => {
-                            if(item.getAttribute('data-bool') === "true"){
+                            if (item.getAttribute('data-bool') === "true") {
                                 item.style.left = `${left + this.randomFun(75)}px`
                                 item.style.top = `${175 + this.randomFun(60)}px`
-                                item.setAttribute("data-bool","false")
+                                item.setAttribute("data-bool", "false")
                             }
                         })
+                        this.animateChips.isBet = false
                     })
                 }, 1)
             },
@@ -634,6 +635,7 @@
                     this.$message.error('下注失败！剩余时间小于5s不能下注！')
                     return
                 }
+                this.animateChips.isBet = true
                 this.loading = {flag: true, text: '正在下注···'}
                 // 监听是否下注失败
                 let betResult = this.myContractInstance.returnBetResult()
@@ -782,12 +784,40 @@
                 //定时器
                 this.getCoinsTimer = setInterval(() => {
                     // 实时获取下注币数
-                    this.betCoin.length = 0
                     let arr = this.myContractInstance.getTotalCoins()
                     if (arr) {
-                        this.betCoin = arr.map((item) => {
+                        let result = arr.map((item) => {
                             return this.$web3.fromWei(item.toString(10), 'ether')
                         })
+                        if(!this.animateChips.isBet){
+                            if (result[1] !== '0' || result[2] !== '0' || result[3] !== '0') {
+                                if (this.betCoin[0] === 0 && this.betCoin[1] === 0 && this.betCoin[2] === 0) {
+                                    if (result[1] !== '0') {
+                                        this.betAnimate('dragon', result[1] - this.betCoin[1], true)
+                                    }
+                                    if (result[2] !== '0') {
+                                        this.betAnimate('tiger', result[2] - this.betCoin[2], true)
+                                    }
+                                    if (result[3] !== '0') {
+                                        this.betAnimate('leopard', result[3] - this.betCoin[3], true)
+                                    }
+                                } else {
+                                    if (JSON.stringify(result) !== JSON.stringify(this.betCoin)) {
+                                        if (this.betCoin[1] !== result[1]) {
+                                            this.betAnimate('dragon', result[1] - this.betCoin[1], true)
+                                        }
+                                        if (this.betCoin[2] !== result[2]) {
+                                            this.betAnimate('tiger', result[2] - this.betCoin[2], true)
+                                        }
+                                        if (this.betCoin[3] !== result[3]) {
+                                            this.betAnimate('leopard', result[3] - this.betCoin[3], true)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        this.betCoin.length = 0
+                        this.betCoin = result
                     }
                     //倒计时
                     if (this.countDown <= 5) {
