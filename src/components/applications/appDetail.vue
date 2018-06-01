@@ -4,6 +4,15 @@
         <div class="game-content">
             <div class="game-body-background">
                 <div class="game-body">
+                    <span class="chips"
+                          v-for="n in animateChips.number"
+                          ref="chipsItem"
+                          v-show="animateChips.isShow"
+                          :style="{transition: '1s ease-in-out',transitionDelay: n*100 + 'ms'}"
+                          data-bool="true"
+                          :class="{bottom1: animateChips.isOne,
+                          bottom2: animateChips.isTwo,bottom3: animateChips.isThree,
+                          bottom4: animateChips.isFour,top: animateChips.isOther}"></span>
                     <div class="pool-balance">
                         奖池余额：{{ contractBalance }} FOF
                     </div>
@@ -178,7 +187,7 @@
                 <div class="game-result-history">
                     <div class="game-history-title">历史出牌结果</div>
                     <p class="game-history-line"></p>
-                    <div class="game-result-content">
+                    <div class="game-result-content" ref="gameResult">
                         <span v-for="(item,index) in resultList"
                               :key="index"
                               :class="{'record-long': item === '0','record-hu': item === '1','record-he': item === '2'}">
@@ -241,7 +250,7 @@
         data() {
             return {
                 temporaryParams: {},
-                promptPwd:'',
+                promptPwd: '',
                 myAddress: '',// 我的地址
                 myBalance: '', // 我的余额
                 showResult: false,
@@ -290,7 +299,17 @@
                 savePwdConfirm: {
                     flag: false,
                     text: '',
-                }
+                },
+                // 下注钱币飞舞动画
+                animateChips: {
+                    number: [],
+                    isShow: false,
+                    isOne: false,
+                    isTwo: false,
+                    isThree: false,
+                    isFour: false,
+                    isOther: false,
+                },
             }
         },
         filters: {
@@ -424,6 +443,13 @@
                         this.betArr.long = 0
                         this.betArr.hu = 0
                         this.betArr.he = 0
+                        this.animateChips.number.length = 0
+                        this.animateChips.isShow = false
+                        this.animateChips.isOne = false
+                        this.animateChips.isTwo = false
+                        this.animateChips.isThree = false
+                        this.animateChips.isFour = false
+                        this.animateChips.isOther = false
                     } else {
                         this.resultBalance = 0
                     }
@@ -463,7 +489,7 @@
                     this.temporaryParams = params
                 }
             },
-            promptFun(){
+            promptFun() {
                 this.prompt.flag = false
                 try {
                     this.$web3.personal.unlockAccount(this.myAddress, this.promptPwd, 6000000)
@@ -485,6 +511,99 @@
                     this.savePwdConfirm.flag = false
                     this.betFun(this.myAddress, this.temporaryParams)
                 }
+            },
+            /**
+             * 下注动画
+             * **** 左上
+             * left: 260px;
+             * top: 175px;
+             * **** 右上
+             * left: 335px;
+             * top: 175px;
+             * **** 左下
+             * left: 260px;
+             * top: 235px;
+             * **** 右下
+             * left: 335px;
+             * top: 235px;
+             * 矩形：75 * 60
+             * 右移一次加： 450 - 260 = 190
+             *
+             * sign: 龙虎和
+             * coin: 金额
+             * isOther: 是不是其他人下注
+             */
+            betAnimate(sign, coin, isOther) {
+                // left: 260px;
+                // top: 175px;
+                let money = Number(coin)
+                this.amountArr = this.amountArr.sort((a, b) => {
+                    return a - b
+                })
+                if (money < this.amountArr[1]) {
+                    for (let i = 0; i < 3; i++) {
+                        this.animateChips.number.push(i)
+                    }
+                    if (money === this.amountArr[0]) {
+                        this.animateChips.isOne = true
+                    } else {
+                        this.animateChips.isFour = true
+                    }
+                } else if (money >= this.amountArr[2]) {
+                    for (let i = 0; i < 8; i++) {
+                        this.animateChips.number.push(i)
+                    }
+                    if (money === this.amountArr[2]) {
+                        this.animateChips.isThree = true
+                    } else {
+                        this.animateChips.isFour = true
+                    }
+                } else {
+                    for (let i = 0; i < 5; i++) {
+                        this.animateChips.number.push(i)
+                    }
+                    if (money === this.amountArr[1]) {
+                        this.animateChips.isTwo = true
+                    } else {
+                        this.animateChips.isFour = true
+                    }
+                }
+                if(isOther){
+                    this.animateChips.isOther = true
+                    this.animateChips.isOne = false
+                    this.animateChips.isTwo = false
+                    this.animateChips.isThree = false
+                    this.animateChips.isFour = false
+                }
+                this.animateChips.isShow = true
+                let left = 0
+                switch (sign) {
+                    case 'dragon':
+                        left = 260
+                        break
+                    case 'leopard':
+                        left = 260 + 190
+                        break
+                    case 'tiger':
+                        left = 260 + 190 * 2
+                        break
+                }
+                let timer = setTimeout(() => {
+                    clearTimeout(timer)
+                    this.$nextTick(() => {
+
+                        this.$refs.chipsItem.forEach((item) => {
+                            if(item.getAttribute('data-bool') === "true"){
+                                item.style.left = `${left + this.randomFun(75)}px`
+                                item.style.top = `${175 + this.randomFun(60)}px`
+                                item.setAttribute("data-bool","false")
+                            }
+                        })
+                    })
+                }, 1)
+            },
+            randomFun(range) {
+                return Number((Math.random() * range).toFixed(0))
             },
             /**
              * 下注
@@ -509,7 +628,6 @@
                 this.confirm.flag = true
                 this.confirm.text = this.moneyNum
             },
-
             betFun(user, params) {
                 this.savePwdConfirm.flag = false
                 if (this.countDown < 5) {
@@ -547,9 +665,10 @@
                             flag: this.prevBet[1],
                             coin: this.prevBet[2],
                             win: '',
-                            result:''
+                            result: ''
                         })
                         this.$message.success('下注成功！请等待出牌结果！')
+                        this.betAnimate(this.betSign, this.moneyNum)
                     } else {
                         this.$message.error('下注失败！本局已封盘（奖池金额不够）')
                     }
@@ -642,6 +761,12 @@
             },
             exit() {
                 this.$router.replace({name: 'applications'})
+            },
+            scrollToBottom() {
+                this.$nextTick(() => {
+                    let div = this.$refs.gameResult
+                    div.scrollTop = div.scrollHeight
+                })
             }
         },
         mounted() {
@@ -684,7 +809,10 @@
         },
         beforeDestroy() {
             clearInterval(this.getCoinsTimer)
-        }
+        },
+        watch: {
+            'resultList': 'scrollToBottom',
+        },
     }
 </script>
 
