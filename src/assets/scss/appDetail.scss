@@ -58,6 +58,33 @@
                 height: 100%;
                 position: relative;
                 background: url("../../assets/images/longhudou/table_bg.jpg") no-repeat;
+                .chips{
+                    position: absolute;
+                    width: 23px;
+                    height: 23px;
+                    background: url("../../assets/images/longhudou/chips_small.png") no-repeat;
+                    z-index: 10;
+                    &.bottom1{
+                        left: 237px;
+                        top: 478px;
+                    }
+                    &.bottom2{
+                        left: 387px;
+                        top: 478px;
+                    }
+                    &.bottom3{
+                        left: 537px;
+                        top: 478px;
+                    }
+                    &.bottom4{
+                        left: 720px;
+                        top: 478px;
+                    }
+                    &.top{
+                        left: 487px;
+                        top: 41px;
+                    }
+                }
                 &:before {
                     content: '';
                     display: table;
