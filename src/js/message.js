@@ -24,5 +24,6 @@ export default {
     readFileErr: '读取文件失败',
     diffrentAccount:'输入账户与当前登录账户不一致，是否把当前登录账户替换',
     mustSelectAnApp:'请选择需要创建的应用',
-    balanceNotEnough:'余额不足'
+    balanceNotEnough:'余额不足',
+    invalidBalanceAddr:'查询余额失败，账户地址无效'
 }

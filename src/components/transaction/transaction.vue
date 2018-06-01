@@ -209,10 +209,10 @@
         },
         computed: {
             balanceToWei() {
-                return this.$web3.toWei(this.balance)
+                return Number(this.$web3.toWei(this.balance))
             },
             valueToWei() {
-                return this.$web3.toWei(this.form.value, 'ether')
+                return Number(this.$web3.toWei(this.form.value, 'ether'))
             },
             totalPrice() {
                 let total = ((this.$store.state.gasPrice * Math.pow(10, 9)) * this.form.gas) + Number(this.valueToWei)
@@ -259,8 +259,8 @@
             importAccount() {
                 this.$refs.unlock.importAccount().then((wallet) => {
                     if (typeof wallet === 'object') {
-                        let balance = this.$web3.eth.getBalance(wallet.address, 'latest')
-                        if (balance.toJSON() < this.totalPrice) {
+                        let balance = this.$funs.getBalanceByWei(wallet.address)
+                        if (balance < this.totalPrice) {
                             this.$message({
                                 message: this.$msg.balanceNotEnough,
                                 type: 'error'
@@ -275,7 +275,7 @@
                             }).then(() => {
                                 this.$funs.setLocalAddress(wallet)
                                 this.address = wallet.address
-                                this.balance = this.$web3.fromWei(this.$web3.toDecimal(balance), 'ether')
+                                this.balance = this.$funs.getBalance(wallet.address)
                                 this.privateKey = wallet.privateKey.replace('0x', '')
                                 this.getSignMsg().then(() => {
                                     this.steps = '3'
@@ -381,10 +381,7 @@
                 })
             },
             getBalance(){
-                if (this.address) {
-                    let balance = this.$web3.eth.getBalance(this.address)
-                    this.balance = this.$web3.fromWei(this.$web3.toDecimal(balance), 'ether')
-                }
+                this.balance = this.$funs.getBalance(this.address)
             }
         },
         mounted() {

@@ -26,7 +26,7 @@
                     <ul>
                         <li>
                             <span class="get-balance"
-                                  title="点击刷新余额">{{balanceCom | amountUnit}}</span>
+                                  title="点击刷新余额">{{balance | amountUnit}}</span>
                             <i class="el-icon-refresh" @click="getBalance()"></i>
                         </li>
                         <li>
@@ -82,18 +82,6 @@
                 privateKeyQr:'无相关信息'
             }
         },
-        computed: {
-            balanceCom() {
-                return this.$web3.fromWei(this.balance, 'ether')
-            },
-            // privateKeyCom() {
-            //     if (this.privateKey) {
-            //         return this.privateKey
-            //     } else {
-            //         return this.warningInfo
-            //     }
-            // }
-        },
         methods: {
             showOrHideMnemo() {
                 if(this.passwordOrTextMnemo === 'password'){
@@ -111,10 +99,8 @@
                     this.privateKeyQr = this.warningInfo
                 }
             },
-            getBalance() {
-                if (this.address !== '') {
-                    this.balance = this.$web3.eth.getBalance(this.address).toJSON()
-                }
+            getBalance(){
+                this.balance = this.$funs.getBalance(this.address)
             }
         },
         mounted() {
