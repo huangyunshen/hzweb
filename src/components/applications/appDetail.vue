@@ -13,6 +13,16 @@
                           :class="{bottom1: animateChips.isOne,
                           bottom2: animateChips.isTwo,bottom3: animateChips.isThree,
                           bottom4: animateChips.isFour,top: animateChips.isOther}"></span>
+                    <div class="poker-box left" :class="{'get-poker-result': showPokerResult}"
+                         :style="{display: pokerIsShow}">
+                        <div class="poker-back poker-show" :class="`poker-${dragonNum+1}`"></div>
+                        <div class="poker-back poker-back-show"></div>
+                    </div>
+                    <div class="poker-box right" :class="{'get-poker-result': showPokerResult}"
+                         :style="{display: pokerIsShow}">
+                        <div class="poker-back poker-show" :class="`poker-${tigerNum+1}`"></div>
+                        <div class="poker-back poker-back-show"></div>
+                    </div>
                     <div class="pool-balance">
                         奖池余额：{{ contractBalance }} FOF
                     </div>
@@ -20,7 +30,8 @@
                         我的余额：{{ myBalance.toFixed(4) }} FOF
                     </div>
                     <div class="game-talbe">
-                        <p class="time-remaining">剩余下注时间 <span>{{countDown}}</span> 秒</p>
+                        <p class="time-remaining" v-if="!showReadTime">剩余下注时间 <span>{{countDown}}</span> 秒</p>
+                        <p class="time-remaining" v-if="showReadTime">准备时间 <span>{{readTimeNum}}</span> 秒</p>
                         <div class="selectable">
                             <div class="item-1">
                                 <p>
@@ -311,6 +322,11 @@
                     isOther: false,
                     isBet: false
                 },
+                showPokerResult: false,// 桌子上的牌翻转
+                readTimeNum: 3,
+                showReadTime: false,
+                showReady: 1,
+                pokerIsShow: 'none'
             }
         },
         filters: {
@@ -394,27 +410,19 @@
                     this.savePwdConfirm.flag = false
                     this.loading = {flag: true, text: '正在发牌···'}
                     this.showResult = false
-                    this.countDown = 1
+                    this.countDown = -1
                 }
-                // let arr = this.myContractInstance.getBlockTime()
-                // console.log(arr[0].toString(10)
-                //     ,arr[1].toString(10),
-                //     arr[2].toString(10)
-                // ,arr[3].toString(10)
-                //     ,arr[4][0].toString(10)
-                //     ,arr[4][1].toString(10)
-                //     ,arr[5].toString(10))
                 let nowTime = this.myContractInstance.getBlockTime()[0].toString(10)
                 if (this.settleTime !== nowTime) { // 说明结算了
                     //结算逻辑
                     this.settleTime = nowTime
                     this.resultBalance = 0
-                    this.dragonNum = this.myContractInstance.getBlockTime()[4][0].toString(10) % 13
-                    this.tigerNum = this.myContractInstance.getBlockTime()[4][1].toString(10) % 13
+                    this.dragonNum = Number(this.myContractInstance.getBlockTime()[4][0].toString(10))
+                    this.tigerNum = Number(this.myContractInstance.getBlockTime()[4][1].toString(10))
                     let result = ''
-                    if (this.dragonNum > this.tigerNum) {
+                    if ((this.dragonNum + 1) % 13 > (this.tigerNum + 1) % 13) {
                         result = '0'
-                    } else if (this.dragonNum < this.tigerNum) {
+                    } else if ((this.dragonNum % 13 + 1) < (this.tigerNum + 1) % 13) {
                         result = '1'
                     } else {
                         result = '2'
@@ -423,7 +431,14 @@
                     this.prompt.flag = false
                     this.savePwdConfirm.flag = false
                     this.loading = {flag: false, text: ''}
-                    this.showResult = true // 显示结果弹窗
+                    this.showPokerResult = true
+                    this.pokerIsShow = 'block'
+                    let showResultTimer = setTimeout(() => {
+                        clearTimeout(showResultTimer)
+                        this.showPokerResult = false
+                        this.pokerIsShow = 'none'
+                        this.showResult = true // 显示结果弹窗
+                    }, 2000)
                     if (this.prevBet.length > 1) {
                         if (this.betHistory.length === 0) {
                             return
@@ -463,8 +478,18 @@
                         this.contractBalance = this.$web3.fromWei(this.myContractInstance.getCurrentBalance().toString(10), 'ether')
                         this.myBalance = this.$funs.getBalance(this.myAddress)
                         this.showResult = false // 显示结果弹窗
+                        this.showReady = 2
                     }, 6000)
-                    this.getTimerTime()
+                }
+                if (this.showReady === 2) {
+                    this.showReadTime = true
+                    this.readTimeNum--
+                    this.pokerIsShow = 'block'
+                    let readTimer = setTimeout(() => {
+                        clearTimeout(readTimer)
+                        this.showReady = 1
+                        this.getTimerTime()
+                    }, 3000)
                 }
             },
             confirmBet(sign) {
@@ -701,9 +726,12 @@
                 axios.get('http://39.104.81.103:8088')
                     .then((res) => {
                         this.countDown = res.data
+                        this.showReadTime = false
+                        this.readTimeNum = 3
                     })
                     .catch(() => {
                         this.$message.error('节点异常，无法获取时间')
+                        clearInterval(this.getCoinsTimer)
                     })
             },
             /**
@@ -789,7 +817,7 @@
                         let result = arr.map((item) => {
                             return this.$web3.fromWei(item.toString(10), 'ether')
                         })
-                        if(!this.animateChips.isBet){
+                        if (!this.animateChips.isBet) {
                             if (result[1] !== '0' || result[2] !== '0' || result[3] !== '0') {
                                 if (this.betCoin[0] === 0 && this.betCoin[1] === 0 && this.betCoin[2] === 0) {
                                     if (result[1] !== '0') {

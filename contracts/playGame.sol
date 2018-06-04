@@ -51,11 +51,12 @@ contract PlayGame {
     // 如果下注金额大于当前奖池金额，返回false，下注失败
     function sendBetInfo(address addr, uint cho, uint ran, uint coin) payable {
         totalCoins += coin;
-        historyTotalCoins += coin;
-        deposit();
         if (getCurrentBalance() / 10 < totalCoins) {
+            totalCoins -= coin;
             returnBetResult(false);
         } else {
+            historyTotalCoins += coin;
+            deposit();
             if (cho == 0) {
                 bool flag0 = false;
                 for (uint i = 0; i < dragon.length; i++) {
@@ -106,7 +107,7 @@ contract PlayGame {
         for (uint i = 0; i < randomNum.length; i++) {
             xor = xor ^ randomNum[i];
         }
-        xor = xor ^ now;
+        xor = xor ^ (uint256(keccak256(block.difficulty, now)) % 1000000000000);
     }
 
     // 获取当前出块时间戳 (单位是秒)

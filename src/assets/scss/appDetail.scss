@@ -50,39 +50,80 @@
             width: 996px;
             height: 560px;
             padding: 10px;
-            box-shadow: 0px 14px 40px 0px rgba(11, 6, 27, 0.5);
+            box-shadow: 0 14px 40px 0 rgba(11, 6, 27, 0.5);
             border-radius: 5px;
             border: solid 2px rgba(198, 157, 226, 0.25);
-
             .game-body {
                 height: 100%;
                 position: relative;
                 background: url("../../assets/images/longhudou/table_bg.jpg") no-repeat;
-                .chips{
+                .chips {
                     position: absolute;
                     width: 23px;
                     height: 23px;
                     background: url("../../assets/images/longhudou/chips_small.png") no-repeat;
                     z-index: 10;
-                    &.bottom1{
+                    &.bottom1 {
                         left: 237px;
                         top: 478px;
                     }
-                    &.bottom2{
+                    &.bottom2 {
                         left: 387px;
                         top: 478px;
                     }
-                    &.bottom3{
+                    &.bottom3 {
                         left: 537px;
                         top: 478px;
                     }
-                    &.bottom4{
+                    &.bottom4 {
                         left: 720px;
                         top: 478px;
                     }
-                    &.top{
+                    &.top {
                         left: 487px;
                         top: 41px;
+                    }
+                }
+                .poker-box {
+                    position: absolute;
+                    left: 190px;
+                    top: 180px;
+                    width: 58px;
+                    height: 68px;
+                    .poker-back {
+                        position: absolute;
+                        width: 58px;
+                        height: 68px;
+                        transform: rotateY(180deg) rotateZ(-15deg);
+                        -webkit-transition: all 1000ms;
+                        -moz-transition: all 1000ms;
+                        -ms-transition: all 1000ms;
+                        -o-transition: all 1000ms;
+                        transition: all 1000ms;
+                        &.poker-show {
+                            backface-visibility: hidden;
+                            z-index: 9;
+                        }
+                        &.poker-back-show {
+                            background: url("../../assets/images/longhudou/poker/poker_back.png") no-repeat;
+                        }
+                    }
+                    &.get-poker-result {
+                        .poker-back {
+                            transform: rotateY(0) rotateZ(-15deg);
+                        }
+                    }
+                    &.right{
+                        left: auto;
+                        right: 190px;
+                        .poker-back {
+                            transform: rotateY(180deg) rotateZ(15deg);
+                        }
+                        &.get-poker-result {
+                            .poker-back {
+                                transform: rotateY(0) rotateZ(15deg);
+                            }
+                        }
                     }
                 }
                 &:before {
@@ -285,9 +326,15 @@
                                 &.cancel {
                                     margin-right: 90px;
                                     background: url("../../assets/images/longhudou/btn_cancle.png") no-repeat;
+                                    &:hover {
+                                        background-image: url("../../assets/images/longhudou/btn_cancle_hover.png")
+                                    }
                                 }
                                 &.confirm {
                                     background: url("../../assets/images/longhudou/btn_sure.png") no-repeat;
+                                    &:hover {
+                                        background-image: url("../../assets/images/longhudou/btn_sure_hover.png")
+                                    }
                                 }
                             }
                         }
@@ -424,7 +471,7 @@
                 width: 320px;
                 height: 180px;
                 background-color: rgba(63, 27, 104, 0.2);
-                box-shadow: 0px 14px 40px 0px rgba(11, 6, 27, 0.5);
+                box-shadow: 0 14px 40px 0 rgba(11, 6, 27, 0.5);
                 border-radius: 5px;
                 border: solid 2px rgba(198, 157, 226, 0.25);
                 .game-result-content {
@@ -453,7 +500,7 @@
                 width: 320px;
                 height: 378px;
                 background-color: rgba(63, 27, 104, 0.2);
-                box-shadow: 0px 14px 40px 0px rgba(11, 6, 27, 0.5);
+                box-shadow: 0 14px 40px 0 rgba(11, 6, 27, 0.5);
                 border-radius: 5px;
                 border: solid 2px rgba(198, 157, 226, 0.25);
                 .game-pour-content {
