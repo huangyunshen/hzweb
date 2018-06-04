@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="create-wallet">
         <el-form
                 label-width="150px"
                 label-position="left"
@@ -28,8 +28,11 @@
                 ></el-input>
             </el-form-item>
         </el-form>
+        <p class="agreed">
+            <el-checkbox v-model="agreed">我已仔细阅读并同意</el-checkbox> <span class="deal" @click="agreedDialog = true">《服务及隐私协议》</span>
+        </p>
 
-        <el-button class="el-wallet-main-button mt-60" @click="createOrLogin($event)">创建新的钱包</el-button>
+        <el-button class="el-wallet-main-button" @click="createOrLogin($event)">创建新的钱包</el-button>
 
         <div class="wallet-info">
             该密码将会加密您的私钥，但不会生成密钥的种子。您需要用此密码加私钥才能解锁您的钱包。
@@ -39,14 +42,19 @@
             如何创建电子钱包 | 入门
         </div>
 
-        <!--<user-login ref="unlock" :formGroupToggle="formGroupToggle"></user-login>-->
-
-        <!--<el-form label-width="100px" @submit.native.prevent>-->
-        <!--<el-form-item>-->
-        <!--<el-button type="primary" @click="createOrLogin">{{mainBtnText}}</el-button>-->
-        <!--<el-button type="text" size="mini" @click="formGroupToggleFun">{{lastBtnText}}</el-button>-->
-        <!--</el-form-item>-->
-        <!--</el-form>-->
+        <el-dialog class="wallet-agreement"
+                   title="用户协议"
+                   :visible.sync="agreedDialog"
+                   :show-close="false"
+                   center
+                   width="1200px">
+            <div class="body">
+                <agreement></agreement>
+            </div>
+            <div class="footer">
+                <el-button @click="agreedDialog = false">确定</el-button>
+            </div>
+        </el-dialog>
 
         <el-dialog class="create-wallet-dialog"
                    title="创建成功"
@@ -55,6 +63,7 @@
                    :close-on-click-modal="false"
                    :close-on-press-escape="false"
                    width="800px"
+                   top="30vh"
                    center>
             <h2>保存你的Keystore文件！不要忘记你的密码！</h2>
 
@@ -78,11 +87,13 @@
 
 <script>
     import userLogin from './importWallet'
+    import agreement from '../createApp/agreement'
 
     export default {
         name: "createWallet",
         components: {
-            userLogin
+            userLogin,
+            agreement
         },
         data() {
             return {
@@ -103,7 +114,9 @@
                     fileName: '',
                     blobEnc: '',
                     fileDownloaded: true
-                }
+                },
+                agreed:true,
+                agreedDialog:false
             }
         },
         methods: {
@@ -120,6 +133,13 @@
                 if (this.formRulesCreate.pwd !== this.formRulesCreate.confirmPwd) {
                     this.$message({
                         message: this.$msg.pwdInconformity,
+                        type: 'error'
+                    })
+                    return
+                }
+                if(!this.agreed) {
+                    this.$message({
+                        message: this.$msg.notAgreed,
                         type: 'error'
                     })
                     return
@@ -195,7 +215,6 @@
     .el-form-item {
         margin-bottom: 0;
     }
-
     .wallet-info {
         margin-top: 30px;
         font-size: 16px;

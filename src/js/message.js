@@ -1,6 +1,7 @@
 export default {
     pwdIsEmpty: '密码不能为空',
     pwdInconformity: '两次密码不一致',
+    notAgreed:'未同意协议',
     createPwd: '密码长度至少9位，不包含空格',
     serviceException: '服务器异常,请联系管理员',
     emptyResult: '无查询结果',

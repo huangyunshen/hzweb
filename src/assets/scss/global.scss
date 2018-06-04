@@ -141,27 +141,78 @@ textarea:read-only {
     color: $ph_color !important;
 }
 
-.create-wallet-dialog {
-    &.app-detail-font {
-        .el-dialog {
-            .el-dialog__header {
-                span {
-                    font-size: 22px;
-                }
+#app .create-wallet {
+    .agreed {
+        margin-top: 40px;
+        margin-bottom: 15px;
+        font-size: 18px;
+        .el-checkbox {
+            color: #8a9df0;
+            span {
+                font-size: 18px;
+            }
+            .el-checkbox__input.is-checked + .el-checkbox__label {
+                color: #8a9df0;
+            }
+            .el-checkbox__input {
+                margin-top: -6px;
+            }
+            &:hover {
+                cursor: default;
+            }
+        }
+        .deal {
+            color: #8a9df0;
+            &:hover {
+                cursor: pointer;
+                color:#5D76EA;
             }
         }
     }
+
     .el-dialog {
-        margin-top: 22vh !important;
-        padding: 0 45px;
+        //margin-top: 22vh !important;
+        padding: 0 30px;
         border: solid 1px $outside_border_color;
         background: rgba(32, 27, 67, 0.97) !important;
+    }
+    .create-wallet-dialog {
+        &.app-detail-font {
+            .el-dialog {
+                .el-dialog__header {
+                    span {
+                        font-size: 22px;
+                    }
+                }
+            }
+        }
         .el-dialog__header {
             border-bottom: solid 1px $inner_border_color;
             line-height: 50px;
             span {
                 font-size: 28px;
                 color: #8abdec;
+            }
+        }
+    }
+    .wallet-agreement {
+        .body {
+            height: 52vh;
+            overflow-y: auto;
+            border: solid 1px rgba(208, 202, 253, 0.15);
+            padding: 10px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            .el-button {
+                background-color: #5837ff;
+                color: #ffffff;
+                border: none;
+                &:hover {
+                    background-color: #6262FF;
+                    color: #ffffff;
+                }
             }
         }
     }

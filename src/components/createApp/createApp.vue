@@ -19,7 +19,7 @@
                         <div class="body">
                             <agreement></agreement>
                         </div>
-                        <p class="tc" style="margin: 20px;color: #f00">
+                        <p class="tc" style="margin: 20px;">
                             <el-checkbox v-model="checked">同意以上协议</el-checkbox>
                         </p>
                     </div>
@@ -96,6 +96,9 @@
                                     </el-form-item>
                                 </el-form>
                             </div>
+                            <div class="explain">
+                                <longhudou-rule></longhudou-rule>
+                            </div>
                         </div>
                     </div>
                 </transition>
@@ -146,20 +149,23 @@
 <script>
     import agreement from './agreement'
     import application from './apps'
+    import longhudouRule from '../ruleDescription/longhudouRule'
     // 先部署定时器合约 得到其地址
     import intervalContract from '../../../contracts/Interval.json'
     import playGameContract from '../../../contracts/playGame.json'
     import solSource from '../../../contracts/playGame.sol'
 
+
     export default {
         name: "create-app",
         components: {
             agreement,
-            application
+            application,
+            longhudouRule
         },
         data() {
             return {
-                steps: 1,
+                steps: 3,
                 selected: '',
                 appList: [{
                     contractAddr: "0xfe56582a999c5dae6ba4cc9ea84e9f1842e5fb39",
@@ -543,6 +549,10 @@
                 .content {
                     width: 800px;
                     padding: 30px;
+                }
+                .explain {
+                    border-top: solid 1px #28234D;
+                    margin: 20px;
                 }
             }
             .step-4 {
