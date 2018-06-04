@@ -121,7 +121,8 @@
                                             <span class="modal-result-icon1"></span>
                                         </p>
                                         <p>
-                                            <span class="modal-result-winicon" v-show="dragonNum>tigerNum"></span>
+                                            <span class="modal-result-winicon"
+                                                  v-show="(dragonNum+1)%13>(tigerNum+1)%13"></span>
                                             <span class="modal-result-icon2"></span>
                                         </p>
                                         <p>
@@ -129,7 +130,8 @@
                                             <span class="modal-result-icon3"></span>
                                         </p>
                                         <p>
-                                            <span class="modal-result-winicon" v-show="dragonNum<tigerNum"></span>
+                                            <span class="modal-result-winicon"
+                                                  v-show="(dragonNum+1)%13<(tigerNum+1)%13"></span>
                                             <span class="modal-result-icon4"></span>
                                         </p>
                                     </div>
@@ -570,7 +572,7 @@
                     for (let i = 0; i < 3; i++) {
                         this.animateChips.number.push(i)
                     }
-                    if (money === this.amountArr[0]) {
+                    if (money === Number(this.amountArr[0])) {
                         this.animateChips.isOne = true
                     } else {
                         this.animateChips.isFour = true
@@ -579,7 +581,7 @@
                     for (let i = 0; i < 8; i++) {
                         this.animateChips.number.push(i)
                     }
-                    if (money === this.amountArr[2]) {
+                    if (money === Number(this.amountArr[2])) {
                         this.animateChips.isThree = true
                     } else {
                         this.animateChips.isFour = true
@@ -588,7 +590,7 @@
                     for (let i = 0; i < 5; i++) {
                         this.animateChips.number.push(i)
                     }
-                    if (money === this.amountArr[1]) {
+                    if (money === Number(this.amountArr[1])) {
                         this.animateChips.isTwo = true
                     } else {
                         this.animateChips.isFour = true
@@ -624,9 +626,12 @@
                                 item.setAttribute("data-bool", "false")
                             }
                         })
-                        this.animateChips.isBet = false
                     })
                 }, 1)
+                let timer2 = setTimeout(()=>{
+                    clearTimeout(timer2)
+                    this.animateChips.isBet = false
+                },1000)
             },
             randomFun(range) {
                 return Number((Math.random() * range).toFixed(0))

@@ -51,12 +51,13 @@ contract PlayGame {
     // 如果下注金额大于当前奖池金额，返回false，下注失败
     function sendBetInfo(address addr, uint cho, uint ran, uint coin) payable {
         totalCoins += coin;
+        deposit();
         if (getCurrentBalance() / 10 < totalCoins) {
             totalCoins -= coin;
+            transferCoin(addr, coin);
             returnBetResult(false);
         } else {
             historyTotalCoins += coin;
-            deposit();
             if (cho == 0) {
                 bool flag0 = false;
                 for (uint i = 0; i < dragon.length; i++) {
