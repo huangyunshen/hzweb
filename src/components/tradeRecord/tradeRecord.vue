@@ -21,8 +21,7 @@
                             <a style="color:#8490c5;"
                                :title="scope.row.hash"
                                :href="scope.row.hash"
-                               @click.prevent="getTransaction(scope.row.hash)">{{
-                                scope.row.hash }}</a>
+                               @click.prevent="getTransaction(scope.row.hash)">{{ scope.row.hash }}</a>
                         </template>
                     </el-table-column>
 
@@ -84,6 +83,7 @@
         data() {
             return {
                 transactionsList: [],
+                transData: [],
                 transactionsData: null,
                 // searchParams: '', // 搜索参数
                 showSwitch: 'table',// 显示表格还是列表
@@ -121,6 +121,20 @@
                     return 'background:#221d44;'
                 }
             },
+            async(i) {
+                let time = this.transData[i].time
+                this.transData[i] = this.$web3.eth.getTransaction(this.transData[i].txHash)
+                this.transData[i].value = this.$web3.fromWei(this.transData[i].value.toString(10))
+                this.transData[i].time = time
+                this.transactionsList.push(this.transData[i])
+                if (i < this.transData.length - 1) {
+                    i++
+                    let timer = setTimeout(() => {
+                        clearTimeout(timer)
+                        this.async(i)
+                    }, 1)
+                }
+            }
         },
         mounted() {
             let users = this.$funs.getLocalAddress()
@@ -130,12 +144,18 @@
             }).then((res) => {
                 if (res.status === 200) {
                     if (res.data.length) {
-                        this.transactionsList = res.data.map((item) => {
-                            let hashObj = this.$web3.eth.getTransaction(item.txHash)
-                            hashObj.value = this.$web3.fromWei(hashObj.value.toString(10))
-                            hashObj.time = item.time
-                            return hashObj
-                        })
+                        // this.transactionsList = res.data.map((item) => {
+                        //     let hashObj = {}
+                        //     let timer = setTimeout(()=>{
+                        //         clearTimeout(timer)
+                        //         hashObj = this.$web3.eth.getTransaction(item.txHash)
+                        //         hashObj.value = this.$web3.fromWei(hashObj.value.toString(10))
+                        //         hashObj.time = item.time
+                        //     },1)
+                        //     return hashObj
+                        // })
+                        this.transData = res.data
+                        this.async(0)
                     }
                 }
             }).catch((error) => {
