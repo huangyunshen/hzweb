@@ -42,7 +42,9 @@
             <el-pagination
                     background
                     layout="prev, pager, next"
-                    :total="1000">
+                    :page-size="pageSize"
+                    @current-change="sendMsgToServer"
+                    :total="totalNum">
             </el-pagination>
         </div>
     </div>
@@ -60,31 +62,39 @@
             return {
                 appList: [],
                 blankHref: '',
-                host: ''
+                host: '',
+                pageSize: 6,
+                totalNum: 0,
             }
         },
         methods: {
             /**
              * 获取所有应用
              */
-            sendMsgToServer() {
-                this.$axios.get('/api/requestContract.php')
-                    .then((res) => {
-                        if (res.status === 200) {
-                            this.appList = res.data
+            sendMsgToServer(page) {
+                this.$axios.post('/api/requestContract.php', {
+                    "pageSize": this.pageSize,
+                    "pageNum": page,
+                }).then((res) => {
+                    if (res.status === 200) {
+                        this.appList = res.data
+                        if(res.data.length > 0){
+                            this.totalNum = Number(res.data[0].dataCount)
+                        }else {
+                            this.$message.error('查询结果为0')
                         }
-                    })
-                    .catch((error) => {
-                        this.$message.error(String(error))
-                        let timer = setTimeout(() => {
-                            clearTimeout(timer)
-                            this.$message.error('无法获取应用列表')
-                        }, 3000)
-                    })
+                    }
+                }).catch((error) => {
+                    this.$message.error(String(error))
+                    let timer = setTimeout(() => {
+                        clearTimeout(timer)
+                        this.$message.error('无法获取应用列表')
+                    }, 3000)
+                })
             },
         },
         mounted() {
-            this.sendMsgToServer()
+            this.sendMsgToServer(1)
             this.host = 'http://' + location.host + '/#/appDetail?'
         }
     }

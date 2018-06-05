@@ -243,14 +243,16 @@
             </div>
         </div>
         <el-button class="exit show-source" type="button" @click="showSource">智能合约源码</el-button>
-        <el-dialog title="智能合约源码"
-                   :modal="false"
-                   class="create-wallet-dialog app-detail-font"
-                   :visible.sync="showSourceVisible">
-            <div style="height: 500px;overflow: auto">
-                <pre>{{ contractSource }}</pre>
-            </div>
-        </el-dialog>
+        <div class="create-wallet">
+            <el-dialog title="智能合约源码"
+                       :modal="false"
+                       class="create-wallet-dialog app-detail-font"
+                       :visible.sync="showSourceVisible">
+                <div style="height: 500px;overflow: auto">
+                    <pre>{{ contractSource }}</pre>
+                </div>
+            </el-dialog>
+        </div>
     </div>
 </template>
 
@@ -328,7 +330,8 @@
                 readTimeNum: 3,
                 showReadTime: false,
                 showReady: 1,
-                pokerIsShow: 'none'
+                pokerIsShow: 'none',
+                timerOverTime: null
             }
         },
         filters: {
@@ -356,11 +359,17 @@
                 let url = window.location.href.split('?')[1]
                 this.$axios.post('/api/requestContract.php', {
                     "createAddr": "",
-                    "contractAddr": url
+                    "contractAddr": url,
+                    "pageSize": 200,
+                    "pageNum": 1,
                 }).then((res) => {
                     if (res.status === 200) {
                         this.showSourceVisible = true
-                        this.contractSource = this.$web3.eth.getTransaction(res.data[0].txHash).datasourcecode
+                        if(res.data.length > 0){
+                            this.contractSource = this.$web3.eth.getTransaction(res.data[0].txHash).datasourcecode
+                        }else {
+                            this.$message.error('未查询到相关信息！')
+                        }
                     }
                 }).catch((error) => {
                     this.$message.error(String(error))
@@ -413,10 +422,17 @@
                     this.loading = {flag: true, text: '正在发牌···'}
                     this.showResult = false
                     this.countDown = -1
+                    this.timerOverTime = setTimeout(()=>{
+                        clearTimeout(this.timerOverTime)
+                        this.loading = {flag: false, text: ''}
+                        this.$message.error('发牌超时！请联系管理员！')
+                        clearInterval(this.getCoinsTimer)
+                    },20000)
                 }
                 let nowTime = this.myContractInstance.getBlockTime()[0].toString(10)
                 if (this.settleTime !== nowTime) { // 说明结算了
                     //结算逻辑
+                    clearTimeout(this.timerOverTime)
                     this.settleTime = nowTime
                     this.resultBalance = 0
                     this.dragonNum = Number(this.myContractInstance.getBlockTime()[4][0].toString(10))

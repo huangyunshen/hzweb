@@ -31,6 +31,7 @@
                     </el-table-column>
                     <el-table-column
                             prop="time"
+                            width="180px"
                             label="时间">
                     </el-table-column>
                     <el-table-column
@@ -52,7 +53,9 @@
             <el-pagination
                     background
                     layout="prev, pager, next"
-                    :total="1000">
+                    :page-size="pageSize"
+                    @current-change="currentPage"
+                    :total="totalNum">
             </el-pagination>
         </div>
 
@@ -87,6 +90,8 @@
                 transactionsData: null,
                 // searchParams: '', // 搜索参数
                 showSwitch: 'table',// 显示表格还是列表
+                totalNum: 0,
+                pageSize: 20
             }
         },
         methods: {
@@ -134,33 +139,32 @@
                         this.async(i)
                     }, 1)
                 }
-            }
+            },
+            currentPage(page){
+                this.transactionsList.length = 0
+                let users = this.$funs.getLocalAddress()
+                let userAddr = users.addresses[users.active]
+                this.$axios.post('/api/requestTx.php', {
+                    "addr": userAddr,
+                    "pageSize":this.pageSize,
+                    "pageNum":page,
+                }).then((res) => {
+                    if (res.status === 200) {
+                        if (res.data.length > 0) {
+                            this.totalNum = Number(res.data[0].dataCount)
+                            this.transData = res.data
+                            this.async(0)
+                        } else {
+                            this.$message.error("未查询到相关信息")
+                        }
+                    }
+                }).catch((error) => {
+                    this.$message.error(String(error))
+                })
+            },
         },
         mounted() {
-            let users = this.$funs.getLocalAddress()
-            let userAddr = users.addresses[users.active]
-            this.$axios.post('/api/requestTx.php', {
-                "addr": userAddr
-            }).then((res) => {
-                if (res.status === 200) {
-                    if (res.data.length) {
-                        // this.transactionsList = res.data.map((item) => {
-                        //     let hashObj = {}
-                        //     let timer = setTimeout(()=>{
-                        //         clearTimeout(timer)
-                        //         hashObj = this.$web3.eth.getTransaction(item.txHash)
-                        //         hashObj.value = this.$web3.fromWei(hashObj.value.toString(10))
-                        //         hashObj.time = item.time
-                        //     },1)
-                        //     return hashObj
-                        // })
-                        this.transData = res.data
-                        this.async(0)
-                    }
-                }
-            }).catch((error) => {
-                this.$message.error(String(error))
-            })
+          this.currentPage(1)
         }
     }
 </script>
