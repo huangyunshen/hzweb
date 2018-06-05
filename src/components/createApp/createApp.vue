@@ -165,7 +165,7 @@
         },
         data() {
             return {
-                steps: 3,
+                steps: 1,
                 selected: '',
                 appList: [{
                     contractAddr: "0xfe56582a999c5dae6ba4cc9ea84e9f1842e5fb39",
@@ -428,6 +428,7 @@
                                 gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
                             })
                             let tHxObj = this.$web3.eth.getTransaction(hash)
+                            // SELECT * FROM `txlist` LIMIT 0, 1000
                             this.$axios.post('/api/addTx.php', {
                                 "type": "1",
                                 "sendAddr": tHxObj.from,
