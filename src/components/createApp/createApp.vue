@@ -225,13 +225,13 @@
                             this.$message.error('请输入正确的充值数额！')
                             return
                         }
-                        let reg = /^\d+.\d{0,9}$/g
-                        if (!reg.test(this.rechargeData.value)) {
-                            this.$message.error('充值数额小数点后不能超过9位！')
-                            return
-                        }
                         if (this.rechargeData.value === '' || Number(this.rechargeData.value) === 0) {
                             this.$message.error('充值数量不能为空和不能为0！')
+                            return
+                        }
+                        let reg = /^\d*.\d{0,9}$/g
+                        if (!reg.test(this.rechargeData.value)) {
+                            this.$message.error('充值数额小数点后不能超过9位！')
                             return
                         }
                         if (balance < (Number(this.rechargeData.value) + 1)) {
@@ -422,13 +422,12 @@
                             localStorage.setItem('contractAddress', myContract.address)
                             // 每次部署完合约，需要向定时器合约中注册当前合约地址
                             let myIntContractInstance = MyContract.at(myContract.address)
-                            let hash = myIntContractInstance.registerInterval('0x5a748131aad38c67e969bc28b4f2fa7091be8e69', {
+                            let hash = myIntContractInstance.registerInterval('0x9d6e9343fd878066337bcaf094260eef7b5202c1', {
                                 from: user,
                                 gasPrice: 41000000000,
                                 gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
                             })
                             let tHxObj = this.$web3.eth.getTransaction(hash)
-                            // SELECT * FROM `txlist` LIMIT 0, 1000
                             this.$axios.post('/api/addTx.php', {
                                 "type": "1",
                                 "sendAddr": tHxObj.from,

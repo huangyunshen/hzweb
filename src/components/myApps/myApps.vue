@@ -299,7 +299,9 @@
             this.user = users.addresses[users.active]
             this.$axios.post('/api/requestContract.php', {
                 "createAddr": this.user,
-                "contractAddr": ""
+                "contractAddr": "",
+                "pageSize": 200,
+                "pageNum": 1,
             }).then((res) => {
                 if (res.status === 200) {
                     this.appList = res.data
