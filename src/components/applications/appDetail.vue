@@ -13,16 +13,20 @@
                           :class="{bottom1: animateChips.isOne,
                           bottom2: animateChips.isTwo,bottom3: animateChips.isThree,
                           bottom4: animateChips.isFour,top: animateChips.isOther}"></span>
-                    <div class="poker-box left" :class="{'get-poker-result': showPokerResult}"
-                         :style="{display: pokerIsShow}">
-                        <div class="poker-back poker-show" :class="`poker-${dragonNum+1}`"></div>
-                        <div class="poker-back poker-back-show"></div>
-                    </div>
-                    <div class="poker-box right" :class="{'get-poker-result': showPokerResult}"
-                         :style="{display: pokerIsShow}">
-                        <div class="poker-back poker-show" :class="`poker-${tigerNum+1}`"></div>
-                        <div class="poker-back poker-back-show"></div>
-                    </div>
+                    <transition name="fof-fade">
+                        <div class="poker-box left" :class="{'get-poker-result': showPokerResult}"
+                             :style="{display: pokerIsShow}">
+                            <div class="poker-back poker-show" :class="`poker-${dragonNum+1}`"></div>
+                            <div class="poker-back poker-back-show"></div>
+                        </div>
+                    </transition>
+                    <transition name="fof-fade">
+                        <div class="poker-box right" :class="{'get-poker-result': showPokerResult}"
+                             :style="{display: pokerIsShow}">
+                            <div class="poker-back poker-show" :class="`poker-${tigerNum+1}`"></div>
+                            <div class="poker-back poker-back-show"></div>
+                        </div>
+                    </transition>
                     <div class="pool-balance">
                         奖池余额：{{ contractBalance }} FOF
                     </div>
@@ -280,7 +284,7 @@
                 choosed: null, // 龙虎合选中的标识
                 betZh: '',
                 moneyNum: 0,
-                countDown: -1,
+                countDown: 0,
                 getCoinsTimer: null,
                 dragonNum: '0',
                 tigerNum: '0',
@@ -327,10 +331,10 @@
                     isBet: false
                 },
                 showPokerResult: false,// 桌子上的牌翻转
-                readTimeNum: 3,
+                readTimeNum: 4,
                 showReadTime: false,
                 showReady: 1,
-                pokerIsShow: 'none',
+                pokerIsShow: 'block',
                 timerOverTime: null
             }
         },
@@ -365,9 +369,9 @@
                 }).then((res) => {
                     if (res.status === 200) {
                         this.showSourceVisible = true
-                        if(res.data.length > 0){
+                        if (res.data.length > 0) {
                             this.contractSource = this.$web3.eth.getTransaction(res.data[0].txHash).datasourcecode
-                        }else {
+                        } else {
                             this.$message.error('未查询到相关信息！')
                         }
                     }
@@ -414,20 +418,28 @@
             },
             // 开启监控
             settlement() {
-                if (this.countDown === 0) {
+                if (this.countDown === 1) {
                     this.showSourceVisible = false
                     this.confirm.flag = false
                     this.prompt.flag = false
                     this.savePwdConfirm.flag = false
                     this.loading = {flag: true, text: '正在发牌···'}
                     this.showResult = false
-                    this.countDown = -1
-                    this.timerOverTime = setTimeout(()=>{
+                    this.countDown = 0
+                    this.timerOverTime = setTimeout(() => {
                         clearTimeout(this.timerOverTime)
                         this.loading = {flag: false, text: ''}
-                        this.$message.error('发牌超时！请联系管理员！')
+                        this.$message({
+                            duration: 0,
+                            type: 'error',
+                            message: '发牌超时！请联系管理员！'
+                        })
                         clearInterval(this.getCoinsTimer)
-                    },20000)
+                        let thisTimer = setTimeout(() => {
+                            clearTimeout(thisTimer)
+                            window.location.reload()
+                        }, 3000)
+                    }, 60000)
                 }
                 let nowTime = this.myContractInstance.getBlockTime()[0].toString(10)
                 if (this.settleTime !== nowTime) { // 说明结算了
@@ -534,6 +546,10 @@
                 }
             },
             promptFun() {
+                if (this.promptPwd.trim() === '') {
+                    this.$message.error("密码不能为空！")
+                    return
+                }
                 this.prompt.flag = false
                 try {
                     this.$web3.personal.unlockAccount(this.myAddress, this.promptPwd, 6000000)
@@ -644,10 +660,10 @@
                         })
                     })
                 }, 1)
-                let timer2 = setTimeout(()=>{
+                let timer2 = setTimeout(() => {
                     clearTimeout(timer2)
                     this.animateChips.isBet = false
-                },1000)
+                }, 1000)
             },
             randomFun(range) {
                 return Number((Math.random() * range).toFixed(0))
@@ -748,7 +764,7 @@
                     .then((res) => {
                         this.countDown = res.data
                         this.showReadTime = false
-                        this.readTimeNum = 3
+                        this.readTimeNum = 4
                     })
                     .catch(() => {
                         this.$message.error('节点异常，无法获取时间')
@@ -872,7 +888,7 @@
                     if (this.countDown <= 5) {
                         this.settlement()
                     }
-                    if (this.countDown > 0) {
+                    if (this.countDown > 1) {
                         this.countDown--
                     }
                 }, 1000)
