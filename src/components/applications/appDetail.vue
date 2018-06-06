@@ -449,6 +449,8 @@
                     this.resultBalance = 0
                     this.dragonNum = Number(this.myContractInstance.getBlockTime()[4][0].toString(10))
                     this.tigerNum = Number(this.myContractInstance.getBlockTime()[4][1].toString(10))
+                    console.log(this.dragonNum)
+                    console.log(this.tigerNum)
                     let result = ''
                     if ((this.dragonNum + 1) % 13 > (this.tigerNum + 1) % 13) {
                         result = '0'

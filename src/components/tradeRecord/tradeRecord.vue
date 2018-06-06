@@ -27,10 +27,12 @@
 
                     <el-table-column
                             prop="blockNumber"
+                            sortable
                             label="区块值">
                     </el-table-column>
                     <el-table-column
                             prop="time"
+                            sortable
                             width="180px"
                             label="时间">
                     </el-table-column>
@@ -46,6 +48,7 @@
                     </el-table-column>
                     <el-table-column
                             prop="value"
+                            sortable
                             label="金额">
                     </el-table-column>
                 </el-table>
