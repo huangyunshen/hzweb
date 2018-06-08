@@ -423,6 +423,7 @@
                             // 每次部署完合约，需要向定时器合约中注册当前合约地址
                             let myIntContractInstance = MyContract.at(myContract.address)
                             let hash = myIntContractInstance.registerInterval('0x9d6e9343fd878066337bcaf094260eef7b5202c1', {
+                            // let hash = myIntContractInstance.registerInterval('0x7dceb234f633a7a0c821cf31188db701fadecb5b', { // 君哥测试
                                 from: user,
                                 gasPrice: 41000000000,
                                 gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})

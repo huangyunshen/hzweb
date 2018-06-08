@@ -131,10 +131,17 @@
             },
             async(i) {
                 let time = this.transData[i].time
-                this.transData[i] = this.$web3.eth.getTransaction(this.transData[i].txHash)
-                this.transData[i].value = this.$web3.fromWei(this.transData[i].value.toString(10))
-                this.transData[i].time = time
-                this.transactionsList.push(this.transData[i])
+                let data = this.$web3.eth.getTransaction(this.transData[i].txHash)
+                if (data === null || data === undefined) {
+                    data = this.transData[i]
+                    data.to =  this.transData[i].revAddr
+                    data.from =  this.transData[i].sendAddr
+                    data.hash =  this.transData[i].txHash
+                } else {
+                    data.value = this.$web3.fromWei(data.value.toString(10))
+                    data.time = time
+                }
+                this.transactionsList.push(data)
                 if (i < this.transData.length - 1) {
                     i++
                     let timer = setTimeout(() => {
@@ -143,14 +150,14 @@
                     }, 1)
                 }
             },
-            currentPage(page){
+            currentPage(page) {
                 this.transactionsList.length = 0
                 let users = this.$funs.getLocalAddress()
                 let userAddr = users.addresses[users.active]
                 this.$axios.post('/api/requestTx.php', {
                     "addr": userAddr,
-                    "pageSize":this.pageSize,
-                    "pageNum":page,
+                    "pageSize": this.pageSize,
+                    "pageNum": page,
                 }).then((res) => {
                     if (res.status === 200) {
                         if (res.data.length > 0) {
@@ -167,7 +174,7 @@
             },
         },
         mounted() {
-          this.currentPage(1)
+            this.currentPage(1)
         }
     }
 </script>

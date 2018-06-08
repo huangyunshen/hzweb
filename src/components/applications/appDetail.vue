@@ -449,8 +449,6 @@
                     this.resultBalance = 0
                     this.dragonNum = Number(this.myContractInstance.getBlockTime()[4][0].toString(10))
                     this.tigerNum = Number(this.myContractInstance.getBlockTime()[4][1].toString(10))
-                    console.log(this.dragonNum)
-                    console.log(this.tigerNum)
                     let result = ''
                     if ((this.dragonNum + 1) % 13 > (this.tigerNum + 1) % 13) {
                         result = '0'
@@ -763,6 +761,7 @@
             // 获取服务器定时器时间
             getTimerTime() {
                 axios.get('http://39.104.81.103:8088')
+                // axios.get('http://192.168.1.135:8088') // 君哥测试
                     .then((res) => {
                         this.countDown = res.data
                         this.showReadTime = false

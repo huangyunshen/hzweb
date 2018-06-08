@@ -365,6 +365,8 @@
                     let nonce = this.$web3.eth.getTransactionCount(this.address)
                     let rawTx = {
                         nonce: this.$web3.toHex(nonce),
+                        // gasPrice: this.$web3.toHex(0),
+                        // gasLimit: this.$web3.toHex(0),
                         gasPrice: this.$web3.toHex(this.$store.state.gasPrice * (Math.pow(10, 9))),
                         gasLimit: this.$web3.toHex(this.form.gas),
                         to: this.form.to,
@@ -372,6 +374,7 @@
                         data: "",
                         datasourcecode:""
                     }
+                    console.log(rawTx)
                     let tx = new Tx(rawTx)
                     tx.sign(privateKey)
                     let serializedTx = tx.serialize()
