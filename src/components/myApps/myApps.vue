@@ -79,7 +79,7 @@
                 form: {},
                 appList: [],
                 myContractInstance: null,
-                user: '',
+                // user: '',
                 password: '',
                 left: 0, // itemBox的left
                 prevIsHover: true,
@@ -124,13 +124,13 @@
                     this.$message.error('充值金额须为纯数字！')
                     return
                 }
-                this.$prompt(`请输入${this.user}的密码`, '提示', {
+                this.$prompt(`请输入${this.$store.state.address}的密码`, '提示', {
                     inputType: 'password',
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                 }).then(({value}) => {
                     // this.$store.commit("setPassword", value)
-                    this.rechargefun(this.user, value)
+                    this.rechargefun(this.$store.state.address, value)
                 }).catch((error) => {
                     if (error !== 'cancel') {
                         this.$message.error(String(error))
@@ -184,12 +184,12 @@
                     this.$message.error('提现金额须为纯数字！')
                     return
                 }
-                this.$prompt(`请输入${this.user}的密码`, '提示', {
+                this.$prompt(`请输入${this.$store.state.address}的密码`, '提示', {
                     inputType: 'password',
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                 }).then(({value}) => {
-                    this.drawingFun(this.user, value)
+                    this.drawingFun(this.$store.state.address, value)
                 }).catch((error) => {
                     if (error !== 'cancel') {
                         this.$message.error(String(error))
@@ -295,13 +295,11 @@
             }
         },
         mounted() {
-            let users = this.$funs.getLocalAddress()
-            this.user = users.addresses[users.active]
             this.$axios.post('/api/requestContract.php', {
-                "createAddr": this.user,
+                "createAddr": this.$store.state.address,
                 "contractAddr": "",
-                "pageSize": 200,
-                "pageNum": 1,
+                "pageSize": 1000,
+                "pageNum": 1
             }).then((res) => {
                 if (res.status === 200) {
                     this.appList = res.data

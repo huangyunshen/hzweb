@@ -45,13 +45,13 @@
 
             <main class="content">
                 <transition name="fof-fade">
-                    <router-view v-if="!$route.meta.keepAlive"></router-view>
+                    <router-view></router-view>
                 </transition>
-                <transition name="fof-fade">
-                    <keep-alive>
-                        <router-view v-if="$route.meta.keepAlive"></router-view>
-                    </keep-alive>
-                </transition>
+                <!--<transition name="fof-fade">-->
+                    <!--<keep-alive>-->
+                        <!--<router-view v-if="$route.meta.keepAlive"></router-view>-->
+                    <!--</keep-alive>-->
+                <!--</transition>-->
             </main>
         </div>
     </div>

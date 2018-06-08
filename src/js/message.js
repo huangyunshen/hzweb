@@ -1,7 +1,8 @@
 export default {
     pwdIsEmpty: '密码不能为空',
     pwdInconformity: '两次密码不一致',
-    notAgreed:'未同意协议',
+    notAgreed:'请阅读并勾选同意《服务及隐私协议》',
+    walletIsExist:'钱包已存在',
     createPwd: '密码长度至少9位，不包含空格',
     serviceException: '服务器异常,请联系管理员',
     emptyResult: '无查询结果',
@@ -26,5 +27,6 @@ export default {
     diffrentAccount:'输入账户与当前登录账户不一致，是否把当前登录账户替换',
     mustSelectAnApp:'请选择需要创建的应用',
     balanceNotEnough:'余额不足',
-    invalidBalanceAddr:'查询余额失败，账户地址无效'
+    invalidBalanceAddr:'查询余额失败，账户地址无效',
+    noWalletFound:'未找到钱包'
 }

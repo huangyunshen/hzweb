@@ -26,11 +26,11 @@
                     <ul>
                         <li>
                             <span class="get-balance"
-                                  title="点击刷新余额">{{balance | amountUnit}}</span>
-                            <i class="el-icon-refresh" @click="getBalance()"></i>
+                                  title="点击刷新余额">{{$store.state.balance | amountUnit}}</span>
+                            <i class="el-icon-refresh" @click="$funs.getBalance()"></i>
                         </li>
                         <li>
-                            <span>{{address}}</span>
+                            <span v-text="$store.state.address"></span>
                         </li>
                         <li style="padding-right: 25px">
                             <el-input v-show="mnemonic" v-model="mnemonic" :type="passwordOrTextMnemo" readonly>
@@ -51,7 +51,7 @@
                 <div class="qr-item">
                     <p class="qr-title">账户地址</p>
                     <div class="qr-body">
-                        <vue-qr :text="address" :margin="8"></vue-qr>
+                        <vue-qr :text="$store.state.address" :margin="8"></vue-qr>
                     </div>
                 </div>
                 <div class="qr-item">
@@ -72,50 +72,50 @@
         name: "account-info",
         data() {
             return {
-                balance: 0,
-                address: '',
                 mnemonic: '',
                 privateKey: '',
                 warningInfo: '无相关信息',
                 passwordOrTextPriv: 'password',
                 passwordOrTextMnemo: 'password',
-                privateKeyQr:'无相关信息'
+                privateKeyQr: '无相关信息',
             }
+        },
+        components: {
+            VueQr
         },
         methods: {
             showOrHideMnemo() {
-                if(this.passwordOrTextMnemo === 'password'){
+                if (this.passwordOrTextMnemo === 'password') {
                     this.passwordOrTextMnemo = 'text'
                 } else {
                     this.passwordOrTextMnemo = 'password'
                 }
             },
             showOrHidePriv() {
-                if(this.passwordOrTextPriv === 'password'){
+                if (this.passwordOrTextPriv === 'password') {
                     this.passwordOrTextPriv = 'text'
                     this.privateKeyQr = this.privateKey
                 } else {
                     this.passwordOrTextPriv = 'password'
                     this.privateKeyQr = this.warningInfo
                 }
-            },
-            getBalance(){
-                this.balance = this.$funs.getBalance(this.address)
             }
         },
         mounted() {
-            let obj = this.$funs.getLocalAddress()
-            this.address = obj.addresses[obj.active]
-
-            if (!this.mnemonic && !this.privateKey) {
-                let params = this.$route.params
-                this.mnemonic = params.mnemonic || ''
-                this.privateKey = params.privateKey ? params.privateKey.replace('0x', '') : ''
+            let wallet = this.$funs.getActiveAccount()
+            if(wallet) {
+                this.mnemonic = wallet.mnemonic ? wallet.mnemonic : ''
+                this.privateKey = wallet.privateKey ? wallet.privateKey.replace('0x', '') : ''
+                // this.$funs.getBalance()
             }
-            this.getBalance()
         },
-        components: {
-            VueQr
+        updated() {
+            let wallet = this.$funs.getActiveAccount()
+            if(wallet) {
+                this.mnemonic = wallet.mnemonic ? wallet.mnemonic : ''
+                this.privateKey = wallet.privateKey ? wallet.privateKey.replace('0x', '') : ''
+                // this.$funs.getBalance()
+            }
         }
     }
 </script>
@@ -174,7 +174,7 @@
                     margin-left: 20px;
                     cursor: pointer;
                     &:hover {
-                        color : #A0CBF5;
+                        color: #A0CBF5;
                     }
                 }
                 .el-input {

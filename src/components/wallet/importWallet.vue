@@ -25,8 +25,8 @@
             importAccount() {
                 this.$refs.unlock.importAccount().then((wallet) => {
                     if (typeof wallet === 'object') {
-                        this.$funs.setLocalAddress(wallet)
-                        this.$funs.linkToMainScreenRep(wallet)
+                        this.$web3.eth.accounts.wallet.add(wallet)
+                        this.$funs.ifWalletExist()
                         this.$message({
                             message: this.$msg.importSucc,
                             type: 'success'

@@ -46,17 +46,17 @@ export default new Router({
             path: '/mainScreen',
             component: mainScreen,
             children: [
-                {
-                    path: '/',
-                    redirect: 'accountInfo'
-                },
+                // {
+                //     path: '/',
+                //     redirect: 'accountInfo'
+                // },
                 {
                     path: 'accountInfo',
                     name: 'accountInfo',
                     component: accountInfo,
-                    meta: {
-                        keepAlive: true // 需要被缓存
-                    }
+                    // meta: {
+                    //     keepAlive: true // 需要被缓存
+                    // }
                 },
                 {
                     path: 'tradeRecord',

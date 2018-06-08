@@ -1,20 +1,33 @@
 <template>
     <div id="app"
-         v-loading="cryptPercent.percent"
-         :element-loading-text="cryptPercent.text"
+         v-loading="$store.state.cryptPercent.percent"
+         :element-loading-text="$store.state.cryptPercent.text"
          element-loading-custom-class="full-loading"
+         @click.capture="isActive($event)"
     >
 
         <img src="./assets/images/logo.png" class="logoImg"></img>
         <transition name="fof-fade">
             <router-view name="default"></router-view>
         </transition>
-        <!--<el-col :span="8" style="padding-top: 41px;color: white">-->
-        <!--Gas 价格： {{ gasPrice }} Gwei-->
-        <!--</el-col>-->
-        <!--<el-col :span="8" style="padding-top: 30px">-->
-        <!--<el-slider v-model="gasPrice" :min="1" :max="99" @change="gasPriceChange"></el-slider>-->
-        <!--</el-col>-->
+
+        <div class="create-wallet">
+            <el-dialog class="create-wallet-dialog"
+                       title="钱包已锁定！请输入密码！"
+                       :visible.sync="lockModal"
+                       :show-close="false"
+                       :close-on-click-modal="false"
+                       :close-on-press-escape="false"
+                       width="400px"
+                       top="30vh"
+                       center>
+
+                <el-input v-model="pwd" type="password"></el-input>
+                <div class="mt-40 tc">
+                    <el-button type="primary" @click="unlockWallet">确定</el-button>
+                </div>
+            </el-dialog>
+        </div>
     </div>
 </template>
 
@@ -24,26 +37,54 @@
         name: 'App',
         data() {
             return {
-                // gasPrice: 41,
-                cryptPercent: null
+                timer: null,    //定时器
+                timeRemaining: 0,   //倒计时时间
+                duration: 600,       //多久后锁定（s）
+                lockModal: true,
+                pwd: '111111111'
             }
         },
         methods: {
-            // gasPriceChange(val) {
-            //     this.$store.commit('setGasPrice', val)
-            // },
+            isActive(e) {
+                if (!this.lockModal) {
+                    this.timeRemaining = this.duration
+                }
+            },
+            unlockWallet() {
+                try {
+                    this.$funs.loadWallet(this.pwd)
+                    this.$funs.getBalance()
+                    this.lockModal = false
+                    this.countDown()
+                } catch (error) {
+                    this.$message({
+                        message: this.$msg.unlockFailByPwd,
+                        type: 'error'
+                    })
+                }
+            },
+            countDown() {
+                clearInterval(this.timer)
+                this.timeRemaining = this.duration
+
+                this.timer = setInterval(() => {
+                    this.timeRemaining -= 1
+                    if (this.timeRemaining === 0) {
+                        this.$web3.eth.accounts.wallet.clear()
+                        clearInterval(this.timer)
+                        this.lockModal = true
+                    }
+                }, 1000)
+            }
+
         },
-        beforeMount() {
-
-            // this.$store.state.publicKey = '0x1d278e1419bd697cabf772f7ed05160731fdb26b'
-            // this.$store.state.privateKey = '8888888888888888888888888888888888888888888888888888888888888888'
-            // this.$router.replace('/mainScreen')
-
-            // if (this.$store.state.publicKey === '' || this.$store.state.privateKey === '') {
-            //     this.$router.replace('/')
-            // }
-
-            this.cryptPercent = this.$store.state.cryptPercent
+        beforeCreate(){
+            if(!this.$funs.ifWalletExist()) {
+                this.lockModal = false
+            }
+        },
+        mounted() {
+            this.countDown()
         }
     }
 </script>

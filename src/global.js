@@ -3,11 +3,13 @@ import Web3 from 'web3'
 import msg from './js/message'
 import {Wallet} from 'ethers'
 import axios from './js/api'
-import $router from "./router";
+import $router from "./router"
+import $store from './js/store'
 
-const WEB3OBJ = new Web3(new Web3.providers.HttpProvider('http://39.104.81.103:8101'))
-// const WEB3OBJ = new Web3(new Web3.providers.HttpProvider('http://192.168.1.135:8553'))
-// const WEB3OBJ = new Web3(new Web3.providers.HttpProvider('http://192.168.1.124:8551'))
+const HOST = 'http://39.104.81.103:8101'
+// const HOST = 'http://127.0.0.1:7545'
+const WEB3OBJ = new Web3(Web3.givenProvider || HOST)
+
 export default {
     install(Vue, options) {
         Vue.prototype.$web3 = WEB3OBJ
@@ -16,76 +18,90 @@ export default {
         Vue.prototype.$axios = axios
         Vue.prototype.$funs = {
             validatePwd(rule, value, callback) {     //验证创建钱包的密码强度
-                // let reg = /^(?![0-9]+$)(?![a-zA-Z]+$)\w{8,}$/g;
                 if (value) {
-                    if (value.trim().length<9) {
+                    if (value.trim().length < 9) {
                         return callback(new Error(msg.createPwd));
                     } else {
                         return callback()
                     }
                 }
             },
-            validateFloatNum(num){      //验证浮点数
+            validateFloatNum(num) {      //验证浮点数
                 let reg = /^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/g
                 return reg.test(num)
             },
-            validateIntNum(num){      //验证正整数
+            validateIntNum(num) {      //验证正整数
                 let reg = /^\d*[1-9]+\d*$/g
                 return reg.test(num)
             },
-            onlyEnterNum(n){
+            onlyEnterNum(n) {
                 console.log(n);
                 let reg = /^[1-9]+\d*$/g
-                return n.replace(reg,'')
+                return n.replace(reg, '')
             },
 
-            linkToFirstScreenRep(){     //转到登录 / replace模式
+            linkToFirstScreenRep() {     //转到登录 / replace模式
                 $router.replace({name: 'importWallet'})
             },
 
-            linkToMainScreenRep(params){     //转到主页面 / replace模式
-                if(params && (typeof params !=='object')){
-                    return new Error('Param Error')
-                }
-                params = params ? params : {}
-                $router.replace({name: 'accountInfo',params: params})
-            },
-
-
-            getLocalAddress(){
-                let json = localStorage.getItem('userAddress')
-                if(json){
-                    return JSON.parse(json)
+            // linkToMainScreenRep() {     //转到主页面 / replace模式
+            //     if(!this.ifWalletExist()){
+            //         return
+            //     }
+            //     $router.replace({name: 'accountInfo'})
+            // },
+            ifWalletExist() {
+                let walletJSON = localStorage.getItem('web3js_wallet')
+                if(walletJSON) {
+                    $router.replace({name: 'accountInfo'})
+                    return walletJSON
                 } else {
-                    return null
+                    $router.replace({name: 'createWallet'})
+                    return false
                 }
             },
-            setLocalAddress(wallet){
-                let obj = localStorage.getItem('userAddress')
-                if (obj) {
-                    obj = JSON.parse(obj)
-                }
-                let addresses = obj ? obj.addresses : []
-                let index = addresses.indexOf(wallet.address)
-                if (index === -1) {
-                    index = obj ? addresses.length : 0
-                    addresses.push(wallet.address)
-                }
-                obj = {active: index, addresses: addresses}
-                localStorage.setItem('userAddress',JSON.stringify(obj))
+            loadWallet(pwd) {
+                return WEB3OBJ.eth.accounts.wallet.load(pwd)
             },
-            getBalanceByWei(addr){        //获取余额 bywei
+            setActiveAccount(index){
+                localStorage.setItem('active_account',index)
+            },
+            getActiveAccount(){
+                let wallet = WEB3OBJ.eth.accounts.wallet
+                let index = localStorage.getItem('active_account')
+                let activeAccount = wallet[index] || new Error('Wallet Is Locked')
+                return activeAccount
+            },
+
+            getAddress(){
+                let addr = this.getActiveAccount().address
+                if(WEB3OBJ.utils.isAddress(addr)){
+                    $store.commit('setAddress', addr)
+                    return addr
+                }
+            },
+            getBalanceByWei(callback) {        //获取余额 bywei
+                let addr = this.getAddress()
                 if (addr) {
-                    let balance = WEB3OBJ.eth.getBalance(addr, 'latest').toJSON()
-                    return Number(balance)
+                    WEB3OBJ.eth.getBalance(addr).then((balance) => {
+                        if (callback)
+                            callback(balance)
+                    })
                 } else {
-                    return callback(new Error(msg.invalidBalanceAddr));
+                    return callback(new Error(msg.invalidBalanceAddr))
                 }
             },
-            getBalance(addr){        //获取余额 fromwei
-                let balance = this.getBalanceByWei(addr)
-                balance = WEB3OBJ.fromWei(balance, 'ether')
-                return Number(balance)
+            getBalance(callback) {        //获取余额 fromwei
+                this.getBalanceByWei((balance) => {
+                    if (typeof balance === 'string') {
+                        balance = WEB3OBJ.utils.fromWei(balance, 'ether')
+                        $store.commit('setBalance', balance)
+                    } else {
+                        $store.commit('setBalance', '0')
+                    }
+                    if (callback)
+                        callback(balance)
+                })
             }
         }
     }

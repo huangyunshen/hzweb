@@ -6,39 +6,35 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     state: {
         gasPrice: 41, // 保存gasPrice
-        publicKey: '', // 保存公钥
-        privateKey: '', // 保存私钥
-        mnemonic:'', // 保存助记词
-        cryptPercent: {      //创建或解锁账户进行中
+        address: '', // 保存账户地址
+        cryptPercent: {      //loading modal
             percent: false,
             text: ''
         },
         userPassword: '',
-        passwordOfPlay: ''
+        passwordOfPlay: '',
+        balance: '0' //账户余额
     },
     mutations: {
         setGasPrice(state, data) {
             state.gasPrice = data
         },
-        setPublicKey(state, data) {
-            state.publicKey = data
+        setAddress(state, data) {
+            state.address = data
         },
-        setPrivateKey(state, data) {
-            state.privateKey = data
-        },
-        setMnemonic(state, data){
-            state.mnemonic = data
-        },
-        setCryptPercent(state, data){
+        setCryptPercent(state, data) {
             state.cryptPercent.percent = data.percent
             state.cryptPercent.text = data.text
         },
-        setPassword(state, data){
+        setPassword(state, data) {
             state.userPassword = data
         },
-        setPlayPassword(state, data){
+        setPlayPassword(state, data) {
             state.passwordOfPlay = data
         },
+        setBalance(state, data) {
+            state.balance = data
+        }
     }
 })
 

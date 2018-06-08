@@ -100,6 +100,7 @@
     }
 </script>
 
+
 <style lang="scss" type="text/scss" scoped>
     .app-list {
         height: 100%;

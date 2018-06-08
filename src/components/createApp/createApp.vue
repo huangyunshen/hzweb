@@ -202,8 +202,8 @@
             },
             nextStep() {
                 if (this.steps < 4) {
-                    let users = this.$funs.getLocalAddress()
-                    let balance = this.$funs.getBalance(users.addresses[users.active])
+                    let users = this.$store.state.address
+                    let balance = Number(this.$store.state.balance)
                     if (this.steps === 1) {
                         if (balance < 1) {
                             this.$message({
@@ -273,26 +273,24 @@
                             cancelButtonText: '取消',
                             type: 'warning'
                         }).then(() => {
-                            let users = this.$funs.getLocalAddress()
-                            this.publicKey = users.addresses[users.active]
                             if (this.$store.state.userPassword === "") {
-                                this.$prompt(`请输入${this.publicKey}的密码`, '提示', {
+                                this.$prompt(`请输入${users}的密码`, '提示', {
                                     inputType: 'password',
                                     confirmButtonText: '确定',
                                     cancelButtonText: '取消',
                                 }).then(({value}) => {
                                     this.password = value
                                     try {
-                                        this.$web3.personal.unlockAccount(this.publicKey, value, 6000000)
+                                        this.$web3.personal.unlockAccount(users, value, 6000000)
                                         this.$confirm('是否临时保存密码，页面在刷新或者关闭后自动清除', '提示', {
                                             confirmButtonText: '确定',
                                             cancelButtonText: '取消',
                                             type: 'warning'
                                         }).then(() => {
                                             this.$store.commit("setPassword", value)
-                                            this.migration(this.publicKey, value)
+                                            this.migration(users, value)
                                         }).catch(() => {
-                                            this.migration(this.publicKey, value)
+                                            this.migration(users, value)
                                         })
                                     } catch (err) {
                                         this.$message.error(String(err))
@@ -301,7 +299,7 @@
                                     console.log(error)
                                 })
                             } else {
-                                this.migration(this.publicKey, this.$store.state.userPassword)
+                                this.migration(users, this.$store.state.userPassword)
                             }
                         }).catch((err) => {
                             if (err !== 'cancel') {
@@ -325,9 +323,7 @@
              * 充值
              */
             recharge() {
-                let users = this.$funs.getLocalAddress()
-                this.publicKey = users.addresses[users.active]
-                this.rechargeFun(this.publicKey, this.$store.state.userPassword === "" ? this.password : this.$store.state.userPassword)
+                this.rechargeFun(this.$store.state.address, this.$store.state.userPassword === "" ? this.password : this.$store.state.userPassword)
             },
             //
             rechargeFun(user, value) {
@@ -339,7 +335,7 @@
                 // 转账 到合约账户，返回交易hash
                 let hash = myContractInstance.deposit({
                     from: user,
-                    value: this.$web3.toWei(this.rechargeData.value, 'ether'),
+                    value: this.$web3.utils.toWei(this.rechargeData.value, 'ether'),
                     gasPrice: this.rechargeData.gasPrice * Math.pow(10, 9),
                     gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
                 })
@@ -475,6 +471,54 @@
                         }, 3000)
                     })
             },
+            /*
+                签名交易
+             */
+            getSignMsg() {
+                return new Promise((resolve, reject) => {
+                    let Tx = require('ethereumjs-tx')
+                    let privateKey = this.$funs.getActiveAccount().privateKey
+                    privateKey = new Buffer(privateKey.replace('0x',''), 'hex')
+                    this.$web3.eth.getTransactionCount(this.$store.state.address).then( (nonce) => {
+                        let rawTx = {
+                            from:this.$store.state.address,
+                            nonce: this.$web3.utils.toHex(nonce),
+                            gasPrice: this.$web3.utils.toHex(this.$store.state.gasPrice * (Math.pow(10, 9))),
+                            gasLimit: this.$web3.utils.toHex(this.form.gas),
+                            data: "608060405234801561001057600080fd5b5061013f806100206000396000f300608060405260043610610041576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680630e84ae6f14610046575b600080fd5b34801561005257600080fd5b5061005b6100d6565b6040518080602001828103825283818151815260200191508051906020019080838360005b8381101561009b578082015181840152602081019050610080565b50505050905090810190601f1680156100c85780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b60606040805190810160405280600b81526020017f68656c6c6f20776f726c640000000000000000000000000000000000000000008152509050905600a165627a7a72305820af63f746974fda64e0c34c28cd691c155c375a84488016a02b77b9dae6b9b0e00029",
+                            datasourcecode:''
+                        }
+                        let tx = new Tx(rawTx)
+                        tx.sign(privateKey)
+                        let serializedTx = tx.serialize()
+                        this.transactionSign = '0x' + serializedTx.toString('hex')
+                        this.transactionData = JSON.stringify(rawTx)
+                        resolve()
+                    })
+                })
+                // return new Promise((resolve, reject) => {
+                //     let Tx = require('ethereumjs-tx')
+                //     let privateKey = this.$funs.getActiveAccount().privateKey
+                //     privateKey = new Buffer(privateKey.replace('0x',''), 'hex')
+                //     this.$web3.eth.getTransactionCount(this.$store.state.address).then( (nonce) => {
+                //         let rawTx = {
+                //             from:this.$store.state.address,
+                //             nonce: this.$web3.utils.toHex(nonce),
+                //             gasPrice: this.$web3.utils.toHex(this.$store.state.gasPrice * (Math.pow(10, 9))),
+                //             gasLimit: this.$web3.utils.toHex(this.form.gas),
+                //             to: this.form.to,
+                //             value: this.$web3.utils.toHex(this.$web3.utils.toWei(this.form.value, 'ether')),
+                //             data: ""
+                //         }
+                //         let tx = new Tx(rawTx)
+                //         tx.sign(privateKey)
+                //         let serializedTx = tx.serialize()
+                //         this.transactionSign = '0x' + serializedTx.toString('hex')
+                //         this.transactionData = JSON.stringify(rawTx)
+                //         resolve()
+                //     })
+                // })
+            },
             copyAddress($event) {
                 let input = document.getElementById('appAddress')
                 input.select()
@@ -482,7 +526,7 @@
             }
         },
         mounted() {
-            // this.sendMsgToServer()
+            this.$funs.getBalance()
         }
     }
 </script>

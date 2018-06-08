@@ -92,7 +92,7 @@
             return {
                 form: {
                     decryptType: '4',   //解锁方式,
-                    privateKey: '',
+                    privateKey: 'a8c17169820f10c175bf1bf83003cdbc80a277c20c78f74bae5d1a9f4f6ba954',
                     mnemonic: '',
                     address: '',
                     pwd: '',
@@ -189,7 +189,7 @@
                             reject(false)
                         }
                     } else if (this.form.decryptType === '4') {          //账户地址
-                        if (this.$web3.isAddress(this.form.address)) {
+                        if (this.$web3.utils.isAddress(this.form.address)) {
                             this.form.privateKey = ''
                             this.form.mnemonic = ''
                             resolve({address: this.form.address})

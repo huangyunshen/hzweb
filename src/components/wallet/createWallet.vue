@@ -29,10 +29,11 @@
             </el-form-item>
         </el-form>
         <p class="agreed">
-            <el-checkbox v-model="agreed">我已仔细阅读并同意</el-checkbox> <span class="deal" @click="agreedDialog = true">《服务及隐私协议》</span>
+            <el-checkbox v-model="agreed">我已仔细阅读并同意</el-checkbox>
+            <span class="deal" @click="agreedDialog = true">《服务及隐私协议》</span>
         </p>
 
-        <el-button class="el-wallet-main-button" @click="createOrLogin($event)">创建新的钱包</el-button>
+        <el-button class="el-wallet-main-button" @click="createWallet()">创建新的钱包</el-button>
 
         <div class="wallet-info">
             该密码将会加密您的私钥，但不会生成密钥的种子。您需要用此密码加私钥才能解锁您的钱包。
@@ -71,7 +72,8 @@
                 <a class="el-button" :href="walletInfo.blobEnc" :download="walletInfo.fileName"
                    @click="walletInfo.fileDownloaded=false">下载Keystore文件(UTC/JSON)</a>
 
-                <el-button type="danger" @click="unlockNewAccount" :disabled="walletInfo.fileDownloaded" style="width: 280px;">
+                <el-button type="danger" @click="unlockNewAccount" :disabled="walletInfo.fileDownloaded"
+                           style="width: 280px;">
                     点我登陆
                 </el-button>
             </div>
@@ -98,31 +100,30 @@
         data() {
             return {
                 createDialog: false,  //创建成功后显示模态框
-                mainBtnText: '创建钱包',
-                lastBtnText: '转到解锁',
                 formRulesCreate: {       //创建钱包的数据绑定对象
-                    pwd: '',
-                    confirmPwd: ''
+                    pwd: '111111111',
+                    confirmPwd: '111111111'
                 },
-                // rulesCreate: {         //创建钱包的校验对象
-                //     pwd: [
-                //         {validator: this.$funs.validatePwd, trigger: 'blur'}
-                //     ]
-                // },
-                wallet: null,
                 walletInfo: {
                     fileName: '',
                     blobEnc: '',
                     fileDownloaded: true
                 },
-                agreed:true,
-                agreedDialog:false
+                agreed: false,
+                agreedDialog: false
             }
         },
         methods: {
-            createOrLogin(e) {
+            createWallet() {
                 this.createDialog = false
                 this.walletInfo.fileDownloaded = true
+                if(localStorage.getItem('web3js_wallet')) {
+                    this.$message({
+                        message: this.$msg.walletIsExist,
+                        type: 'warning'
+                    })
+                    return
+                }
                 if (!this.formRulesCreate.pwd || !this.formRulesCreate.confirmPwd) {
                     this.$message({
                         message: this.$msg.pwdIsEmpty,
@@ -137,7 +138,7 @@
                     })
                     return
                 }
-                if(!this.agreed) {
+                if (!this.agreed) {
                     this.$message({
                         message: this.$msg.notAgreed,
                         type: 'error'
@@ -147,39 +148,28 @@
                 if (this.$funs.validatePwd(null, this.formRulesCreate.pwd, (param) => {
                         return param || 'true'
                     }) === 'true') {
-
-                    this.wallet = this.$Wallet.createRandom()
-
-                    let encryptPromise = this.wallet.encrypt(this.formRulesCreate.pwd)
-
                     this.$store.commit('setCryptPercent', {
                             percent: true,
-                            text: '正在创建并加密账户，请稍等...'
+                            text: '正在创建并加密钱包，请稍等...'
                         }
                     )
+                    setTimeout(() => {
+                        let wallet = this.$web3.eth.accounts.wallet.create(1)
+                        let encryptedJSON = this.$web3.eth.accounts.wallet.encrypt(this.formRulesCreate.pwd)
 
-                    let address = this.wallet.getAddress()
-                    this.walletInfo.fileName = this.getV3Filename(address)
+                        let address = wallet[0].address
+                        this.walletInfo.fileName = this.getV3Filename(address)
 
-                    encryptPromise.then((json) => {
-                        this.$axios.post('http://39.104.81.103:8101', {
-                            "jsonrpc": "2.0",
-                            "method": "eth_uploadkeyfile",
-                            "params": [this.walletInfo.fileName, json],
-                            "id": 1
-                        }).then((res) => {
-
-                        }).catch((error) => {
-                            console.log(error)
-                        })
-                        this.walletInfo.blobEnc = this.getBlob("text/json;charset=UTF-8", json)
+                        this.walletInfo.blobEnc = this.getBlob("text/json;charset=UTF-8", encryptedJSON)
                         this.$store.commit('setCryptPercent', {
                                 percent: false,
                                 text: ''
                             }
                         )
                         this.createDialog = true
-                    })
+                        this.$web3.eth.accounts.wallet.save(this.formRulesCreate.pwd)
+                        this.$funs.setActiveAccount('0')
+                    },1000)
                 } else {
                     this.$message({
                         message: this.$msg.createPwd,
@@ -188,8 +178,7 @@
                 }
             },
             unlockNewAccount() {
-                this.$funs.setLocalAddress(this.wallet)
-                this.$funs.linkToMainScreenRep(this.wallet)
+                this.$funs.ifWalletExist('accountInfo')
                 this.$message({
                     message: this.$msg.unlockSucc,
                     type: 'success'
@@ -198,14 +187,15 @@
             getBlob(mime, str) {
                 str = (typeof str === 'object') ? JSON.stringify(str) : str
                 if (str == null) return ''
-                var blob = new Blob([str], {
+                let blob = new Blob([str], {
                     type: mime
                 })
                 return window.URL.createObjectURL(blob)
             },
             getV3Filename(address) {
-                var ts = new Date()
-                return ['UTC--', ts.toJSON().replace(/:/g, '-'), '--', address.toString('hex')].join('')
+                let ts = new Date()
+                // return ['UTC--', ts.toJSON().replace(/:/g, '-'), '--', address.toString('hex')].join('')
+                return ['FOF-Wallet-', ts.toJSON().slice(0,10), '-', address.toString('hex')].join('')
             }
         }
     }
@@ -215,6 +205,7 @@
     .el-form-item {
         margin-bottom: 0;
     }
+
     .wallet-info {
         margin-top: 30px;
         font-size: 16px;
