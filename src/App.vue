@@ -39,7 +39,7 @@
             return {
                 timer: null,    //定时器
                 timeRemaining: 0,   //倒计时时间
-                duration: 600,       //多久后锁定（s）
+                duration: 1800,       //多久后锁定（s）
                 lockModal: true,
                 pwd: '111111111'
             }
@@ -53,8 +53,14 @@
             unlockWallet() {
                 try {
                     this.$funs.loadWallet(this.pwd)
+                    let wallet = this.$funs.getActiveAccount()
                     this.$funs.getBalance()
                     this.lockModal = false
+
+                    this.$store.commit('setAddress', wallet.address)
+                    this.$store.commit('setPrivKey', wallet.privateKey)
+                    this.$store.commit('setLock',false)
+
                     this.countDown()
                 } catch (error) {
                     this.$message({
@@ -73,10 +79,10 @@
                         this.$web3.eth.accounts.wallet.clear()
                         clearInterval(this.timer)
                         this.lockModal = true
+                        this.$store.commit('setLock',true)
                     }
                 }, 1000)
             }
-
         },
         beforeCreate(){
             if(!this.$funs.ifWalletExist()) {

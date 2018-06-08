@@ -154,7 +154,7 @@
                         }
                     )
                     setTimeout(() => {
-                        let wallet = this.$web3.eth.accounts.wallet.create(1)
+                        let wallet = this.$web3.eth.accounts.wallet.create(2)
                         let encryptedJSON = this.$web3.eth.accounts.wallet.encrypt(this.formRulesCreate.pwd)
 
                         let address = wallet[0].address

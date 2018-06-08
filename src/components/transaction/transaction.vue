@@ -410,12 +410,6 @@
                     })
                 })
             }
-        },
-        // mounted() {
-        //     this.$funs.getBalance()
-        // },
-        updated() {
-            this.$funs.getBalance()
         }
     }
 </script>

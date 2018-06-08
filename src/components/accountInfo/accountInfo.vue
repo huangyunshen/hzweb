@@ -33,16 +33,20 @@
                             <span v-text="$store.state.address"></span>
                         </li>
                         <li style="padding-right: 25px">
-                            <el-input v-show="mnemonic" v-model="mnemonic" :type="passwordOrTextMnemo" readonly>
+                            <el-input v-show="$store.state.mnemonic" v-model="$store.state.mnemonic"
+                                      :type="passwordOrTextMnemo" readonly>
                                 <el-button slot="append" icon="el-icon-view" @click="showOrHideMnemo"></el-button>
                             </el-input>
-                            <span v-show="!mnemonic" class="text-disabled no-select-text">{{warningInfo}}</span>
+                            <span v-show="!$store.state.mnemonic"
+                                  class="text-disabled no-select-text">{{warningInfo}}</span>
                         </li>
                         <li style="padding-right: 25px">
-                            <el-input v-show="privateKey" v-model="privateKey" :type="passwordOrTextPriv" readonly>
+                            <el-input v-show="$store.state.privKey" v-model="$store.state.privKey"
+                                      :type="passwordOrTextPriv" readonly>
                                 <el-button slot="append" icon="el-icon-view" @click="showOrHidePriv"></el-button>
                             </el-input>
-                            <span v-show="!privateKey" class="text-disabled no-select-text">{{warningInfo}}</span>
+                            <span v-show="!$store.state.privKey"
+                                  class="text-disabled no-select-text">{{warningInfo}}</span>
                         </li>
                     </ul>
                 </div>
@@ -73,7 +77,6 @@
         data() {
             return {
                 mnemonic: '',
-                privateKey: '',
                 warningInfo: '无相关信息',
                 passwordOrTextPriv: 'password',
                 passwordOrTextMnemo: 'password',
@@ -82,6 +85,17 @@
         },
         components: {
             VueQr
+        },
+        computed: {
+            privateKey() {
+                return this.$store.state.privKey
+            }
+        },
+        watch: {
+            privateKey() {
+                if (this.passwordOrTextPriv === 'text')
+                    this.privateKeyQr = this.privateKey
+            }
         },
         methods: {
             showOrHideMnemo() {
@@ -102,20 +116,7 @@
             }
         },
         mounted() {
-            let wallet = this.$funs.getActiveAccount()
-            if(wallet) {
-                this.mnemonic = wallet.mnemonic ? wallet.mnemonic : ''
-                this.privateKey = wallet.privateKey ? wallet.privateKey.replace('0x', '') : ''
-                // this.$funs.getBalance()
-            }
-        },
-        updated() {
-            let wallet = this.$funs.getActiveAccount()
-            if(wallet) {
-                this.mnemonic = wallet.mnemonic ? wallet.mnemonic : ''
-                this.privateKey = wallet.privateKey ? wallet.privateKey.replace('0x', '') : ''
-                // this.$funs.getBalance()
-            }
+
         }
     }
 </script>

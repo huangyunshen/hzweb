@@ -7,13 +7,16 @@ const store = new Vuex.Store({
     state: {
         gasPrice: 41, // 保存gasPrice
         address: '', // 保存账户地址
+        privKey:'',
+        mnemonic:'',
         cryptPercent: {      //loading modal
             percent: false,
             text: ''
         },
         userPassword: '',
         passwordOfPlay: '',
-        balance: '0' //账户余额
+        balance: '0', //账户余额
+        isLock:true,
     },
     mutations: {
         setGasPrice(state, data) {
@@ -21,6 +24,12 @@ const store = new Vuex.Store({
         },
         setAddress(state, data) {
             state.address = data
+        },
+        setPrivKey(state, data) {
+            state.privKey = data
+        },
+        setMnemonic(state, data) {
+            state.mnemonic = data
         },
         setCryptPercent(state, data) {
             state.cryptPercent.percent = data.percent
@@ -34,6 +43,9 @@ const store = new Vuex.Store({
         },
         setBalance(state, data) {
             state.balance = data
+        },
+        setLock(state, data) {
+            state.isLock = data
         }
     }
 })

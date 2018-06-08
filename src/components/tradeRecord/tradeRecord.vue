@@ -152,8 +152,7 @@
             },
             currentPage(page) {
                 this.transactionsList.length = 0
-                let users = this.$funs.getLocalAddress()
-                let userAddr = users.addresses[users.active]
+                let userAddr = this.$store.state.address
                 this.$axios.post('/api/requestTx.php', {
                     "addr": userAddr,
                     "pageSize": this.pageSize,

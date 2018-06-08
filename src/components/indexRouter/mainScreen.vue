@@ -39,8 +39,16 @@
 
         <div class="container">
             <header class="header">
-                <el-button size="mini" @click="exit">退出</el-button>
+                <el-select class="language-style" v-model="activeAccount" size="mini" @change="changeAccount">
+                    <el-option
+                            v-for="(item,index) in accounts"
+                            :key="index"
+                            :label="item.label"
+                            :value="item.value"
+                    ></el-option>
+                </el-select>
                 <language class="language"></language>
+                <el-button size="mini" @click="exit">退出</el-button>
             </header>
 
             <main class="content">
@@ -48,9 +56,9 @@
                     <router-view></router-view>
                 </transition>
                 <!--<transition name="fof-fade">-->
-                    <!--<keep-alive>-->
-                        <!--<router-view v-if="$route.meta.keepAlive"></router-view>-->
-                    <!--</keep-alive>-->
+                <!--<keep-alive>-->
+                <!--<router-view v-if="$route.meta.keepAlive"></router-view>-->
+                <!--</keep-alive>-->
                 <!--</transition>-->
             </main>
         </div>
@@ -67,7 +75,31 @@
         },
         data() {
             return {
-                itemSelected: '1'
+                itemSelected: '1',
+                accounts: [{value:-1, label: '切换账户'}],
+                activeAccount: -1
+            }
+        },
+        computed: {
+            lockFlag() {
+                return this.$store.state.isLock
+            }
+        },
+        watch: {
+            lockFlag() {
+                if (!this.lockFlag) {
+                    let activeId = Number(localStorage.getItem('active_account'))
+                    let wallet = this.$web3.eth.accounts.wallet
+                    this.accounts = []
+                    this.activeAccount = activeId
+                    for (let i = 0; i < wallet.length; i++) {
+                        let obj = {
+                            value: i,
+                            label: wallet[i].address
+                        }
+                        this.accounts.push(obj)
+                    }
+                }
             }
         },
         methods: {
@@ -76,6 +108,13 @@
             },
             exit() {
                 this.$funs.linkToFirstScreenRep()
+            },
+            changeAccount(){
+                this.$funs.setActiveAccount(this.activeAccount)
+                let wallet = this.$funs.getActiveAccount()
+                this.$funs.getBalance()
+                this.$store.commit('setAddress',wallet.address)
+                this.$store.commit('setPrivKey',wallet.privateKey)
             }
         },
         mounted() {
@@ -154,22 +193,22 @@
                         animation-name: passInto;
                         animation-timing-function: ease-in-out;
                         animation-fill-mode: forwards;
-                        &.pass-enter1{
+                        &.pass-enter1 {
                             animation-duration: 0.5s;
                         }
-                        &.pass-enter2{
+                        &.pass-enter2 {
                             animation-duration: 0.6s;
                         }
-                        &.pass-enter3{
+                        &.pass-enter3 {
                             animation-duration: 0.7s;
                         }
-                        &.pass-enter4{
+                        &.pass-enter4 {
                             animation-duration: 0.8s;
                         }
-                        &.pass-enter5{
+                        &.pass-enter5 {
                             animation-duration: 0.9s;
                         }
-                        &.pass-enter6{
+                        &.pass-enter6 {
                             animation-duration: 1s;
                         }
                         &:hover {
@@ -240,7 +279,7 @@
 
         /**    主体     **/
         .container {
-            width: calc(100% - 400px);
+            width: calc(100% - 380px);
             height: $height;
             float: left;
             background-color: rgba(25, 21, 46, 0.7);
@@ -258,6 +297,9 @@
                 align-items: center;
                 justify-content: flex-end;
 
+                .el-select {
+                    margin-right: 30px;
+                }
                 .el-button {
                     height: 28px;
                     margin-right: 30px;
@@ -293,7 +335,7 @@
             left: -110%;
         }
         to {
-            left:0;
+            left: 0;
         }
     }
 </style>

@@ -81,7 +81,7 @@ export default {
                 }
             },
             getBalanceByWei(callback) {        //获取余额 bywei
-                let addr = this.getAddress()
+                let addr = this.getActiveAccount().address
                 if (addr) {
                     WEB3OBJ.eth.getBalance(addr).then((balance) => {
                         if (callback)
