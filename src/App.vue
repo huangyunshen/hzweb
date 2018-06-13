@@ -53,14 +53,8 @@
             unlockWallet() {
                 try {
                     this.$funs.loadWallet(this.pwd)
-                    let wallet = this.$funs.getActiveAccount()
-                    this.$funs.getBalance()
+                    this.$funs.loadActivWallet()
                     this.lockModal = false
-
-                    this.$store.commit('setAddress', wallet.address)
-                    this.$store.commit('setPrivKey', wallet.privateKey)
-                    this.$store.commit('setLock',false)
-
                     this.countDown()
                 } catch (error) {
                     this.$message({

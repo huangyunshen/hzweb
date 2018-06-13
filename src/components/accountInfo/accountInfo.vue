@@ -55,7 +55,7 @@
                 <div class="qr-item">
                     <p class="qr-title">账户地址</p>
                     <div class="qr-body">
-                        <vue-qr :text="$store.state.address" :margin="8"></vue-qr>
+                        <vue-qr :text="$store.state.address || 'no address'" :margin="8"></vue-qr>
                     </div>
                 </div>
                 <div class="qr-item">

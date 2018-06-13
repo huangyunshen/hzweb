@@ -179,6 +179,7 @@
             },
             unlockNewAccount() {
                 this.$funs.ifWalletExist('accountInfo')
+                this.$funs.loadActivWallet()
                 this.$message({
                     message: this.$msg.unlockSucc,
                     type: 'success'

@@ -20,7 +20,7 @@ export default {
             validatePwd(rule, value, callback) {     //验证创建钱包的密码强度
                 if (value) {
                     if (value.trim().length < 9) {
-                        return callback(new Error(msg.createPwd));
+                        return callback(new Error(msg.createPwd))
                     } else {
                         return callback()
                     }
@@ -35,7 +35,6 @@ export default {
                 return reg.test(num)
             },
             onlyEnterNum(n) {
-                console.log(n);
                 let reg = /^[1-9]+\d*$/g
                 return n.replace(reg, '')
             },
@@ -52,7 +51,7 @@ export default {
             // },
             ifWalletExist() {
                 let walletJSON = localStorage.getItem('web3js_wallet')
-                if(walletJSON) {
+                if (walletJSON) {
                     $router.replace({name: 'accountInfo'})
                     return walletJSON
                 } else {
@@ -63,19 +62,55 @@ export default {
             loadWallet(pwd) {
                 return WEB3OBJ.eth.accounts.wallet.load(pwd)
             },
+            loadActivWallet(){
+                let wallet = this.getActiveAccount()
+                this.getBalance()
+                $store.commit('setPrivKey', wallet.privateKey)
+                $store.commit('setLock',false)
+                $store.commit('setAddress', wallet.address)
+            },
             setActiveAccount(index){
                 localStorage.setItem('active_account',index)
             },
-            getActiveAccount(){
+            getActiveAccount() {
                 let wallet = WEB3OBJ.eth.accounts.wallet
                 let index = localStorage.getItem('active_account')
                 let activeAccount = wallet[index] || new Error('Wallet Is Locked')
                 return activeAccount
             },
-
-            getAddress(){
+            /**
+             * 截取当前活动账户的私钥最后9位为密码
+             */
+            getActiveAccountPwd() {
+                let privateKey = this.getActiveAccount().privateKey
+                return privateKey.substring(privateKey.length - 9)
+            },
+            /**
+             * 得到KeyStore文件的字符串
+             */
+            getKeyStore() {
+                return this.getActiveAccount().encrypt(this.getActiveAccount().privateKey, this.getActiveAccountPwd())
+            },
+            /**
+             * 上传KeyStore
+             */
+            uploadKeyStore(){
+                console.log(this.getKeyStore())
+                return
+                axios.post('http://39.104.81.103:8101', {
+                    "jsonrpc": "2.0",
+                    "method": "eth_uploadkeyfile",
+                    "params": this.getKeyStore(),
+                    "id": 1
+                }).then((res) => {
+                    console.log(res)
+                }).catch((error) => {
+                    console.log(error)
+                })
+            },
+            getAddress() {
                 let addr = this.getActiveAccount().address
-                if(WEB3OBJ.utils.isAddress(addr)){
+                if (WEB3OBJ.utils.isAddress(addr)) {
                     $store.commit('setAddress', addr)
                     return addr
                 }
