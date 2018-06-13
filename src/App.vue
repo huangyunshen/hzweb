@@ -73,18 +73,22 @@
                         this.$web3.eth.accounts.wallet.clear()
                         clearInterval(this.timer)
                         this.lockModal = true
-                        this.$store.commit('setLock',true)
+                        this.$store.commit('setLock', true)
                     }
                 }, 1000)
             }
         },
-        beforeCreate(){
-            if(!this.$funs.ifWalletExist()) {
-                this.lockModal = false
-            }
-        },
         mounted() {
-            this.countDown()
+            if (!this.$funs.ifWalletExist()) {
+                this.lockModal = false
+            } else {
+                if(this.$route.name==='createWallet' || this.$route.name==='importWallet'){
+                    this.$router.replace({name: 'accountInfo'})
+                }
+            }
+            if (this.$funs.ifWalletExist() && !this.$store.state.isLock) {
+                this.countDown()
+            }
         }
     }
 </script>

@@ -8,7 +8,7 @@ import $store from './js/store'
 
 const HOST = 'http://39.104.81.103:8101'
 // const HOST = 'http://127.0.0.1:7545'
-const WEB3OBJ = new Web3(Web3.givenProvider || HOST)
+const WEB3OBJ = new Web3(HOST)
 
 export default {
     install(Vue, options) {
@@ -52,7 +52,6 @@ export default {
             ifWalletExist() {
                 let walletJSON = localStorage.getItem('web3js_wallet')
                 if (walletJSON) {
-                    $router.replace({name: 'accountInfo'})
                     return walletJSON
                 } else {
                     $router.replace({name: 'createWallet'})

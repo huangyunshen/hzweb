@@ -88,17 +88,7 @@
         watch: {
             lockFlag() {
                 if (!this.lockFlag) {
-                    let activeId = Number(localStorage.getItem('active_account'))
-                    let wallet = this.$web3.eth.accounts.wallet
-                    this.accounts = []
-                    this.activeAccount = activeId
-                    for (let i = 0; i < wallet.length; i++) {
-                        let obj = {
-                            value: i,
-                            label: wallet[i].address
-                        }
-                        this.accounts.push(obj)
-                    }
+                    this.loadAccounts()
                 }
             }
         },
@@ -115,6 +105,19 @@
                 this.$funs.getBalance()
                 this.$store.commit('setAddress',wallet.address)
                 this.$store.commit('setPrivKey',wallet.privateKey)
+            },
+            loadAccounts(){
+                let activeId = Number(localStorage.getItem('active_account'))
+                let wallet = this.$web3.eth.accounts.wallet
+                this.accounts = []
+                this.activeAccount = activeId
+                for (let i = 0; i < wallet.length; i++) {
+                    let obj = {
+                        value: i,
+                        label: wallet[i].address
+                    }
+                    this.accounts.push(obj)
+                }
             }
         },
         mounted() {
@@ -139,6 +142,10 @@
                     break
                 default:
                     break
+            }
+
+            if(this.$route.params.loadAcc){
+                this.loadAccounts()
             }
         }
     }

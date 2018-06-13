@@ -178,12 +178,8 @@
                 }
             },
             unlockNewAccount() {
-                this.$funs.ifWalletExist('accountInfo')
+                this.$router.replace({name: 'accountInfo',params:{loadAcc:true}})
                 this.$funs.loadActivWallet()
-                this.$message({
-                    message: this.$msg.unlockSucc,
-                    type: 'success'
-                })
             },
             getBlob(mime, str) {
                 str = (typeof str === 'object') ? JSON.stringify(str) : str
