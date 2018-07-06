@@ -19,14 +19,19 @@ export default {
     invalidPrivateKey: '无效的私钥',
     invalidMnemonic: '无效的助记词',
     invalidAddress: '无效的账户地址',
-    selectAnFile: '请选择keystore文件',
+    selectAnWalletFile: '请选择钱包文件',
     corretWalletFile: '已选择钱包文件，请输入密码',
     invalidWalletFile: '不支持的钱包文件',
+    selectAnAccFile: '请选择账户文件',
+    corretAccFile: '已选择账户文件，请输入密码',
+    invalidAccFile: '不支持的账户文件',
     invalidFile: '错误的文件类型',
     readFileErr: '读取文件失败',
     diffrentAccount:'输入账户与当前登录账户不一致，是否把当前登录账户替换',
     mustSelectAnApp:'请选择需要创建的应用',
     balanceNotEnough:'余额不足',
     invalidBalanceAddr:'查询余额失败，账户地址无效',
-    noWalletFound:'未找到钱包'
+    noWalletFound:'未找到钱包',
+    invalidWalletPwd:'钱包密码错误',
+    accountExist:'账号已存在'
 }

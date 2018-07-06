@@ -69,7 +69,8 @@ contract PlayGame {
                 if (!flag0) {
                     dragon.push(addr);
                 }
-                dragonMap[addr] = dragonMap[addr] == 0 ? (dragonMap[addr] + coin) : coin;
+                // dragonMap[addr] = dragonMap[addr] == 0 ? (dragonMap[addr] + coin) : coin;
+                dragonMap[addr] = dragonMap[addr] + coin;
                 dragonCoins += coin;
             } else if (cho == 1) {
                 bool flag1 = false;
@@ -82,7 +83,8 @@ contract PlayGame {
                 if (!flag1) {
                     tiger.push(addr);
                 }
-                tigerMap[addr] = tigerMap[addr] == 0 ? (tigerMap[addr] + coin) : coin;
+//                tigerMap[addr] = tigerMap[addr] == 0 ? (tigerMap[addr] + coin) : coin;
+                tigerMap[addr] = tigerMap[addr] + coin;
                 tigerCoins += coin;
             } else if (cho == 2) {
                 bool flag2 = false;
@@ -95,7 +97,8 @@ contract PlayGame {
                 if (!flag2) {
                     draw.push(addr);
                 }
-                drawMap[addr] = drawMap[addr] == 0 ? (drawMap[addr] + coin) : coin;
+//                drawMap[addr] = drawMap[addr] == 0 ? (drawMap[addr] + coin) : coin;
+                drawMap[addr] = drawMap[addr] + coin;
                 drawCoins += coin;
             }
             randomNum.push(ran);

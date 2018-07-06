@@ -5,10 +5,6 @@
                 <div class="list-header">
                     <ul class="list-padding">
                         <li>
-                            <i class="list-icon1"></i>
-                            <span>账户余额</span>
-                        </li>
-                        <li>
                             <i class="list-icon2"></i>
                             <span>账户地址</span>
                         </li>
@@ -25,11 +21,6 @@
                 <div class="list-body">
                     <ul>
                         <li>
-                            <span class="get-balance"
-                                  title="点击刷新余额">{{$store.state.balance | amountUnit}}</span>
-                            <i class="el-icon-refresh" @click="$funs.getBalance()"></i>
-                        </li>
-                        <li>
                             <span v-text="$store.state.address"></span>
                         </li>
                         <li style="padding-right: 25px">
@@ -41,11 +32,11 @@
                                   class="text-disabled no-select-text">{{warningInfo}}</span>
                         </li>
                         <li style="padding-right: 25px">
-                            <el-input v-show="$store.state.privKey" v-model="$store.state.privKey"
+                            <el-input v-show="privateKey" v-model="privateKey"
                                       :type="passwordOrTextPriv" readonly>
                                 <el-button slot="append" icon="el-icon-view" @click="showOrHidePriv"></el-button>
                             </el-input>
-                            <span v-show="!$store.state.privKey"
+                            <span v-show="!privateKey"
                                   class="text-disabled no-select-text">{{warningInfo}}</span>
                         </li>
                     </ul>
@@ -80,16 +71,12 @@
                 warningInfo: '无相关信息',
                 passwordOrTextPriv: 'password',
                 passwordOrTextMnemo: 'password',
+                privateKey: '',
                 privateKeyQr: '无相关信息',
             }
         },
         components: {
             VueQr
-        },
-        computed: {
-            privateKey() {
-                return this.$store.state.privKey
-            }
         },
         watch: {
             privateKey() {
@@ -113,20 +100,26 @@
                     this.passwordOrTextPriv = 'password'
                     this.privateKeyQr = this.warningInfo
                 }
+            },
+            getWallet() {
+                let wallet = this.$funs.getActiveAccount()
+                if (wallet.privateKey) {
+                    this.privateKey = wallet.privateKey.replace('0x', '')
+                }
             }
         },
         mounted() {
-
+            this.getWallet()
         }
     }
 </script>
 
 <style scoped lang="scss">
 
-    $list_height: 100px;
+    $list_height: 70px;
 
     .container {
-        padding: 0 70px;
+        padding: 0 10px;
         .list-content {
             display: flex;
             ul {
@@ -153,9 +146,6 @@
                     margin-right: 5px;
                     vertical-align: text-top;
                 }
-                .list-icon1 {
-                    background: url("../../assets/images/mainScreen/icon_circle_zhye.png");
-                }
                 .list-icon2 {
                     background: url("../../assets/images/mainScreen/con_circle_zhdz.png");
                 }
@@ -170,14 +160,6 @@
                 flex-grow: 1;
                 font-size: 24px;
                 color: #8abdec;
-
-                .el-icon-refresh {
-                    margin-left: 20px;
-                    cursor: pointer;
-                    &:hover {
-                        color: #A0CBF5;
-                    }
-                }
                 .el-input {
                     font-size: 24px;
                 }
@@ -193,15 +175,14 @@
         }
 
         .qr-content {
-            height: 280px;
-            margin-top: 50px;
+            height: 260px;
+            margin-top: 30px;
             padding-left: 15px;
-
+            text-align: center;
             .qr-item {
                 width: 250px;
-                margin-right: 200px;
-                float: left;
-
+                display: inline-block;
+                margin: 0 50px;
                 .qr-title {
                     font-size: 24px;
                     font-weight: 100;
@@ -209,7 +190,7 @@
                 }
                 .qr-body {
                     width: 250px;
-                    height: 250px;
+                    height: 210px;
                     margin-top: 20px;
                 }
             }

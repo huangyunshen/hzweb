@@ -5,35 +5,35 @@
                 label-position="left"
                 @submit.native.prevent>
 
-            <el-form-item class="el-wallet-style" label="解锁方式">
+            <!--<el-form-item class="el-wallet-style" label="导入方式">-->
                 <div class="wallet-decrypt-type no-select-text">
                     <span class="wallet-decrypt-item" :class="{active:form.decryptType==='4'}"
-                          @click="selectDecryptType('4')" v-show="isTrancCom">
+                          <!--@click="selectDecryptType('4')" v-show="hasWalletCom">
                         <i class="wallet-decrypt-type-icon icon3" :class="{'icon3-active':form.decryptType==='4'}"></i>
-                        账户地址
+                        钱包文件-->
                     </span>
                     <span class="wallet-decrypt-item" :class="{active:form.decryptType==='1'}"
-                          @click="selectDecryptType('1')">
+                          @click="selectDecryptType('1')" v-show="!hasWalletCom">
                         <i class="wallet-decrypt-type-icon icon1" :class="{'icon1-active':form.decryptType==='1'}"></i>
                         私钥
                     </span>
                     <span class="wallet-decrypt-item" :class="{active:form.decryptType==='2'}"
-                          @click="selectDecryptType('2')">
+                          @click="selectDecryptType('2')" v-show="!hasWalletCom">
                         <i class="wallet-decrypt-type-icon icon2" :class="{'icon2-active':form.decryptType==='2'}"></i>
-                        钱包文件
+                        账户文件
                     </span>
                     <span class="wallet-decrypt-item" :class="{active:form.decryptType==='3'}"
-                          @click="selectDecryptType('3')">
+                          @click="selectDecryptType('3')" v-show="!hasWalletCom">
                         <i class="wallet-decrypt-type-icon icon3" :class="{'icon3-active':form.decryptType==='3'}"></i>
                         助记词
                     </span>
                 </div>
-                <p>{{decryptInfo}}</p>
+                <!--<p>{{decryptInfo}}</p>-->
             </el-form-item>
 
-            <div v-show="form.decryptType==='1'">
-                <el-form-item class="el-wallet-style mt-40" label="私钥">
-                    <el-input class="el-wallet-input"
+            <div v-show="!hasWalletCom && form.decryptType==='1'">
+                <el-form-item class="el-wallet-style mt-40">
+                    <el-input class="el-wallet-account-input"
                               v-model="form.privateKey"
                               placeholder="请输入私钥"
                               auto-complete="off"
@@ -42,26 +42,26 @@
                 </el-form-item>
             </div>
 
-            <div v-show="form.decryptType==='2'">
-                <el-form-item class="el-wallet-style mt-40" label="选择文件">
-                    <input id="fileUpload" type="file" style="display:none" @change="uploadFile">
-                    <el-button class="choose-file-btn" @click="selectFile">选择钱包文件...</el-button>
+            <div v-show="!hasWalletCom && form.decryptType==='2'">
+                <el-form-item class="el-wallet-style mt-40" >
+                    <input id="fileUpload1" type="file" style="display:none" @change="uploadFile1">
+                    <el-button class="choose-file-btn" @click="selectFile1">选择账户文件...</el-button>
                 </el-form-item>
 
-                <el-form-item class="el-wallet-style mt-40" label="密码">
+                <el-form-item class="el-wallet-style mt-40">
                     <el-input class="el-wallet-input"
                               v-model="form.pwd"
                               type="password"
-                              placeholder="已验证钱包文件，请输入密码"
+                              placeholder="请输入账户密码"
                               auto-complete="off"
                               clearable
                     ></el-input>
                 </el-form-item>
             </div>
 
-            <div v-show="form.decryptType==='3'">
-                <el-form-item class="el-wallet-style mt-40" label="助记词">
-                    <el-input class="el-wallet-input"
+            <div v-show="!hasWalletCom && form.decryptType==='3'">
+                <el-form-item class="el-wallet-style mt-40">
+                    <el-input class="el-wallet-account-input"
                               v-model="form.mnemonic"
                               type="textarea"
                               :autosize="{ minRows: 3, maxRows: 3 }"
@@ -71,14 +71,30 @@
                 </el-form-item>
             </div>
 
-            <div v-show="isTrancCom && form.decryptType==='4'">
-                <el-form-item class="el-wallet-style mt-40" label="账户地址">
+            <div v-show="hasWalletCom && form.decryptType==='4'">
+                <el-form-item class="el-wallet-style mt-40">
+                    <input id="fileUpload2" type="file" style="display:none" @change="uploadFile2">
+                    <el-button class="choose-file-btn" @click="selectFile2">选择钱包文件...</el-button>
+                </el-form-item>
+
+                <el-form-item class="el-wallet-style mt-40">
                     <el-input class="el-wallet-input"
-                              v-model="form.address"
+                              v-model="form.pwd"
+                              type="password"
+                              placeholder="请输入钱包密码"
+                              auto-complete="off"
                               clearable
                     ></el-input>
                 </el-form-item>
             </div>
+            <!--<div v-show="hasWalletCom && form.decryptType==='4'">-->
+            <!--<el-form-item class="el-wallet-style mt-40" label="账户地址">-->
+            <!--<el-input class="el-wallet-input"-->
+            <!--v-model="form.address"-->
+            <!--clearable-->
+            <!--&gt;</el-input>-->
+            <!--</el-form-item>-->
+            <!--</div>-->
         </el-form>
     </div>
 </template>
@@ -87,17 +103,17 @@
 
     export default {
         name: "unlockAccount",
-        props: ['isTranc'],
+        props: ['hasWallet'],
         data() {
             return {
                 form: {
                     decryptType: '4',   //解锁方式,
-                    privateKey: 'a8c17169820f10c175bf1bf83003cdbc80a277c20c78f74bae5d1a9f4f6ba954',
+                    privateKey: '',
                     mnemonic: '',
                     address: '',
                     pwd: '',
                     keystore: {},
-                    // fileName: '请选择keystore钱包文件',
+                    //fileName: '请选择keystore钱包文件',
                     fileContent: ''
                 }
             }
@@ -106,25 +122,35 @@
             selectDecryptType(type) {
                 this.form.decryptType = type
             },
-            importAccount() {
+            importWallet() {
                 return new Promise((resolve, reject) => {
                     if (this.form.decryptType === '1') {          //私钥
                         try {
-                            let wallet = new this.$Wallet('0x' + this.form.privateKey)
-                            resolve(wallet)
-                            this.form.privateKey
+                            if ( this.form.privateKey && this.form.privateKey.indexOf('0x') === -1) this.form.privateKey = '0x' + this.form.privateKey
+                            if (this.form.privateKey.length !== 66) {
+                                this.$message({
+                                    message: this.$msg.invalidPrivateKey,
+                                    type: 'error'
+                                })
+                                reject(false)
+                                return
+                            }
+                            resolve(this.form.privateKey)
+                            this.form.privateKey = ''
                         } catch (err) {
+                            console.log(err);
                             this.$message({
                                 message: this.$msg.invalidPrivateKey,
                                 type: 'error'
                             })
                             reject(false)
                         }
-                    } else if (this.form.decryptType === '2') {          //keystore文件+密码
+                    }
+                    else if (this.form.decryptType === '2') {          //keystore文件+密码
 
                         if (!this.form.fileContent) {
                             this.$message({
-                                message: this.$msg.selectAnFile,
+                                message: this.$msg.selectAnAccFile,
                                 type: 'error'
                             })
                             reject(false)
@@ -151,7 +177,8 @@
                                         text: ''
                                     }
                                 )
-                                resolve(wallet)
+                                resolve(wallet.privateKey)
+                                this.form.pwd = ''
                             }, (err) => {
                                 this.form.pwd = ''
                                 this.$message({
@@ -171,16 +198,18 @@
                             this.form.pwd = ''
 
                             this.$message({
-                                message: this.$msg.invalidMnemonic,
+                                message: this.$msg.unlockFailByPwd,
                                 type: 'error'
                             })
                             reject(false)
                         }
 
-                    } else if (this.form.decryptType === '3') {          //助记词
+                    }
+                    else if (this.form.decryptType === '3') {          //助记词
                         try {
                             let wallet = this.$Wallet.fromMnemonic(this.form.mnemonic)
-                            resolve(wallet)
+                            resolve(wallet.privateKey)
+                            this.form.mnemonic = ''
                         } catch (err) {
                             this.$message({
                                 message: this.$msg.invalidMnemonic,
@@ -188,14 +217,39 @@
                             })
                             reject(false)
                         }
-                    } else if (this.form.decryptType === '4') {          //账户地址
-                        if (this.$web3.utils.isAddress(this.form.address)) {
-                            this.form.privateKey = ''
-                            this.form.mnemonic = ''
-                            resolve({address: this.form.address})
-                        } else {
+                    }
+                    else if (this.form.decryptType === '4') {          //通过钱包文件导入钱包
+
+                        if (!this.form.fileContent) {
                             this.$message({
-                                message: this.$msg.invalidAddress,
+                                message: this.$msg.selectAnWalletFile,
+                                type: 'error'
+                            })
+                            reject(false)
+                            return
+                        }
+                        if (!this.form.pwd) {
+                            this.$message({
+                                message: this.$msg.enterPwd,
+                                type: 'error'
+                            })
+                            reject(false)
+                            return
+                        }
+                        try {
+                            this.$web3.eth.accounts.wallet.decrypt(this.form.fileContent, this.form.pwd)
+                            this.$web3.eth.accounts.wallet.save(this.form.pwd)
+                            this.$funs.setActiveAccount('0')
+                            this.$store.commit('setCryptPercent', {
+                                    percent: false,
+                                    text: ''
+                                }
+                            )
+                            resolve()
+                        } catch (err) {
+                            this.form.pwd = ''
+                            this.$message({
+                                message: this.$msg.unlockFailByPwd,
                                 type: 'error'
                             })
                             reject(false)
@@ -203,11 +257,11 @@
                     }
                 })
             },
-            selectFile() {
-                document.getElementById('fileUpload').click()
+            selectFile1() {
+                document.getElementById('fileUpload1').click()
             },
-            uploadFile() {
-                let file = document.getElementById('fileUpload').files[0]
+            uploadFile1() {
+                let file = document.getElementById('fileUpload1').files[0]
                 let reader = new FileReader()
                 this.form.fileContent = ''
                 this.form.fileName = ''
@@ -221,6 +275,47 @@
 
                         if (keystore.Crypto != null || keystore.crypto != null || (keystore.hash != null && keystore.locked)) {
                             this.form.fileContent = reader.result
+                            this.$message({
+                                message: this.$msg.corretAccFile,
+                                type: 'success'
+                            })
+                        } else {
+                            this.$message({
+                                message: this.$msg.invalidAccFile,
+                                type: 'error'
+                            })
+                        }
+                    } catch (err) {
+                        this.$message({
+                            message: this.$msg.invalidFile,
+                            type: 'error'
+                        })
+                    }
+                }
+
+                reader.onerror = () => {
+                    this.$message({
+                        message: this.$msg.readFileErr,
+                        type: 'error'
+                    })
+                }
+            },
+            selectFile2() {
+                document.getElementById('fileUpload2').click()
+            },
+            uploadFile2() {
+                let file = document.getElementById('fileUpload2').files[0]
+                let reader = new FileReader()
+                this.form.fileContent = ''
+                this.form.fileName = ''
+                this.form.pwd = ''
+                reader.readAsText(file)
+                reader.onload = () => {
+                    let keystore
+                    try {
+                        keystore = JSON.parse(reader.result)
+                        if (keystore[0].Crypto != null || keystore[0].crypto != null || (keystore[0].hash != null && keystore[0].locked)) {
+                            this.form.fileContent = keystore
                             this.$message({
                                 message: this.$msg.corretWalletFile,
                                 type: 'success'
@@ -248,8 +343,8 @@
             }
         },
         computed: {
-            isTrancCom() {
-                if (this.isTranc === 'isTranc') {
+            hasWalletCom() {
+                if (this.hasWallet === 'hasWallet') {
                     return false
                 } else {
                     return true
@@ -259,18 +354,18 @@
             decryptInfo() {
                 switch (this.form.decryptType) {
                     case '1':
-                        return '使用您的私钥访问您的帐户(不推荐)'
+                        return '使用私钥导入账号到钱包'
                     case '2':
-                        return '使用您的密钥存储文件(UTC)访问您的帐户(不推荐)'
+                        return '使用您的密钥存储文件(UTC)导入账号到钱包'
                     case '3':
-                        return '使用助记符短语访问您的帐户(不推荐)'
+                        return '使用助记符短语导入账号到钱包'
                     case '4':
-                        return '使用账户地址访问您的帐户'
+                        return '导入已有的钱包'
                 }
             }
         },
         beforeMount() {          //设置默认的方式
-            if (this.isTranc === 'isTranc') {
+            if (this.hasWallet === 'hasWallet') {
                 this.form.decryptType = '1'
             } else {
                 this.form.decryptType = '4'
@@ -350,6 +445,8 @@
         border-radius: 2px;
         font-size: 18px;
         color: #ffffff;
+        position: relative;
+        left:-70px;
     }
 
     .fileUploadTip {

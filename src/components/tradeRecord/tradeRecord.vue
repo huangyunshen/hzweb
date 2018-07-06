@@ -8,25 +8,25 @@
                 <el-table class="trade-record-table"
                           :data="transactionsList"
                           height="100%"
-                          style="color:#8490c5;font-size: 16px;background:#221d44;text-align:center;"
+                          style="color:#8490c5;font-size: 16px;background:#191131;text-align:center;"
                           :header-cell-style="headerCellStyle"
                           :row-style="rowStyle"
                           :cell-style="{'border-bottom':'none'}"
                 >
                     <el-table-column
-                            prop="hash"
+                            prop="txHash"
                             label="交易hash"
                     >
                         <template slot-scope="scope">
                             <a style="color:#8490c5;"
-                               :title="scope.row.hash"
-                               :href="scope.row.hash"
-                               @click.prevent="getTransaction(scope.row.hash)">{{ scope.row.hash }}</a>
+                               :title="scope.row.txHash"
+                               :href="scope.row.txHash"
+                               @click.prevent="getTransaction(scope.row.txHash)">{{ scope.row.txHash }}</a>
                         </template>
                     </el-table-column>
 
                     <el-table-column
-                            prop="blockNumber"
+                            prop="id"
                             sortable
                             label="区块值">
                     </el-table-column>
@@ -37,19 +37,14 @@
                             label="时间">
                     </el-table-column>
                     <el-table-column
-                            prop="from"
+                            prop="sendAddr"
                             label="转出方"
                             min-width="300px">
                     </el-table-column>
                     <el-table-column
-                            prop="to"
+                            prop="revAddr"
                             label="转入方"
                             min-width="300px">
-                    </el-table-column>
-                    <el-table-column
-                            prop="value"
-                            sortable
-                            label="金额">
                     </el-table-column>
                 </el-table>
             </div>
@@ -89,12 +84,21 @@
         data() {
             return {
                 transactionsList: [],
-                transData: [],
                 transactionsData: null,
                 // searchParams: '', // 搜索参数
                 showSwitch: 'table',// 显示表格还是列表
                 totalNum: 0,
                 pageSize: 20
+            }
+        },
+        computed: {
+            address() {
+                return this.$store.state.address
+            }
+        },
+        watch: {
+            address() {
+                this.currentPage(1)
             }
         },
         methods: {
@@ -103,20 +107,15 @@
              * @param hash
              */
             getTransaction(hash) {
-                let connected = this.$web3.isConnected()
-                if (connected) {
-                    if (hash) {
-                        this.transactionsData = this.$web3.eth.getTransaction(hash)
-                        delete this.transactionsData.datasourcecode
-                        this.showSwitch = 'list'
-                    } else {
-                        this.showSwitch = 'table'
-                    }
+                if (hash) {
+                    this.$web3.eth.getTransaction(hash)
+                        .then((data) => {
+                            delete data.datasourcecode
+                            this.transactionsData = data
+                            this.showSwitch = 'list'
+                        })
                 } else {
-                    this.$message({
-                        message: this.$msg.serviceException,
-                        type: 'error'
-                    })
+                    this.showSwitch = 'table'
                 }
             },
             headerCellStyle({row, rowIndex}) {
@@ -129,48 +128,29 @@
                     return 'background:#221d44;'
                 }
             },
-            async(i) {
-                let time = this.transData[i].time
-                let data = this.$web3.eth.getTransaction(this.transData[i].txHash)
-                if (data === null || data === undefined) {
-                    data = this.transData[i]
-                    data.to =  this.transData[i].revAddr
-                    data.from =  this.transData[i].sendAddr
-                    data.hash =  this.transData[i].txHash
-                } else {
-                    data.value = this.$web3.fromWei(data.value.toString(10))
-                    data.time = time
-                }
-                this.transactionsList.push(data)
-                if (i < this.transData.length - 1) {
-                    i++
-                    let timer = setTimeout(() => {
-                        clearTimeout(timer)
-                        this.async(i)
-                    }, 1)
-                }
-            },
             currentPage(page) {
-                this.transactionsList.length = 0
-                let userAddr = this.$store.state.address
-                this.$axios.post('/api/requestTx.php', {
-                    "addr": userAddr,
-                    "pageSize": this.pageSize,
-                    "pageNum": page,
-                }).then((res) => {
-                    if (res.status === 200) {
-                        if (res.data.length > 0) {
-                            this.totalNum = Number(res.data[0].dataCount)
-                            this.transData = res.data
-                            this.async(0)
-                        } else {
-                            this.$message.error("未查询到相关信息")
+                if (this.address) {
+                    this.transactionsList = []
+                    let userAddr = this.$store.state.address
+                    this.$axios.post('/api/requestTx.php', {
+                        "addr": userAddr,
+                        "pageSize": this.pageSize,
+                        "pageNum": page,
+                    }).then((res) => {
+                        if (res.status === 200) {
+                            if (res.data.length > 0) {
+                                this.transactionsList = res.data
+                                this.totalNum = Number(res.data[0].dataCount)
+                            }
+                            // else {
+                            //     this.$message.error("未查询到相关信息")
+                            // }
                         }
-                    }
-                }).catch((error) => {
-                    this.$message.error(String(error))
-                })
-            },
+                    }).catch((error) => {
+                        this.$message.error(String(error))
+                    })
+                }
+            }
         },
         mounted() {
             this.currentPage(1)

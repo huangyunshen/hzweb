@@ -12,6 +12,8 @@ import transaction from '@/components/transaction/transaction'
 import applications from '@/components/applications/appList'
 import createApp from '@/components/createApp/createApp'
 import myApps from '@/components/myApps/myApps'
+import appInfo from '@/components/myApps/appInfo'
+import assetManage from '@/components/assetManage/assetManage'
 
 
 import appDetail from '@/components/applications/appDetail'
@@ -27,7 +29,7 @@ export default new Router({
             children: [
                 {
                     path: '/',
-                    redirect: 'createWallet'
+                    redirect: 'importWallet'
                 },
                 {
                     path: 'createWallet',
@@ -46,17 +48,10 @@ export default new Router({
             path: '/mainScreen',
             component: mainScreen,
             children: [
-                // {
-                //     path: '/',
-                //     redirect: 'accountInfo'
-                // },
                 {
                     path: 'accountInfo',
                     name: 'accountInfo',
                     component: accountInfo,
-                    // meta: {
-                    //     keepAlive: true // 需要被缓存
-                    // }
                 },
                 {
                     path: 'tradeRecord',
@@ -82,6 +77,16 @@ export default new Router({
                     path: 'myApps',
                     name: 'myApps',
                     component: myApps
+                },
+                {
+                    path: 'appInfo',
+                    name: 'appInfo',
+                    component: appInfo
+                },
+                {
+                    path: 'assetManage',
+                    name: 'assetManage',
+                    component: assetManage
                 },
             ]
         },

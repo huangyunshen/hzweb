@@ -1,5 +1,14 @@
 <template>
     <div class="app-list">
+        <div class="btn-list">
+            <el-button size="mini" class="mini">全部</el-button>
+            <el-button size="mini" class="mini">赛事</el-button>
+            <el-button size="mini" class="mini">棋牌</el-button>
+            <el-button size="mini" class="mini">博彩</el-button>
+            <el-input placeholder="输入应用地址或者创建人地址查找" style="width: 40%;margin-left: calc(100% - 900px)">
+                <el-button slot="append" icon="el-icon-search"></el-button>
+            </el-input>
+        </div>
         <el-row class="row-content">
             <el-col style="padding: 0 15px;"
                     :span="12"
@@ -29,7 +38,7 @@
                                     </li>
                                     <li class="current">
                                         <span class="label">奖金池余额：</span>
-                                        <span class="data">{{ item.currentCoin }}</span>
+                                        <span class="data">{{ item.currentCoin | amountUnit}}</span>
                                     </li>
                                 </ul>
                             </el-col>
@@ -78,9 +87,14 @@
                 }).then((res) => {
                     if (res.status === 200) {
                         this.appList = res.data
-                        if(res.data.length > 0){
+                        for (let i = 0; i < this.appList.length; i++) {
+                            this.$web3.eth.getBalance(this.appList[i].contractAddr).then((coin) => {
+                                this.appList[i].currentCoin = this.$web3.utils.fromWei(coin, 'ether')
+                            })
+                        }
+                        if (res.data.length > 0) {
                             this.totalNum = Number(res.data[0].dataCount)
-                        }else {
+                        } else {
                             this.$message.error('查询结果为0')
                         }
                     }
@@ -104,10 +118,27 @@
 <style lang="scss" type="text/scss" scoped>
     .app-list {
         height: 100%;
-        padding: 2%;
+        padding: 1%;
         -webkit-box-sizing: border-box;
         -moz-box-sizing: border-box;
         box-sizing: border-box;
+        .btn-list{
+            padding: 0 10px 10px 10px;
+            white-space: nowrap;
+            .mini {
+                height: 28px;
+                margin-right: 30px;
+                background: #403A6D;
+                color: #CEC8FF;
+                font-size: 12px;
+                border: none;
+                border: solid 1px #433e71;
+                background: rgba(0, 0, 0, 0);
+                &:hover {
+                    border-color: #726bab;
+                }
+            }
+        }
         .row-content {
             max-height: calc(100% - 100px);
             overflow-y: auto;
@@ -147,8 +178,8 @@
         }
         .pagination {
             margin: 0 15px;
-            margin-top: 30px;
-            padding-top: 30px;
+            margin-top: 10px;
+            padding-top: 20px;
             border-top: 1px solid #28234D;
             .el-pagination {
                 text-align: center;

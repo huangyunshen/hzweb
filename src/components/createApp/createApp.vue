@@ -182,12 +182,13 @@
                 contractAddressUrl: '',// 可以访问的地址
                 rechargeValue: '',
                 rechargeData: {
-                    value: '100',
+                    value: '10',
                     gasPrice: '41',
                     gas: '21000',
                     price1: '1',
                     price2: '5',
-                    price3: '10'
+                    price3: '10',
+                    price4: '20',
                 },
                 publicKey: '',
                 password: '',
@@ -273,33 +274,15 @@
                             cancelButtonText: '取消',
                             type: 'warning'
                         }).then(() => {
-                            if (this.$store.state.userPassword === "") {
-                                this.$prompt(`请输入${users}的密码`, '提示', {
-                                    inputType: 'password',
-                                    confirmButtonText: '确定',
-                                    cancelButtonText: '取消',
-                                }).then(({value}) => {
-                                    this.password = value
-                                    try {
-                                        this.$web3.personal.unlockAccount(users, value, 6000000)
-                                        this.$confirm('是否临时保存密码，页面在刷新或者关闭后自动清除', '提示', {
-                                            confirmButtonText: '确定',
-                                            cancelButtonText: '取消',
-                                            type: 'warning'
-                                        }).then(() => {
-                                            this.$store.commit("setPassword", value)
-                                            this.migration(users, value)
-                                        }).catch(() => {
-                                            this.migration(users, value)
-                                        })
-                                    } catch (err) {
-                                        this.$message.error(String(err))
-                                    }
-                                }).catch((error) => {
-                                    console.log(error)
+                            try {
+                                this.$store.commit('setCryptPercent', {percent: true, text: '创建中···'})
+                                this.$funs.unlockAccount().then((res) => {
+                                    this.migration(users)
+                                }).catch((reason) => {
+                                    console.log(reason)
                                 })
-                            } else {
-                                this.migration(users, this.$store.state.userPassword)
+                            } catch (err) {
+                                this.$message.error(String(err))
                             }
                         }).catch((err) => {
                             if (err !== 'cancel') {
@@ -322,78 +305,73 @@
             /**
              * 充值
              */
-            recharge() {
-                this.rechargeFun(this.$store.state.address, this.$store.state.userPassword === "" ? this.password : this.$store.state.userPassword)
-            },
-            //
-            rechargeFun(user, value) {
-                this.$web3.personal.unlockAccount(user, value)
-                let MyContract = this.$web3.eth.contract(
-                    playGameContract.abi,//selected等于1,龙虎斗
-                )
-                let myContractInstance = MyContract.at(this.contractAddress)
+            recharge(instance) {
+                // this.$web3.personal.unlockAccount(user, value)
                 // 转账 到合约账户，返回交易hash
-                let hash = myContractInstance.deposit({
-                    from: user,
-                    value: this.$web3.utils.toWei(this.rechargeData.value, 'ether'),
-                    gasPrice: this.rechargeData.gasPrice * Math.pow(10, 9),
-                    gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
-                })
-                if (hash) {
-                    let txObj = this.$web3.eth.getTransaction(hash)
-                    this.$axios.post('/api/addTx.php', {
-                        "type": "1",
-                        "sendAddr": txObj.from,
-                        "revAddr": txObj.to,
-                        "txHash": txObj.hash,
-                    }).then((res) => {
-                        if (res.status === 200) {
-                            // console.log(res)
-                        }
-                    }).catch((error) => {
-                        this.$message.error(String(error))
+                instance.methods.deposit()
+                    .send({
+                        from: this.$store.state.address,
+                        value: this.$web3.utils.toWei(this.rechargeData.value, 'ether'),
+                        gas: 100000,
+                        txType: 0,
                     })
-                    let timer = setTimeout(() => {
-                        clearTimeout(timer)
-                        this.$store.commit('setCryptPercent', {percent: false, text: '充值成功！'})
-                        this.steps++
-                        this.btnVal = '完成'
-                    }, 500)
-                }
+                    .on('error', (err) => {
+                        this.$store.commit('setCryptPercent', {percent: false, text: ''})
+                        this.$message.error(String(err))
+                    })
+                    .on('receipt', (receipt) => {
+                        this.$axios.post('/api/addTx.php', {
+                            "type": "1",
+                            "sendAddr": receipt.from,
+                            "revAddr": receipt.to,
+                            "txHash": receipt.transactionHash,
+                            "blockNum": receipt.blockNumber,
+                            "amount": this.rechargeData.value
+                        }).then((res) => {
+                            if (res.status === 200) {
+                                // console.log(res)
+                            }
+                        }).catch((error) => {
+                            this.$message.error(String(error))
+                        })
+                        let timer = setTimeout(() => {
+                            clearTimeout(timer)
+                            this.$store.commit('setCryptPercent', {percent: false, text: '充值成功！'})
+                            this.steps++
+                            this.btnVal = '完成'
+                        }, 500)
+                    })
             },
             /**
              * 部署
              * @param user
-             * @param value
              */
-            migration(user, value) {
-                this.$store.commit('setCryptPercent', {percent: true, text: '创建中···'})
-                let MyContract = this.$web3.eth.contract(
-                    playGameContract.abi
-                )
-                // 传入设置的下注金额和类型(1 代表是龙虎斗)
-                MyContract.new(Number(this.rechargeData.price1), Number(this.rechargeData.price2), Number(this.rechargeData.price3), Number(this.selected), {
-                    // MyContract.new({
-                    data: playGameContract.bytecode,
-                    from: user,
-                    gasPrice: 41000000000,
-                    datasourcecode: solSource, // 传入sol源码
-                    gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode}) * 2
-                }, (err, myContract) => {
-                    if (err) {
-                        this.$store.commit('setCryptPercent', {percent: false, text: '创建中···'})
-                        this.$message.error(String(err))
-                    } else {
-                        if (myContract.address) {
-                            this.$store.commit('setCryptPercent', {percent: true, text: '创建成功！正在充值···'})
-                            console.log(myContract.address)
+            migration(user) {
+                this.$web3.eth.estimateGas({data: playGameContract.bytecode}).then((gas) => {
+                    new this.$web3.eth.Contract(playGameContract.abi)
+                        .deploy({
+                            // 传入设置的下注金额和类型(1 代表是龙虎斗)
+                            data: playGameContract.bytecode,
+                            arguments: [Number(this.rechargeData.price1), Number(this.rechargeData.price2), Number(this.rechargeData.price3), Number(this.rechargeData.price4), Number(this.selected)]
+                        })
+                        .send({
+                            from: user,
+                            datasourcecode: this.$web3.utils.toHex(solSource), // 传入sol源码
+                            gas: gas * 2,
+                            txType: 0,
+                        })
+                        .on('error', (err) => {
+                            this.$store.commit('setCryptPercent', {percent: false, text: ''})
+                            this.$message.error(String(err))
+                        })
+                        .on('receipt', (receipt) => {
                             // return
                             this.$axios.post('/api/addContract.php', {
                                 "type": this.selected,
-                                "contractAddr": myContract.address,
+                                "contractAddr": receipt.contractAddress,
                                 "createAddr": user,
                                 "createMoney": this.rechargeData.value,
-                                "txHash": myContract.transactionHash
+                                "txHash": receipt.transactionHash
                             }).then((res) => {
                                 if (res.status === 200) {
                                     // console.log(res)
@@ -401,12 +379,13 @@
                             }).catch((error) => {
                                 this.$message.error(String(error))
                             })
-                            let txObj = this.$web3.eth.getTransaction(myContract.transactionHash)
                             this.$axios.post('/api/addTx.php', {
                                 "type": "1",
-                                "sendAddr": txObj.from,
-                                "revAddr": txObj.to,
-                                "txHash": txObj.hash,
+                                "sendAddr": receipt.from,
+                                "revAddr": receipt.to,
+                                "txHash": receipt.transactionHash,
+                                "blockNum": receipt.blockNumber,
+                                "amount": "0"
                             }).then((res) => {
                                 if (res.status === 200) {
                                     // console.log(res)
@@ -414,36 +393,50 @@
                             }).catch((error) => {
                                 this.$message.error(String(error))
                             })
-                            this.contractAddress = myContract.address
-                            localStorage.setItem('contractAddress', myContract.address)
-                            // 每次部署完合约，需要向定时器合约中注册当前合约地址
-                            let myIntContractInstance = MyContract.at(myContract.address)
-                            let hash = myIntContractInstance.registerInterval('0x9d6e9343fd878066337bcaf094260eef7b5202c1', {
-                            // let hash = myIntContractInstance.registerInterval('0x7dceb234f633a7a0c821cf31188db701fadecb5b', { // 君哥测试
-                                from: user,
-                                gasPrice: 41000000000,
-                                gas: this.$web3.eth.estimateGas({data: playGameContract.bytecode})
-                            })
-                            let tHxObj = this.$web3.eth.getTransaction(hash)
-                            this.$axios.post('/api/addTx.php', {
-                                "type": "1",
-                                "sendAddr": tHxObj.from,
-                                "revAddr": tHxObj.to,
-                                "txHash": tHxObj.hash,
-                            }).then((res) => {
-                                if (res.status === 200) {
-                                    // console.log(res)
-                                }
-                            }).catch((error) => {
-                                this.$message.error(String(error))
-                            })
-                            sessionStorage.setItem('userContract', myContract.address)
-                            this.recharge() // 充值
-                            //部署成功！你的合约地址为
-                            let host = window.location.host
-                            this.contractAddressUrl = `http://${host}/#/appDetail?${myContract.address}`
-                        }
-                    }
+                            this.contractAddress = receipt.contractAddress
+                            localStorage.setItem('contractAddress', receipt.contractAddress)
+                        })
+                        .then((newContractInstance) => {
+                            console.log(newContractInstance.options.address)
+                            // return
+                            if (newContractInstance.options.address) {
+                                this.$store.commit('setCryptPercent', {percent: true, text: '创建成功！正在充值···'})
+                                // return
+                                // 每次部署完合约，需要向定时器合约中注册当前合约地址
+                                // this.$web3.eth.estimateGas({data: playGameContract.bytecode})
+                                newContractInstance.methods.registerInterval('0xa73D0b05c0CF6e09607F0Cf9D96b64F124799bc7')
+                                    .send({
+                                        from: user,
+                                        gas: 4712388,
+                                        txType: 0,
+                                    })
+                                    .on('error', (err) => {
+                                        this.$store.commit('setCryptPercent', {percent: false, text: ''})
+                                        this.$message.error(err.message)
+                                        console.log(err.message)
+                                    })
+                                    .on('receipt', (receipt) => {
+                                        this.$axios.post('/api/addTx.php', {
+                                            "type": "1",
+                                            "sendAddr": receipt.from,
+                                            "revAddr": receipt.to,
+                                            "txHash": receipt.transactionHash,
+                                            "blockNum": receipt.blockNumber,
+                                            "amount": "0"
+                                        }).then((res) => {
+                                            if (res.status === 200) {
+                                                // console.log(res)
+                                            }
+                                        }).catch((error) => {
+                                            this.$message.error(String(error))
+                                        })
+                                        this.recharge(newContractInstance) // 充值
+                                        //部署成功！你的合约地址为
+                                        let host = window.location.host
+                                        this.contractAddressUrl = `http://${host}/#/appDetail?${newContractInstance.options.address}`
+                                    })
+                            }
+                        })
                 })
             },
             sendMsgToServer() {
@@ -470,54 +463,6 @@
                             this.$message.error('无法获取应用列表')
                         }, 3000)
                     })
-            },
-            /*
-                签名交易
-             */
-            getSignMsg() {
-                return new Promise((resolve, reject) => {
-                    let Tx = require('ethereumjs-tx')
-                    let privateKey = this.$funs.getActiveAccount().privateKey
-                    privateKey = new Buffer(privateKey.replace('0x',''), 'hex')
-                    this.$web3.eth.getTransactionCount(this.$store.state.address).then( (nonce) => {
-                        let rawTx = {
-                            from:this.$store.state.address,
-                            nonce: this.$web3.utils.toHex(nonce),
-                            gasPrice: this.$web3.utils.toHex(this.$store.state.gasPrice * (Math.pow(10, 9))),
-                            gasLimit: this.$web3.utils.toHex(this.form.gas),
-                            data: "608060405234801561001057600080fd5b5061013f806100206000396000f300608060405260043610610041576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680630e84ae6f14610046575b600080fd5b34801561005257600080fd5b5061005b6100d6565b6040518080602001828103825283818151815260200191508051906020019080838360005b8381101561009b578082015181840152602081019050610080565b50505050905090810190601f1680156100c85780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b60606040805190810160405280600b81526020017f68656c6c6f20776f726c640000000000000000000000000000000000000000008152509050905600a165627a7a72305820af63f746974fda64e0c34c28cd691c155c375a84488016a02b77b9dae6b9b0e00029",
-                            datasourcecode:''
-                        }
-                        let tx = new Tx(rawTx)
-                        tx.sign(privateKey)
-                        let serializedTx = tx.serialize()
-                        this.transactionSign = '0x' + serializedTx.toString('hex')
-                        this.transactionData = JSON.stringify(rawTx)
-                        resolve()
-                    })
-                })
-                // return new Promise((resolve, reject) => {
-                //     let Tx = require('ethereumjs-tx')
-                //     let privateKey = this.$funs.getActiveAccount().privateKey
-                //     privateKey = new Buffer(privateKey.replace('0x',''), 'hex')
-                //     this.$web3.eth.getTransactionCount(this.$store.state.address).then( (nonce) => {
-                //         let rawTx = {
-                //             from:this.$store.state.address,
-                //             nonce: this.$web3.utils.toHex(nonce),
-                //             gasPrice: this.$web3.utils.toHex(this.$store.state.gasPrice * (Math.pow(10, 9))),
-                //             gasLimit: this.$web3.utils.toHex(this.form.gas),
-                //             to: this.form.to,
-                //             value: this.$web3.utils.toHex(this.$web3.utils.toWei(this.form.value, 'ether')),
-                //             data: ""
-                //         }
-                //         let tx = new Tx(rawTx)
-                //         tx.sign(privateKey)
-                //         let serializedTx = tx.serialize()
-                //         this.transactionSign = '0x' + serializedTx.toString('hex')
-                //         this.transactionData = JSON.stringify(rawTx)
-                //         resolve()
-                //     })
-                // })
             },
             copyAddress($event) {
                 let input = document.getElementById('appAddress')

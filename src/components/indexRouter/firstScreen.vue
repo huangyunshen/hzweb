@@ -6,18 +6,15 @@
                 <div class="wallet-header-line"></div>
                 <div class="wallet-header-light" :class="[walletSelect]"></div>
 
-                <div class="wallet-header">
-                    <span @click="selectItem($event)" class="fl" :class="{'wallet-selected':isCreate}">
-                        <router-link tag="i" :to="{name:'createWallet'}">创建钱包</router-link>
-                    </span>
-                    <span @click="selectItem($event)" class="fr" :class="{'wallet-selected':!isCreate}">
-                        <router-link tag="i" :to="{name:'importWallet'}">导入钱包</router-link>
+                <div class="wallet-header tc">
+                    <span>
+                        {{title}}
                     </span>
                 </div>
 
                 <div class="wallet-body">
                     <transition name="fof-fade">
-                        <router-view></router-view>
+                        <router-view @getTitle="getTitle"></router-view>
                     </transition>
                 </div>
             </div>
@@ -49,27 +46,15 @@
         data() {
             return {
                 isCreate: true,
-                walletSelect: 'wallet-create'
+                walletSelect: 'wallet-create',
+                title: "导入钱包"
             }
         },
         methods: {
-            selectItem(e) {
-                this.isCreate = !this.isCreate
-                this.walletSelect = this.isCreate ? 'wallet-create' : 'wallet-import'
-            }
+            getTitle(data){
+                this.title = data
+            },
         },
-        mounted() {
-            switch (this.$route.name) {
-                case 'createWallet':
-                    this.isCreate = true
-                    this.walletSelect = 'wallet-create'
-                    break
-                case 'importWallet':
-                    this.isCreate = false
-                    this.walletSelect = 'wallet-import'
-                    break
-            }
-        }
     }
 </script>
 
@@ -132,7 +117,7 @@
                 .wallet-create {
                     animation: createWallet 0.5s linear;
                     animation-fill-mode: forwards;
-                    left: 160px;
+                    left: 394px;
                 }
                 .wallet-import {
                     animation: importWallet 0.5s linear;
@@ -145,13 +130,9 @@
                     margin: 0 auto;
                     span {
                         margin-top: $head_height+(-50px);
-                        /*display: inline-block;*/
-                        /*width: 50%;*/
-                        /*float: left;*/
-                        /*text-align: center;*/
+                        display: inline-block;
                         font-size: 32px;
                         font-weight: 100;
-                        //line-height: $head_height+20px; //100px
                         color: #706bb8;
                         cursor: pointer;
                     }

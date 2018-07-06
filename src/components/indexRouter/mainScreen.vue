@@ -3,110 +3,252 @@
         <div class="left-nav">
             <nav>
                 <ul class="no-select-text">
-                    <router-link tag="li" :to="{name:'accountInfo'}" @click.native="selectAnItem('1')"
+                    <router-link tag="li" :to="{name:'assetManage'}" @click.native="selectAnItem('1')"
                                  class="pass-enter1" :class="{active:itemSelected==='1'}">
                         <i class="nav-icon1" :class="{'nav-icon1-active':itemSelected==='1'}"></i>
-                        <span>账户信息</span>
+                        <span>资产管理</span>
                     </router-link>
-                    <router-link tag="li" :to="{name:'tradeRecord'}" @click.native="selectAnItem('2')"
+                    <router-link tag="li" :to="{name:'myApps'}" @click.native="selectAnItem('2')"
                                  class="pass-enter2" :class="{active:itemSelected==='2'}">
                         <i class="nav-icon2" :class="{'nav-icon2-active':itemSelected==='2'}"></i>
-                        <span>交易记录</span>
-                    </router-link>
-                    <router-link tag="li" :to="{name:'transaction'}" @click.native="selectAnItem('3')"
-                                 class="pass-enter3" :class="{active:itemSelected==='3'}">
-                        <i class="nav-icon3" :class="{'nav-icon3-active':itemSelected==='3'}"></i>
-                        <span>对外转账</span>
-                    </router-link>
-                    <router-link tag="li" :to="{name:'applications'}" @click.native="selectAnItem('4')"
-                                 class="pass-enter4" :class="{active:itemSelected==='4'}">
-                        <i class="nav-icon4" :class="{'nav-icon4-active':itemSelected==='4'}"></i>
-                        <span>应用市场</span>
-                    </router-link>
-                    <router-link tag="li" :to="{name:'createApp'}" @click.native="selectAnItem('5')"
-                                 class="pass-enter5" :class="{active:itemSelected==='5'}">
-                        <i class="nav-icon5" :class="{'nav-icon5-active':itemSelected==='5'}"></i>
-                        <span>创建应用</span>
-                    </router-link>
-                    <router-link tag="li" :to="{name:'myApps'}" @click.native="selectAnItem('6')"
-                                 class="pass-enter6" :class="{active:itemSelected==='6'}">
-                        <i class="nav-icon6" :class="{'nav-icon6-active':itemSelected==='6'}"></i>
                         <span>我的应用</span>
                     </router-link>
+                    <router-link tag="li" :to="{name:'applications'}" @click.native="selectAnItem('3')"
+                                 class="pass-enter3" :class="{active:itemSelected==='3'}">
+                        <i class="nav-icon3" :class="{'nav-icon3-active':itemSelected==='3'}"></i>
+                        <span>应用中心</span>
+                    </router-link>
+                    <li @click="openUrl('http://39.104.81.103:8890')" class="pass-enter4">
+                        <i class="nav-icon4"></i>
+                        <span>区块查询</span>
+                    </li>
+                    <li @click="openUrl('http://39.104.81.103:8890')" class="pass-enter5">
+                        <i class="nav-icon5"></i>
+                        <span>交易查询</span>
+                    </li>
                 </ul>
             </nav>
         </div>
 
         <div class="container">
             <header class="header">
-                <el-select class="language-style" v-model="activeAccount" size="mini" @change="changeAccount">
-                    <el-option
-                            v-for="(item,index) in accounts"
-                            :key="index"
-                            :label="item.label"
-                            :value="item.value"
-                    ></el-option>
-                </el-select>
+                <el-button size="mini" @click="dialog = true">导入账户</el-button>
                 <language class="language"></language>
-                <el-button size="mini" @click="exit">退出</el-button>
+                <el-button size="mini" @click="exit">锁定</el-button>
             </header>
+            <div class="account-nav">
+                <div class="tranc-balance">
+                    <!--<i></i>-->
+                    账户余额 : {{$store.state.balance | amountUnit}}
+                    <b class="el-icon-refresh" title="点击刷新余额" @click="$funs.getBalance()"></b>
+                </div>
+                <div class="tranc-address">
 
-            <main class="content">
+                    <div class="account-style">
+                        账户地址 :
+                        <el-select v-model="activeAccount" @change="changeAccount">
+                            <el-option
+                                v-for="(item,index) in accounts"
+                                :key="index"
+                                :label="item.label"
+                                :value="item.value"
+                            >
+                                <span class="fl">{{ item.label }}</span>
+                                <el-button type="primary" class="deleteMe fr" size="mini">移除</el-button>
+                                <!--<el-button type="primary" class="selectMe fr">选择</el-button>-->
+                            </el-option>
+                        </el-select>
+                    </div>
+                    <!--<i></i>账户地址 : {{$store.state.address}}-->
+                    <el-button size="mini" @click="getMore">更多</el-button>
+                </div>
+            </div>
+            <main class="content" :class="{border : isBorder}">
                 <transition name="fof-fade">
-                    <router-view></router-view>
+                    <router-view ref="wallet"></router-view>
                 </transition>
-                <!--<transition name="fof-fade">-->
-                <!--<keep-alive>-->
-                <!--<router-view v-if="$route.meta.keepAlive"></router-view>-->
-                <!--</keep-alive>-->
-                <!--</transition>-->
             </main>
+        </div>
+
+        <div class="create-wallet">
+            <el-dialog class="wallet-agreement"
+                       title="导入账户"
+                       :visible.sync="dialog"
+                       :show-close="false"
+                       center
+                       width="1000px">
+                <div class="body" style="padding: 20px;height: 240px;">
+                    <unlock-account ref="importAcc" hasWallet="hasWallet"></unlock-account>
+                </div>
+                <div class="footer">
+                    <el-button @click="importAcc">导入到钱包</el-button>
+                </div>
+            </el-dialog>
+            <el-dialog class="wallet-agreement personal-info"
+                       title="个人信息"
+                       :visible.sync="personalDialog"
+                       center
+                       width="1200px">
+                <div class="body" style="padding: 10px;height: 510px;">
+                    <account-info ref="importAcc" hasWallet="hasWallet"></account-info>
+                </div>
+            </el-dialog>
         </div>
     </div>
 </template>
 
 <script>
     import language from '../language/language'
+    import unlockAccount from '../wallet/unlockAccount'
+    import accountInfo from '../accountInfo/accountInfo'
 
     export default {
         name: "main-screen",
         components: {
-            language
+            language,
+            unlockAccount,
+            accountInfo
         },
         data() {
             return {
                 itemSelected: '1',
-                accounts: [{value:-1, label: '切换账户'}],
-                activeAccount: -1
+                accounts: [{value: -1, label: '切换账户'}],
+                activeAccount: -1,
+                dialog: false,
+                personalDialog: false,
+                isBorder: true
             }
         },
         computed: {
             lockFlag() {
                 return this.$store.state.isLock
-            }
+            },
         },
         watch: {
             lockFlag() {
                 if (!this.lockFlag) {
                     this.loadAccounts()
                 }
+            },
+            $route(to, from) {
+                this.isBorder = to.path !== '/mainScreen/assetManage'
             }
         },
         methods: {
+            importAcc() {
+                this.$refs.importAcc.importWallet()
+                    .then(
+                        (privkey) => {
+
+                            let wallet = this.$web3.eth.accounts.wallet
+                            for (let i = 0; i < wallet.length; i++) {
+                                if (wallet[i].privateKey === privkey) {
+                                    this.$message({
+                                        message: this.$msg.accountExist,
+                                        type: 'error'
+                                    })
+                                    return
+                                }
+                            }
+                            wallet = this.$web3.eth.accounts.privateKeyToAccount(privkey)
+                            this.$web3.eth.accounts.wallet.add(wallet)
+
+                            this.$prompt('', '请输入钱包密码', {
+                                closeOnClickModal: false,
+                                inputType: 'password',
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                                beforeClose: (action, instance, done) => {
+                                    if (action === 'confirm') {
+
+                                        this.$store.commit('setCryptPercent', {
+                                                percent: true,
+                                                text: '正在验证钱包密码，请稍等...'
+                                            }
+                                        )
+                                        setTimeout(() => {
+                                            let promise = new Promise(resolve => {
+
+                                                try {
+                                                    this.$funs.loadWallet(instance.inputValue)
+                                                    resolve()
+                                                } catch (error) {
+                                                    this.$store.commit('setCryptPercent', {
+                                                            percent: false,
+                                                            text: ''
+                                                        }
+                                                    )
+                                                    this.$message({
+                                                        message: this.$msg.invalidWalletPwd,
+                                                        type: 'error'
+                                                    })
+                                                }
+                                            })
+
+                                            promise.then(() => {
+
+                                                this.$store.commit('setCryptPercent', {
+                                                        percent: true,
+                                                        text: '正在导入到钱包并加密保存，请稍等...'
+                                                    }
+                                                )
+                                                setTimeout(() => {
+                                                    let promise = new Promise(resolve => {
+                                                        this.$web3.eth.accounts.wallet.save(instance.inputValue)
+                                                        resolve()
+                                                    })
+                                                    promise.then(() => {
+                                                        this.$store.commit('setCryptPercent', {
+                                                                percent: false,
+                                                                text: ''
+                                                            }
+                                                        )
+                                                        this.$funs.loadActivWallet()
+                                                        this.$message({
+                                                            message: this.$msg.importSucc,
+                                                            type: 'success'
+                                                        })
+                                                        done()
+                                                        this.dialog = false
+                                                        this.loadAccounts()
+                                                    })
+                                                }, 500)
+                                            })
+
+                                        }, 500)
+                                    } else {
+                                        done()
+                                    }
+                                }
+                            }).then(({value}) => {
+
+                            }).catch(() => {
+
+                            })
+                        },
+                        (err) => {
+                        }
+                    )
+            },
             selectAnItem(index) {
                 this.itemSelected = index
+                this.$funs.getBalance()
+            },
+            openUrl(url) {
+                window.open(url);
             },
             exit() {
-                this.$funs.linkToFirstScreenRep()
+                this.$emit('lockOut')
             },
-            changeAccount(){
+            changeAccount() {
                 this.$funs.setActiveAccount(this.activeAccount)
                 let wallet = this.$funs.getActiveAccount()
                 this.$funs.getBalance()
-                this.$store.commit('setAddress',wallet.address)
-                this.$store.commit('setPrivKey',wallet.privateKey)
+                this.$store.commit('setAddress', wallet.address)
+                if (this.$refs.wallet.getWallet)
+                    this.$refs.wallet.getWallet()
             },
-            loadAccounts(){
+            loadAccounts() {
                 let activeId = Number(localStorage.getItem('active_account'))
                 let wallet = this.$web3.eth.accounts.wallet
                 this.accounts = []
@@ -118,6 +260,11 @@
                     }
                     this.accounts.push(obj)
                 }
+                if (this.$refs.wallet.getWallet)
+                    this.$refs.wallet.getWallet()
+            },
+            getMore() {
+                this.personalDialog = true
             }
         },
         mounted() {
@@ -125,26 +272,26 @@
                 case 'accountInfo':
                     this.itemSelected = '1'
                     break
-                case 'tradeRecord':
+                case 'myApps':
                     this.itemSelected = '2'
                     break
-                case 'transaction':
+                case 'applications':
                     this.itemSelected = '3'
                     break
-                case 'applications':
-                    this.itemSelected = '4'
-                    break
-                case 'createApp':
-                    this.itemSelected = '5'
-                    break
-                case 'myApps':
-                    this.itemSelected = '6'
-                    break
+                // case 'tradeRecord':
+                //     this.itemSelected = '2'
+                //     break
+                // case 'transaction':
+                //     this.itemSelected = '3'
+                //     break
+                // case 'createApp':
+                //     this.itemSelected = '5'
+                //     break
                 default:
                     break
             }
 
-            if(this.$route.params.loadAcc){
+            if (this.$route.params.loadAcc) {
                 this.loadAccounts()
             }
         }
@@ -156,7 +303,7 @@
 
     .mainScreen {
         height: $height;
-        min-width: 1700px;
+        min-width: 1300px;
         overflow: hidden;
 
         /**  侧边栏   **/
@@ -176,9 +323,9 @@
                 border-top-style: solid;
                 border-top-width: 2px;
                 border-image-source: linear-gradient(-85deg,
-                        #3410f7 0%,
-                        #711bdc 59%,
-                        #ad25c0 100%);
+                    #3410f7 0%,
+                    #711bdc 59%,
+                    #ad25c0 100%);
                 border-image-slice: 1;
                 -webkit-box-sizing: border-box;
                 -moz-box-sizing: border-box;
@@ -242,34 +389,28 @@
                             background: url("../../assets/images/mainScreen/icon_zhxx_xz.png") no-repeat;
                         }
                         .nav-icon2 {
-                            background: url("../../assets/images/mainScreen/icon_jyjl.png") no-repeat;
+                            background: url("../../assets/images/mainScreen/icon_wdyy.png") no-repeat;
                         }
                         .nav-icon2-active {
-                            background: url("../../assets/images/mainScreen/icon_jyjl_xz.png") no-repeat;
+                            background: url("../../assets/images/mainScreen/icon_wdyy_xz.png") no-repeat;
                         }
                         .nav-icon3 {
-                            background: url("../../assets/images/mainScreen/icon_dwzz.png") no-repeat;
-                        }
-                        .nav-icon3-active {
-                            background: url("../../assets/images/mainScreen/icon_dwzz_xz.png") no-repeat;
-                        }
-                        .nav-icon4 {
                             background: url("../../assets/images/mainScreen/icon_yysc.png") no-repeat;
                         }
-                        .nav-icon4-active {
+                        .nav-icon3-active {
                             background: url("../../assets/images/mainScreen/icon_yysc_xz.png") no-repeat;
+                        }
+                        .nav-icon4 {
+                            background: url("../../assets/images/mainScreen/icon_cjyy.png") no-repeat;
+                        }
+                        .nav-icon4-active {
+                            background: url("../../assets/images/mainScreen/icon_cjyy_xz.png") no-repeat;
                         }
                         .nav-icon5 {
                             background: url("../../assets/images/mainScreen/icon_cjyy.png") no-repeat;
                         }
                         .nav-icon5-active {
                             background: url("../../assets/images/mainScreen/icon_cjyy_xz.png") no-repeat;
-                        }
-                        .nav-icon6 {
-                            background: url("../../assets/images/mainScreen/icon_wdyy.png") no-repeat;
-                        }
-                        .nav-icon6-active {
-                            background: url("../../assets/images/mainScreen/icon_wdyy_xz.png") no-repeat;
                         }
                     }
                     .active {
@@ -324,17 +465,69 @@
                     margin-right: 30px;
                 }
             }
-
+            .account-nav {
+                border-bottom: 1px solid #322D5D;
+                height: 92px;
+                line-height: 32px;
+                color: #8490c5;
+                box-sizing: border-box;
+                font-size: 20px;
+                padding-top: 8px;
+                /*i {
+                    display: inline-block;
+                    height: 30px;
+                    width: 30px;
+                    margin-right: 10px;
+                    margin-left: 30px;
+                    vertical-align: text-top;
+                }*/
+                .tranc-balance {
+                    margin-left: 70px;
+                    /*margin-top:10px;*/
+                    .el-icon-refresh {
+                        margin-left: 20px;
+                        cursor: pointer;
+                        &:hover {
+                            color: #A0CBF5;
+                        }
+                    }
+                    /*i {*/
+                    /*background: url("../../assets/images/transaction/icon_zz_zhye.png") no-repeat;*/
+                    /*}*/
+                }
+                .tranc-address {
+                    margin-left: 70px;
+                    margin-top: 5px;
+                    /*i {*/
+                    /*background: url("../../assets/images/transaction/icon_zz_zhdz.png") no-repeat;*/
+                    /*}*/
+                }
+                .el-button {
+                    height: 28px;
+                    margin-left: 30px;
+                    background: #403A6D;
+                    color: #CEC8FF;
+                    font-size: 12px;
+                    border: solid 1px #433e71;
+                    background: rgba(0, 0, 0, 0);
+                    &:hover {
+                        border-color: #726bab;
+                    }
+                }
+            }
             .content {
                 height: calc(100% - 125px);
                 min-height: 700px;
-                border: solid 1px $border_color;
                 -webkit-box-sizing: border-box;
                 -moz-box-sizing: border-box;
                 box-sizing: border-box;
                 margin: 30px;
+                &.border {
+                    border: solid 1px $border_color;
+                }
             }
         }
+
     }
 
     @keyframes passInto {

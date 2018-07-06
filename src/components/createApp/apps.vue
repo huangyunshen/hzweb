@@ -23,6 +23,9 @@
             getTitle: (value)=> {
                 let result = ''
                 switch (value){
+                    case "0":
+                        result = '点击创建应用'
+                        break;
                     case "1":
                         result = '龙虎斗'
                         break;
@@ -32,6 +35,9 @@
             getImg: (value)=> {
                 let result = ''
                 switch (value){
+                    case "0":
+                        result = require('../../assets/images/myApps/add.png')
+                        break;
                     case "1":
                         result = require('../../assets/images/apps/longhudou.jpg')
                         break;

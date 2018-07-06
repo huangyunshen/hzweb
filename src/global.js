@@ -6,8 +6,10 @@ import axios from './js/api'
 import $router from "./router"
 import $store from './js/store'
 
-const HOST = 'http://39.104.81.103:8101'
+const HOST = 'ws://39.104.81.103:8561'
 // const HOST = 'http://127.0.0.1:7545'
+// const HOST = 'ws://192.168.1.107:8562'
+// const HOST = 'ws://192.168.1.124:8561'
 const WEB3OBJ = new Web3(HOST)
 
 export default {
@@ -39,9 +41,9 @@ export default {
                 return n.replace(reg, '')
             },
 
-            linkToFirstScreenRep() {     //转到登录 / replace模式
-                $router.replace({name: 'importWallet'})
-            },
+            // linkToFirstScreenRep() {     //转到登录 / replace模式
+            //     $router.replace({name: 'importWallet'})
+            // },
 
             // linkToMainScreenRep() {     //转到主页面 / replace模式
             //     if(!this.ifWalletExist()){
@@ -54,22 +56,21 @@ export default {
                 if (walletJSON) {
                     return walletJSON
                 } else {
-                    $router.replace({name: 'createWallet'})
+                    $router.replace({name: 'importWallet'})
                     return false
                 }
             },
             loadWallet(pwd) {
                 return WEB3OBJ.eth.accounts.wallet.load(pwd)
             },
-            loadActivWallet(){
+            loadActivWallet() {
                 let wallet = this.getActiveAccount()
                 this.getBalance()
-                $store.commit('setPrivKey', wallet.privateKey)
-                $store.commit('setLock',false)
+                $store.commit('setLock', false)
                 $store.commit('setAddress', wallet.address)
             },
-            setActiveAccount(index){
-                localStorage.setItem('active_account',index)
+            setActiveAccount(index) {
+                localStorage.setItem('active_account', index)
             },
             getActiveAccount() {
                 let wallet = WEB3OBJ.eth.accounts.wallet
@@ -88,23 +89,66 @@ export default {
              * 得到KeyStore文件的字符串
              */
             getKeyStore() {
-                return this.getActiveAccount().encrypt(this.getActiveAccount().privateKey, this.getActiveAccountPwd())
+                let privateKey = this.getActiveAccount().privateKey
+                let myWallet = new Wallet(privateKey)
+                return myWallet.encrypt(this.getActiveAccountPwd())
             },
             /**
              * 上传KeyStore
              */
-            uploadKeyStore(){
-                console.log(this.getKeyStore())
-                return
-                axios.post('http://39.104.81.103:8101', {
-                    "jsonrpc": "2.0",
-                    "method": "eth_uploadkeyfile",
-                    "params": this.getKeyStore(),
-                    "id": 1
-                }).then((res) => {
-                    console.log(res)
-                }).catch((error) => {
-                    console.log(error)
+            uploadKeyStore() {
+                return new Promise((resolve, reject) => {
+                    this.getKeyStore().then((data) => {
+                        let ts = new Date()
+                        let name = ['UTC--', ts.toJSON().replace(/:/g, '-'), '--', this.getActiveAccount().address.toString('hex')].join('')
+                        // console.log(this.getActiveAccount().address)
+                        // return false
+                        axios.post('http://39.104.81.103:8551', {
+                            "jsonrpc": "2.0",
+                            "method": "eth_uploadkeyfile",
+                            "params": [name, data],
+                            "id": 1
+                        }).then((res) => {
+                            if (res.status === 200) {
+                                if (res.data.id === 1) {
+                                    // this.unlockAccount()
+                                    resolve(true)
+                                }
+                            }
+                        }).catch((error) => {
+                            console.log(error)
+                        })
+                    })
+                })
+            },
+            /**
+             * 解锁
+             */
+            unlockAccount() {
+                return new Promise((resolve, reject) => {
+                    WEB3OBJ.eth.personal.unlockAccount(this.getActiveAccount().address, this.getActiveAccountPwd(), (error, res) => {
+                        // Returned error: no key for given address or file             没有keystore
+                        // Returned error: could not decrypt key with given passphrase  密码错误
+                        if (error) {
+                            // 没有keystore
+                            if (error.message.indexOf('file') !== -1) {
+                                this.uploadKeyStore().then((flag) => {
+                                    if (flag) {
+                                        WEB3OBJ.eth.personal.unlockAccount(this.getActiveAccount().address, this.getActiveAccountPwd(), (error, res) => {
+                                            resolve(res)
+                                            reject(error)
+                                        })
+                                    }
+                                })
+                            } else {
+                                // 密码错误
+                                reject(error.message)
+                            }
+                        }
+                        if (res) {
+                            resolve(res)
+                        }
+                    })
                 })
             },
             getAddress() {

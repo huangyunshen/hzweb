@@ -5,7 +5,7 @@
                 label-position="left"
                 @submit.native.prevent>
 
-            <el-form-item class="el-wallet-style" label="密码" prop="pwd">
+            <el-form-item class="el-wallet-style" prop="pwd">
                 <el-input class="el-wallet-input"
                           type="password"
                           v-model="formRulesCreate.pwd"
@@ -19,7 +19,7 @@
                  label-position="left"
                  @submit.native.prevent>
 
-            <el-form-item class="el-wallet-style" label="确认密码" prop="pwd">
+            <el-form-item class="el-wallet-style"  prop="pwd">
                 <el-input class="el-wallet-input"
                           type="password"
                           v-model="formRulesCreate.confirmPwd"
@@ -33,23 +33,24 @@
             <span class="deal" @click="agreedDialog = true">《服务及隐私协议》</span>
         </p>
 
-        <el-button class="el-wallet-main-button" @click="createWallet()">创建新的钱包</el-button>
-
+        <el-button class="el-wallet-main-button" @click="createWallet()">创建钱包</el-button>
+        <p class="tr import-wallet"><router-link tag="a" @click.native="importWallet" :to="{name:'importWallet'}">导入钱包</router-link></p>
         <div class="wallet-info">
             该密码将会加密您的私钥，但不会生成密钥的种子。您需要用此密码加私钥才能解锁您的钱包。
         </div>
 
-        <div class="wallet-help">
+        <!--<div class="wallet-help">
             如何创建电子钱包 | 入门
-        </div>
+        </div>-->
 
         <el-dialog class="wallet-agreement"
                    title="用户协议"
                    :visible.sync="agreedDialog"
                    :show-close="false"
                    center
-                   width="1200px">
-            <div class="body">
+                   width="1200px"
+        >
+            <div class="body" style="height: 50vh;">
                 <agreement></agreement>
             </div>
             <div class="footer">
@@ -66,11 +67,11 @@
                    width="800px"
                    top="30vh"
                    center>
-            <h2>保存你的Keystore文件！不要忘记你的密码！</h2>
+            <h2>保存你的钱包备份文件！不要忘记你的密码！</h2>
 
             <div class="wallet-dialog-body">
                 <a class="el-button" :href="walletInfo.blobEnc" :download="walletInfo.fileName"
-                   @click="walletInfo.fileDownloaded=false">下载Keystore文件(UTC/JSON)</a>
+                   @click="walletInfo.fileDownloaded=false" style="width: 280px;">下载钱包备份文件</a>
 
                 <el-button type="danger" @click="unlockNewAccount" :disabled="walletInfo.fileDownloaded"
                            style="width: 280px;">
@@ -89,7 +90,7 @@
 
 <script>
     import userLogin from './importWallet'
-    import agreement from '../createApp/agreement'
+    import agreement from '../wallet/walletAgreement'
 
     export default {
         name: "createWallet",
@@ -154,7 +155,7 @@
                         }
                     )
                     setTimeout(() => {
-                        let wallet = this.$web3.eth.accounts.wallet.create(2)
+                        let wallet = this.$web3.eth.accounts.wallet.create(1)
                         let encryptedJSON = this.$web3.eth.accounts.wallet.encrypt(this.formRulesCreate.pwd)
 
                         let address = wallet[0].address
@@ -192,23 +193,42 @@
             getV3Filename(address) {
                 let ts = new Date()
                 // return ['UTC--', ts.toJSON().replace(/:/g, '-'), '--', address.toString('hex')].join('')
-                return ['FOF-Wallet-', ts.toJSON().slice(0,10), '-', address.toString('hex')].join('')
+                return ['FOF-Wallet-', ts.toJSON().slice(0,11), ts.toTimeString().slice(0,8).replace(/:/g,"-")].join('')
+            },
+            importWallet(){
+                this.$emit('getTitle', "导入钱包");
             }
         }
     }
 </script>
 
 <style lang="scss" type="text/scss" scoped>
+    .import-wallet {
+        padding: 15px 0;
+        padding-right: 0px;
+        position: relative;
+        bottom: -35px;
+        left: -255px;
+        font-size: 24px;
+        a{
+            color: greenyellow;
+            text-decoration: underline;
+            &:hover{
+                color: #2A9CE7;
+            }
+        }
+    }
     .el-form-item {
         margin-bottom: 0;
     }
 
     .wallet-info {
-        margin-top: 30px;
         font-size: 16px;
-        color: #9388d3;
+        color: #8a9df0;
         text-align: center;
         line-height: 26px;
+        position: absolute;
+        bottom: 20px;
     }
 
     .wallet-help {

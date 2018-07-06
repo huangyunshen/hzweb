@@ -8,7 +8,7 @@
 
         <img src="./assets/images/logo.png" class="logoImg"></img>
         <transition name="fof-fade">
-            <router-view name="default"></router-view>
+            <router-view name="default" @lockOut="lockOutApp"></router-view>
         </transition>
 
         <div class="create-wallet">
@@ -45,6 +45,9 @@
             }
         },
         methods: {
+            lockOutApp(){
+                this.lockWallet()
+            },
             isActive(e) {
                 if (!this.lockModal) {
                     this.timeRemaining = this.duration
@@ -52,10 +55,29 @@
             },
             unlockWallet() {
                 try {
-                    this.$funs.loadWallet(this.pwd)
-                    this.$funs.loadActivWallet()
-                    this.lockModal = false
-                    this.countDown()
+                    this.$store.commit('setCryptPercent', {
+                            percent: true,
+                            text: '正在解锁钱包，请稍等...'
+                        }
+                    )
+
+                    setTimeout(() => {
+                        let promise = new Promise((resolve => {
+                            this.$funs.loadWallet(this.pwd)
+                            resolve()
+                        }))
+                        promise.then(() => {
+
+                            this.$funs.loadActivWallet()
+                            this.lockModal = false
+                            this.countDown()
+                            this.$store.commit('setCryptPercent', {
+                                    percent: false,
+                                    text: ''
+                                }
+                            )
+                        })
+                    },500)
                 } catch (error) {
                     this.$message({
                         message: this.$msg.unlockFailByPwd,
@@ -70,23 +92,29 @@
                 this.timer = setInterval(() => {
                     this.timeRemaining -= 1
                     if (this.timeRemaining === 0) {
-                        this.$web3.eth.accounts.wallet.clear()
                         clearInterval(this.timer)
-                        this.lockModal = true
-                        this.$store.commit('setLock', true)
+                        this.lockWallet()
                     }
                 }, 1000)
+            },
+            lockWallet(){
+                this.$web3.eth.accounts.wallet.clear()
+                this.lockModal = true
+                this.$store.commit('setLock', true)
+                this.$store.commit('setBalance', 0)
+                this.$store.commit('setAddress', '')
             }
         },
         mounted() {
-            if (!this.$funs.ifWalletExist()) {
+            let wallet = this.$funs.ifWalletExist()
+            if (!wallet) {
                 this.lockModal = false
             } else {
                 if(this.$route.name==='createWallet' || this.$route.name==='importWallet'){
                     this.$router.replace({name: 'accountInfo'})
                 }
             }
-            if (this.$funs.ifWalletExist() && !this.$store.state.isLock) {
+            if (wallet && !this.$store.state.isLock) {
                 this.countDown()
             }
         }

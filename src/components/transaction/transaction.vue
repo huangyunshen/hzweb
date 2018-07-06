@@ -16,10 +16,10 @@
             <!--step-1-->
             <transition name="fof-fade">
                 <div class="step-1" v-show="steps==='1'">
-                    <div class="step-1-head">
+                    <!--<div class="step-1-head">
                         <div class="tranc-balance"><i></i>账户余额 : {{$store.state.balance | amountUnit}}</div>
                         <div class="tranc-address"><i></i>账户地址 : {{$store.state.address}}</div>
-                    </div>
+                    </div>-->
                     <div class="step-1-body">
                         <el-form ref="form" :model="form" label-position="left" label-width="150px">
                             <el-form-item class="mt-40" label="对方账户">
@@ -27,9 +27,9 @@
                                         v-model="form.to"
                                 ></el-input>
                             </el-form-item>
-                            <el-form-item class="mt-40" label="转账数额">
+                            <el-form-item class="mt-40" label="转账金额">
                                 <el-input
-                                        placeholder="数额"
+                                        placeholder="金额"
                                         v-model="form.value">
                                     <template slot="append">FOF</template>
                                 </el-input>
@@ -57,7 +57,7 @@
             <!--<el-button class="el-wallet-main-button mt-50" @click="steps = '1'">上一步</el-button>-->
             <!--</el-col>-->
             <!--<el-col :span="12">-->
-            <!--<el-button class="el-wallet-main-button mt-50" @click="importAccount">解锁钱包</el-button>-->
+            <!--<el-button class="el-wallet-main-button mt-50" @click=".importAccount">解锁钱包</el-button>-->
             <!--</el-col>-->
             <!--</el-row>-->
             <!--</div>-->
@@ -192,8 +192,8 @@
             return {
                 steps: "1",
                 form: {
-                    to: '0x129Fb7e84D819b31DB25c0448A6CD5F3124e763d',
-                    value: '1',
+                    to: '',
+                    value: '',
                     gas: '210000',
                 },
                 unit: 'FOF',
@@ -224,7 +224,6 @@
              * 点击 生成交易
              */
             typePwd() {
-                // this.password = ''
                 if (!this.$web3.utils.isAddress(this.form.to)) {
                     this.$message({
                         message: this.$msg.invalidAddress,
@@ -256,46 +255,6 @@
                 this.getSignMsg().then(() => {
                     this.steps = '3'
                 })
-            },
-            importAccount() {
-                // this.$refs.unlock.importAccount().then((wallet) => {
-                //     if (typeof wallet === 'object') {
-                //         this.$funs.getBalanceByWei(wallet.address, (balance) => {
-                //             balance = Number(balance)
-                // if (wallet.address !== this.$store.state.address) {
-                //     this.$confirm(this.$msg.diffrentAccount, '账户不一致', {
-                //         confirmButtonText: '确定',
-                //         cancelButtonText: '取消',
-                //         type: 'warning'
-                //     }).then(() => {
-                //         this.$funs.setLocalAddress(wallet)
-                //         this.address = wallet.address
-                //
-                //         this.$funs.getBalance(wallet.address, (balance) => {
-                //             this.balance = balance
-                //         })
-                //
-                //         this.privateKey = wallet.privateKey
-                //         this.getSignMsg().then(() => {
-                //             this.steps = '3'
-                //         })
-                //     }).catch(() => {
-                //         this.privateKey = wallet.privateKey
-                //         this.getSignMsg().then(() => {
-                //             this.steps = '3'
-                //         })
-                //     })
-                // } else {
-                //                 this.privateKey = wallet.privateKey
-                //                 this.getSignMsg().then(() => {
-                //                     this.steps = '3'
-                //                 })
-                //             // }
-                //         })
-                //
-                //     }
-                // }, (err) => {
-                // })
             },
             /**
              * 点击 发送交易
@@ -329,16 +288,6 @@
                     }
                 )
                 this.$web3.eth.sendSignedTransaction(this.transactionSign)
-                // .once('transactionHash', function (hash) {
-                //     console.log(hash);
-                // })
-                // .once('receipt', function (receipt) {
-                //     console.log(receipt);
-                // })
-                // .on('confirmation', function (confNumber, receipt) {
-                //     console.log(confNumber);
-                //     console.log(receipt);
-                // })
                     .on('error', (err) => {
                         this.$store.commit('setCryptPercent', {
                                 percent: false,
@@ -351,7 +300,6 @@
                         })
                     })
                     .then((receipt) => {
-                        console.log(receipt);
                         this.transactionHash = receipt.transactionHash
                         this.steps = '5'
                         this.$store.commit('setCryptPercent', {
@@ -388,26 +336,50 @@
             },
             getSignMsg() {
                 return new Promise((resolve, reject) => {
-                    let Tx = require('ethereumjs-tx')
-                    let privateKey = this.$funs.getActiveAccount().privateKey
-                    privateKey = new Buffer(privateKey.replace('0x', ''), 'hex')
                     this.$web3.eth.getTransactionCount(this.$store.state.address).then((nonce) => {
                         let rawTx = {
-                            from: this.$store.state.address,
                             nonce: this.$web3.utils.toHex(nonce),
                             gasPrice: this.$web3.utils.toHex(this.$store.state.gasPrice * (Math.pow(10, 9))),
-                            gasLimit: this.$web3.utils.toHex(this.form.gas),
+                            gas: this.$web3.utils.toHex(this.form.gas),
                             to: this.form.to,
                             value: this.$web3.utils.toHex(this.$web3.utils.toWei(this.form.value, 'ether')),
-                            data: ""
+                            data: "",
+                            txType: 0,
                         }
-                        let tx = new Tx(rawTx)
-                        tx.sign(privateKey)
-                        let serializedTx = tx.serialize()
-                        this.transactionSign = '0x' + serializedTx.toString('hex')
                         this.transactionData = JSON.stringify(rawTx)
-                        resolve()
+                        this.$web3.eth.accounts.signTransaction(rawTx, this.$funs.getActiveAccount().privateKey, (err, data) => {
+                            if(err){
+                                this.$message.error(String(err))
+                            }else {
+                                if(data){
+                                    this.transactionSign = data.rawTransaction
+                                }
+                            }
+                            resolve()
+                        })
                     })
+                    // let Tx = require('ethereumjs-tx')
+                    // let privateKey = this.$funs.getActiveAccount().privateKey
+                    // privateKey = new Buffer(privateKey.replace('0x', ''), 'hex')
+                    // this.$web3.eth.getTransactionCount(this.$store.state.address).then((nonce) => {
+                    //     let rawTx = {
+                    //         from: this.$store.state.address,
+                    //         nonce: this.$web3.utils.toHex(nonce),
+                    //         gasPrice: this.$web3.utils.toHex(this.$store.state.gasPrice * (Math.pow(10, 9))),
+                    //         gasLimit: this.$web3.utils.toHex(this.form.gas),
+                    //         to: this.form.to,
+                    //         value: this.$web3.utils.toHex(this.$web3.utils.toWei(this.form.value, 'ether')),
+                    //         data: "",
+                    //         txType: 2
+                    //     }
+                    //     console.log(rawTx)
+                    //     let tx = new Tx(rawTx)
+                    //     tx.sign(privateKey)
+                    //     let serializedTx = tx.serialize()
+
+                    //     resolve()
+                    // })
+
                 })
             }
         }
@@ -427,7 +399,7 @@
                 line-height: 70px;
                 background-color: #221D44;
                 box-shadow: 1px 0 0 0 #272345;
-                font-size: 20px;
+                font-size: 15px;
                 color: #d3ceff;
 
             }
@@ -507,7 +479,7 @@
         .step-3 {
             .step-3-content {
                 display: flex;
-                padding: 30px 0 50px 0;
+                padding: 30px 0 20px 0;
                 border-bottom: 1px solid #28234D;
                 justify-content: space-around;
                 .emitTransaction {
@@ -537,7 +509,7 @@
             }
             .tc {
                 border-bottom: 1px solid #28234D;
-                padding-top: 40px;
+                padding-top: 20px;
                 padding-bottom: 30px;
                 color: #f39eff;
             }
@@ -549,14 +521,14 @@
                 .abandon {
                     width: 300px;
                     height: 64px;
-                    margin-top: 50px;
+                    margin-top: 15px;
                     border: solid 1px #443e67;
                     font-size: 26px;
                     color: #7e78a5;
                     background: none;
                 }
                 .submit {
-                    margin-top: 50px;
+                    margin-top: 15px;
                     width: 500px !important;
                 }
             }

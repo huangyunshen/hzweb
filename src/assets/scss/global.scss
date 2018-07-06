@@ -6,7 +6,7 @@
 #app {
     height: 100%;
     min-height: 850px;
-    min-width: 100%;
+    //min-width: 100%;
     //min-width: 1700px;
     background: url("./assets/images/firstScreen/bg.jpg") no-repeat;
     background-size: cover;
@@ -87,12 +87,28 @@ textarea:read-only {
     font-size: 18px;
     background-color: #7a99be;
     color: #182f4a;
+    position: relative;
+    left: -70px;
     &:focus {
-        border:none;
+        border: none;
         background-color: #9DC1F0;
     }
 }
 
+.el-wallet-style .el-wallet-account-input input,
+.el-wallet-style .el-wallet-account-input textarea {
+    font-size: 18px;
+    background-color: #7a99be;
+    color: #182f4a;
+    position: relative;
+    left: -70px;
+    top: 40px;
+
+    &:focus {
+        border: none;
+        background-color: #9DC1F0;
+    }
+}
 
 .transaction textarea {
     height: 300px;
@@ -108,19 +124,23 @@ textarea:read-only {
     }
 }
 
-
 #app .el-wallet-main-button {
-    width: 100%;
+    width: 50%;
     height: 64px;
     background-color: #5837ff;
     font-size: 26px;
-    font-weight: 100;
+    font-weight: 500;
     color: #ffffff;
     border: none;
+    position: relative;
+    left: 150px;
+    top: 20px;
+
     &:hover {
         background-color: #6262FF;
         color: #ffffff;
     }
+
     &:disabled {
         background: #9386CE;
     }
@@ -146,6 +166,8 @@ textarea:read-only {
         margin-top: 40px;
         margin-bottom: 15px;
         font-size: 18px;
+        position: relative;
+        left: 150px;
         .el-checkbox {
             color: #8a9df0;
             span {
@@ -165,7 +187,7 @@ textarea:read-only {
             color: #8a9df0;
             &:hover {
                 cursor: pointer;
-                color:#5D76EA;
+                color: #5D76EA;
             }
         }
     }
@@ -197,10 +219,9 @@ textarea:read-only {
     }
     .wallet-agreement {
         .body {
-            height: 52vh;
             overflow-y: auto;
             border: solid 1px rgba(208, 202, 253, 0.15);
-            padding: 10px;
+            padding: 15px;
         }
         .footer {
             text-align: center;
@@ -216,6 +237,10 @@ textarea:read-only {
             }
         }
     }
+}
+
+.el-loading-mask {
+    z-index: 9999999999 !important;
 }
 
 /*****  wallet style end    ****/
@@ -293,9 +318,6 @@ textarea:read-only {
     opacity: 1;
 }
 
-
-
-
 .fof-fade-2-enter {
     opacity: 0;
 }
@@ -308,7 +330,6 @@ textarea:read-only {
     opacity: 1;
 }
 
-
 /*   my-app   */
 .my-apps {
     .el-input-group__append {
@@ -316,7 +337,7 @@ textarea:read-only {
             background: #675DE5;
             border: 2px solid #675DE5;
             border-radius: 0;
-            padding:12px 18px;
+            padding: 12px 18px;
             &:hover {
                 background: #7E74FF;
                 border-color: #7E74FF;
@@ -333,10 +354,42 @@ textarea:read-only {
     font-size: 16px;
 }
 
-input:-webkit-autofill , textarea:-webkit-autofill, select:-webkit-autofill {
+input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
     -webkit-text-fill-color: #182f4a !important;
-    -webkit-box-shadow: 0 0 0 1000px transparent  inset !important;
-    background-color:transparent;
+    -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+    background-color: transparent;
     background-image: none;
     transition: background-color 50000s ease-in-out; //背景色透明  生效时长  过渡效果  启用时延迟的时间
+}
+
+#app {
+    .mainScreen {
+        .tranc-address {
+            .account-style {
+                display: inline-block;
+                .el-input__inner {
+                    min-width: 600px;
+                    height: 32px !important;
+                    border: solid 1px #433e71;
+                    background: rgba(0, 0, 0, 0);
+                }
+            }
+        }
+    }
+}
+.el-scrollbar {
+    .el-button {
+        height: 26px!important;
+        margin-left: 10px;
+        margin-top: 4px;
+        padding: 0 10px;
+        background: #5A529D;
+        border: none;
+        span {
+            line-height: 16px!important;
+        }
+        &:hover {
+            background: #7167C4;
+        }
+    }
 }
