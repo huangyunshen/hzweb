@@ -50,22 +50,23 @@
                             <el-option
                                 v-for="(item,index) in accounts"
                                 :key="index"
-                                :label="item.label"
-                                :value="item.value"
+                                :label="item"
+                                :value="item"
                             >
-                                <span class="fl">{{ item.label }}</span>
-                                <el-button type="primary" class="deleteMe fr" size="mini">移除</el-button>
+                                <span class="fl">{{ item }}</span>
+                                <el-button type="primary" class="deleteMe fr" size="mini"
+                                           @click.stop="showRemoveAcc(item)" v-if="accounts.length > 1">移除
+                                </el-button>
                                 <!--<el-button type="primary" class="selectMe fr">选择</el-button>-->
                             </el-option>
                         </el-select>
                     </div>
-                    <!--<i></i>账户地址 : {{$store.state.address}}-->
                     <el-button size="mini" @click="getMore">更多</el-button>
                 </div>
             </div>
             <main class="content" :class="{border : isBorder}">
                 <transition name="fof-fade">
-                    <router-view ref="wallet"></router-view>
+                    <router-view></router-view>
                 </transition>
             </main>
         </div>
@@ -74,14 +75,15 @@
             <el-dialog class="wallet-agreement"
                        title="导入账户"
                        :visible.sync="dialog"
-                       :show-close="false"
                        center
                        width="1000px">
                 <div class="body" style="padding: 20px;height: 240px;">
                     <unlock-account ref="importAcc" hasWallet="hasWallet"></unlock-account>
                 </div>
                 <div class="footer">
-                    <el-button @click="importAcc">导入到钱包</el-button>
+                    <el-button @click="importAcc" v-show="importing">导入到钱包</el-button>
+                    <span v-if="!importing"
+                          style="line-height: 40px; font-size: 20px; animation: toggleShowHide 2s linear infinite;">正在导入 . . . </span>
                 </div>
             </el-dialog>
             <el-dialog class="wallet-agreement personal-info"
@@ -90,7 +92,31 @@
                        center
                        width="1200px">
                 <div class="body" style="padding: 10px;height: 510px;">
-                    <account-info ref="importAcc" hasWallet="hasWallet"></account-info>
+                    <account-info ref="changeAcc"></account-info>
+                </div>
+            </el-dialog>
+        </div>
+
+        <div class="create-wallet">
+            <el-dialog class="create-wallet-dialog"
+                       title="警告！"
+                       :visible.sync="deleteModal"
+                       width="600px"
+                       top="20vh"
+                       center>
+
+                <div class="del-warning">
+                    您正在删除:
+                    <p>{{accTODelete}}</p>
+                    账户余额：
+                    <p>{{delAccBalance | amountUnit}}</p>
+                    确认删除请验证钱包密码：
+                </div>
+                <el-input v-model="pwd" type="password" placeholder="请输入钱包密码"></el-input>
+                <div class="mt-40 tc">
+                    <el-button type="primary" @click="removeAcc" v-show="deleting">确定</el-button>
+                    <span v-if="!deleting"
+                          style="line-height: 40px; font-size: 20px; animation: toggleShowHide 2s linear infinite;">正在移除 . . . </span>
                 </div>
             </el-dialog>
         </div>
@@ -112,11 +138,17 @@
         data() {
             return {
                 itemSelected: '1',
-                accounts: [{value: -1, label: '切换账户'}],
-                activeAccount: -1,
+                accounts: ['切换账户'],
+                activeAccount: '切换账户',
                 dialog: false,
                 personalDialog: false,
-                isBorder: true
+                isBorder: true,
+                deleteModal: false,
+                accTODelete: '',
+                pwd: '',
+                delAccBalance: 0,
+                importing: true,
+                deleting: true,
             }
         },
         computed: {
@@ -128,6 +160,7 @@
             lockFlag() {
                 if (!this.lockFlag) {
                     this.loadAccounts()
+                    this.activeAccount = localStorage.getItem('active_account')
                 }
             },
             $route(to, from) {
@@ -136,99 +169,34 @@
         },
         methods: {
             importAcc() {
-                this.$refs.importAcc.importWallet()
-                    .then(
-                        (privkey) => {
-
-                            let wallet = this.$web3.eth.accounts.wallet
-                            for (let i = 0; i < wallet.length; i++) {
-                                if (wallet[i].privateKey === privkey) {
-                                    this.$message({
-                                        message: this.$msg.accountExist,
-                                        type: 'error'
-                                    })
-                                    return
-                                }
-                            }
-                            wallet = this.$web3.eth.accounts.privateKeyToAccount(privkey)
-                            this.$web3.eth.accounts.wallet.add(wallet)
-
-                            this.$prompt('', '请输入钱包密码', {
-                                closeOnClickModal: false,
-                                inputType: 'password',
-                                confirmButtonText: '确定',
-                                cancelButtonText: '取消',
-                                beforeClose: (action, instance, done) => {
-                                    if (action === 'confirm') {
-
-                                        this.$store.commit('setCryptPercent', {
-                                                percent: true,
-                                                text: '正在验证钱包密码，请稍等...'
-                                            }
-                                        )
-                                        setTimeout(() => {
-                                            let promise = new Promise(resolve => {
-
-                                                try {
-                                                    this.$funs.loadWallet(instance.inputValue)
-                                                    resolve()
-                                                } catch (error) {
-                                                    this.$store.commit('setCryptPercent', {
-                                                            percent: false,
-                                                            text: ''
-                                                        }
-                                                    )
-                                                    this.$message({
-                                                        message: this.$msg.invalidWalletPwd,
-                                                        type: 'error'
-                                                    })
-                                                }
-                                            })
-
-                                            promise.then(() => {
-
-                                                this.$store.commit('setCryptPercent', {
-                                                        percent: true,
-                                                        text: '正在导入到钱包并加密保存，请稍等...'
-                                                    }
-                                                )
-                                                setTimeout(() => {
-                                                    let promise = new Promise(resolve => {
-                                                        this.$web3.eth.accounts.wallet.save(instance.inputValue)
-                                                        resolve()
-                                                    })
-                                                    promise.then(() => {
-                                                        this.$store.commit('setCryptPercent', {
-                                                                percent: false,
-                                                                text: ''
-                                                            }
-                                                        )
-                                                        this.$funs.loadActivWallet()
-                                                        this.$message({
-                                                            message: this.$msg.importSucc,
-                                                            type: 'success'
-                                                        })
-                                                        done()
-                                                        this.dialog = false
-                                                        this.loadAccounts()
-                                                    })
-                                                }, 500)
-                                            })
-
-                                        }, 500)
-                                    } else {
-                                        done()
-                                    }
-                                }
-                            }).then(({value}) => {
-
-                            }).catch(() => {
-
+                this.$refs.importAcc.importWallet().then((privkey) => {
+                    let wallet = this.$web3.eth.accounts.wallet
+                    for (let i = 0; i < wallet.length; i++) {
+                        if (wallet[i].privateKey === privkey) {
+                            this.$message({
+                                message: this.$msg.accountExist,
+                                type: 'error'
                             })
-                        },
-                        (err) => {
+                            return
                         }
-                    )
+                    }
+                    let newAcc = this.$web3.eth.accounts.privateKeyToAccount(privkey);
+                    wallet.add(newAcc);
+                    this.loadAccounts()
+                    this.activeAccount = newAcc.address;
+                    this.changeAccount();
+
+                    this.importing = false;
+                    setTimeout(() => {
+                        wallet.save(wallet.myPwd);
+                        this.dialog = false
+                        this.$message({
+                            message: this.$msg.importSucc,
+                            type: 'success'
+                        });
+                        this.importing = true;
+                    }, 50)
+                })
             },
             selectAnItem(index) {
                 this.itemSelected = index
@@ -242,29 +210,64 @@
             },
             changeAccount() {
                 this.$funs.setActiveAccount(this.activeAccount)
-                let wallet = this.$funs.getActiveAccount()
                 this.$funs.getBalance()
-                this.$store.commit('setAddress', wallet.address)
-                if (this.$refs.wallet.getWallet)
-                    this.$refs.wallet.getWallet()
+                this.$store.commit('setAddress', this.activeAccount)
             },
             loadAccounts() {
-                let activeId = Number(localStorage.getItem('active_account'))
                 let wallet = this.$web3.eth.accounts.wallet
                 this.accounts = []
-                this.activeAccount = activeId
-                for (let i = 0; i < wallet.length; i++) {
-                    let obj = {
-                        value: i,
-                        label: wallet[i].address
+                let i = 0
+                for (let key in wallet) { //此处谨慎修改
+                    if (wallet[i]) {
+                        this.accounts.push(wallet[i].address)
                     }
-                    this.accounts.push(obj)
+                    i++;
                 }
-                if (this.$refs.wallet.getWallet)
-                    this.$refs.wallet.getWallet()
             },
             getMore() {
-                this.personalDialog = true
+                this.personalDialog = true;
+                setTimeout(() => {
+                    this.$refs.changeAcc.getWallet();
+                }, 0)
+            },
+            showRemoveAcc(acc) {
+                this.$funs.getBalanceByWei(acc, (balance) => {
+                    if (typeof balance === 'string') {
+                        this.delAccBalance = this.$web3.utils.fromWei(balance, 'ether');
+                    } else {
+                        this.delAccBalance = 0;
+                    }
+                    this.accTODelete = acc;
+                    this.deleteModal = true;
+                    this.pwd = "";
+                })
+            },
+            removeAcc() {
+                let wallet = this.$web3.eth.accounts.wallet
+                if (this.pwd === wallet.myPwd) {
+                    wallet.remove(this.accTODelete);
+                    this.loadAccounts();
+                    if (this.accTODelete === this.activeAccount) {
+                        this.activeAccount = this.accounts[0];
+                    }
+                    this.changeAccount();
+
+                    this.deleting = false;
+                    setTimeout(() => {
+                        wallet.save(wallet.myPwd);
+                        this.deleteModal = false
+                        this.$message({
+                            message: this.$msg.deleteSucc,
+                            type: 'success'
+                        });
+                        this.deleting = true;
+                    }, 50)
+                } else {
+                    this.$message({
+                        message: this.$msg.unlockFailByPwd,
+                        type: 'error'
+                    });
+                }
             }
         },
         mounted() {
@@ -293,6 +296,7 @@
 
             if (this.$route.params.loadAcc) {
                 this.loadAccounts()
+                this.activeAccount = localStorage.getItem('active_account')
             }
         }
     }
@@ -527,7 +531,16 @@
                 }
             }
         }
-
+        .del-warning {
+            font-size: 17px;
+            line-height: 25px;
+            padding-bottom: 10px;
+            p {
+                color: #F600AA;
+                padding-left: 30px;
+                padding-bottom: 15px;
+            }
+        }
     }
 
     @keyframes passInto {

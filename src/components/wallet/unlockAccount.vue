@@ -1,17 +1,17 @@
 <template>
     <div>
         <el-form
-                label-width="120px"
-                label-position="left"
+                label-width="140px"
+                label-position="right"
                 @submit.native.prevent>
 
-            <!--<el-form-item class="el-wallet-style" label="导入方式">-->
+            <el-form-item class="el-wallet-style" label="导入方式">
                 <div class="wallet-decrypt-type no-select-text">
-                    <span class="wallet-decrypt-item" :class="{active:form.decryptType==='4'}"
+                    <!--<span class="wallet-decrypt-item" :class="{active:form.decryptType==='4'}">-->
                           <!--@click="selectDecryptType('4')" v-show="hasWalletCom">
                         <i class="wallet-decrypt-type-icon icon3" :class="{'icon3-active':form.decryptType==='4'}"></i>
                         钱包文件-->
-                    </span>
+                    <!--</span>-->
                     <span class="wallet-decrypt-item" :class="{active:form.decryptType==='1'}"
                           @click="selectDecryptType('1')" v-show="!hasWalletCom">
                         <i class="wallet-decrypt-type-icon icon1" :class="{'icon1-active':form.decryptType==='1'}"></i>
@@ -37,7 +37,6 @@
                               v-model="form.privateKey"
                               placeholder="请输入私钥"
                               auto-complete="off"
-                              clearable
                     ></el-input>
                 </el-form-item>
             </div>
@@ -54,7 +53,6 @@
                               type="password"
                               placeholder="请输入账户密码"
                               auto-complete="off"
-                              clearable
                     ></el-input>
                 </el-form-item>
             </div>
@@ -83,7 +81,6 @@
                               type="password"
                               placeholder="请输入钱包密码"
                               auto-complete="off"
-                              clearable
                     ></el-input>
                 </el-form-item>
             </div>
@@ -237,9 +234,10 @@
                             return
                         }
                         try {
-                            this.$web3.eth.accounts.wallet.decrypt(this.form.fileContent, this.form.pwd)
-                            this.$web3.eth.accounts.wallet.save(this.form.pwd)
-                            this.$funs.setActiveAccount('0')
+                            let wallet = this.$web3.eth.accounts.wallet
+                            wallet.decrypt(this.form.fileContent, this.form.pwd)
+                            wallet.save(this.form.pwd)
+                            this.$funs.setActiveAccount(wallet[0].address || wallet[1].address || wallet[2].address || wallet[3].address || wallet[4].address)
                             this.$store.commit('setCryptPercent', {
                                     percent: false,
                                     text: ''

@@ -33,5 +33,6 @@ export default {
     invalidBalanceAddr:'查询余额失败，账户地址无效',
     noWalletFound:'未找到钱包',
     invalidWalletPwd:'钱包密码错误',
-    accountExist:'账号已存在'
+    accountExist:'账号已存在',
+    deleteSucc:'删除成功',
 }

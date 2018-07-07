@@ -158,10 +158,10 @@
             }
             .list-body {
                 flex-grow: 1;
-                font-size: 24px;
+                font-size: 19px;
                 color: #8abdec;
                 .el-input {
-                    font-size: 24px;
+                    font-size: 19px;
                 }
                 .text-disabled {
                     width: 260px;

@@ -115,12 +115,12 @@
                     top: $head_height+(-128px);
                 }
                 .wallet-create {
-                    animation: createWallet 0.5s linear;
+                    animation: toggleShowHide 0.5s linear;
                     animation-fill-mode: forwards;
                     left: 394px;
                 }
                 .wallet-import {
-                    animation: importWallet 0.5s linear;
+                    animation: toggleShowHide 0.5s linear;
                     animation-fill-mode: forwards;
                     left: 632px;
                 }
@@ -192,28 +192,28 @@
         }
     }
 
-    @keyframes createWallet {
-        0% {
-            opacity: 1;
-        }
-        50% {
-            opacity: 0.2;
-        }
-        100% {
-            opacity: 1;
-        }
-    }
+    /*@keyframes createWallet {*/
+        /*0% {*/
+            /*opacity: 1;*/
+        /*}*/
+        /*50% {*/
+            /*opacity: 0.2;*/
+        /*}*/
+        /*100% {*/
+            /*opacity: 1;*/
+        /*}*/
+    /*}*/
 
-    @keyframes importWallet {
-        0% {
-            opacity: 1;
-        }
-        50% {
-            opacity: 0.2;
-        }
-        100% {
-            opacity: 1;
-        }
-    }
+    /*@keyframes importWallet {*/
+        /*0% {*/
+            /*opacity: 1;*/
+        /*}*/
+        /*50% {*/
+            /*opacity: 0.2;*/
+        /*}*/
+        /*100% {*/
+            /*opacity: 1;*/
+        /*}*/
+    /*}*/
 
 </style>

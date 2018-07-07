@@ -169,8 +169,8 @@
                         )
                         this.createDialog = true
                         this.$web3.eth.accounts.wallet.save(this.formRulesCreate.pwd)
-                        this.$funs.setActiveAccount('0')
-                    },1000)
+                        this.$funs.setActiveAccount(address)
+                    },500)
                 } else {
                     this.$message({
                         message: this.$msg.createPwd,

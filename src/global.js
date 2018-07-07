@@ -69,6 +69,17 @@ export default {
                 $store.commit('setLock', false)
                 $store.commit('setAddress', wallet.address)
             },
+            verifyWalletPwd(pwd) {
+                return new Promise((resolve, reject) => {
+                    try {
+                        let wallet = this.loadWallet(pwd);
+                        resolve(wallet);
+                    }
+                    catch (e) {
+                        reject(e);
+                    }
+                })
+            },
             setActiveAccount(index) {
                 localStorage.setItem('active_account', index)
             },
@@ -158,8 +169,8 @@ export default {
                     return addr
                 }
             },
-            getBalanceByWei(callback) {        //获取余额 bywei
-                let addr = this.getActiveAccount().address
+            getBalanceByWei(address, callback) {        //获取余额 bywei
+                let addr = address || this.getActiveAccount().address
                 if (addr) {
                     WEB3OBJ.eth.getBalance(addr).then((balance) => {
                         if (callback)
@@ -170,7 +181,7 @@ export default {
                 }
             },
             getBalance(callback) {        //获取余额 fromwei
-                this.getBalanceByWei((balance) => {
+                this.getBalanceByWei(null, (balance) => {
                     if (typeof balance === 'string') {
                         balance = WEB3OBJ.utils.fromWei(balance, 'ether')
                         $store.commit('setBalance', balance)
@@ -180,7 +191,7 @@ export default {
                     if (callback)
                         callback(balance)
                 })
-            }
+            },
         }
     }
 }

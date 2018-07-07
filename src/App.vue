@@ -24,7 +24,8 @@
 
                 <el-input v-model="pwd" type="password"></el-input>
                 <div class="mt-40 tc">
-                    <el-button type="primary" @click="unlockWallet">确定</el-button>
+                    <el-button type="primary" @click="unlockWallet" v-show="unlocking">确定</el-button>
+                    <span v-if="!unlocking" style="line-height: 40px; font-size: 20px; animation: toggleShowHide 2s linear infinite;">正在解锁 . . . </span>
                 </div>
             </el-dialog>
         </div>
@@ -41,11 +42,12 @@
                 timeRemaining: 0,   //倒计时时间
                 duration: 1800,       //多久后锁定（s）
                 lockModal: true,
-                pwd: '111111111'
+                pwd: '111111111',
+                unlocking: true,
             }
         },
         methods: {
-            lockOutApp(){
+            lockOutApp() {
                 this.lockWallet()
             },
             isActive(e) {
@@ -54,36 +56,23 @@
                 }
             },
             unlockWallet() {
-                try {
-                    this.$store.commit('setCryptPercent', {
-                            percent: true,
-                            text: '正在解锁钱包，请稍等...'
-                        }
-                    )
-
-                    setTimeout(() => {
-                        let promise = new Promise((resolve => {
-                            this.$funs.loadWallet(this.pwd)
-                            resolve()
-                        }))
-                        promise.then(() => {
-
-                            this.$funs.loadActivWallet()
-                            this.lockModal = false
-                            this.countDown()
-                            this.$store.commit('setCryptPercent', {
-                                    percent: false,
-                                    text: ''
-                                }
-                            )
-                        })
-                    },500)
-                } catch (error) {
-                    this.$message({
-                        message: this.$msg.unlockFailByPwd,
-                        type: 'error'
+                this.unlocking = false;
+                setTimeout(() => {
+                    let promise = this.$funs.verifyWalletPwd(this.pwd);
+                    promise.then((wallet) => {
+                        this.$funs.loadActivWallet()
+                        this.lockModal = false
+                        this.countDown()
+                        this.unlocking = true;
+                        this.$web3.eth.accounts.wallet.myPwd = this.pwd;
+                    }, (err) => {
+                        this.$message({
+                            message: this.$msg.unlockFailByPwd,
+                            type: 'error'
+                        });
+                        this.unlocking = true;
                     })
-                }
+                }, 50);
             },
             countDown() {
                 clearInterval(this.timer)
@@ -97,7 +86,7 @@
                     }
                 }, 1000)
             },
-            lockWallet(){
+            lockWallet() {
                 this.$web3.eth.accounts.wallet.clear()
                 this.lockModal = true
                 this.$store.commit('setLock', true)
@@ -110,7 +99,7 @@
             if (!wallet) {
                 this.lockModal = false
             } else {
-                if(this.$route.name==='createWallet' || this.$route.name==='importWallet'){
+                if (this.$route.name === 'createWallet' || this.$route.name === 'importWallet') {
                     this.$router.replace({name: 'accountInfo'})
                 }
             }
