@@ -171,8 +171,8 @@
             importAcc() {
                 this.$refs.importAcc.importWallet().then((privkey) => {
                     let wallet = this.$web3.eth.accounts.wallet
-                    for (let i = 0; i < wallet.length; i++) {
-                        if (wallet[i].privateKey === privkey) {
+                    for (let key in wallet) {
+                        if (wallet[key].privateKey === privkey) {
                             this.$message({
                                 message: this.$msg.accountExist,
                                 type: 'error'
@@ -216,12 +216,10 @@
             loadAccounts() {
                 let wallet = this.$web3.eth.accounts.wallet
                 this.accounts = []
-                let i = 0
-                for (let key in wallet) { //此处谨慎修改
-                    if (wallet[i]) {
-                        this.accounts.push(wallet[i].address)
+                for (let key in wallet) {
+                    if (wallet[key].address && this.accounts.indexOf(wallet[key].address) === -1) {
+                        this.accounts.push(wallet[key].address)
                     }
-                    i++;
                 }
             },
             getMore() {
@@ -246,15 +244,18 @@
                 let wallet = this.$web3.eth.accounts.wallet
                 if (this.pwd === wallet.myPwd) {
                     wallet.remove(this.accTODelete);
-                    this.loadAccounts();
-                    if (this.accTODelete === this.activeAccount) {
-                        this.activeAccount = this.accounts[0];
-                    }
-                    this.changeAccount();
 
                     this.deleting = false;
                     setTimeout(() => {
                         wallet.save(wallet.myPwd);
+                        // let pwd = wallet.myPwd;
+                        // wallet = this.$funs.loadWallet(pwd);
+                        // wallet.myPwd = pwd;
+                        this.loadAccounts();
+                        if (this.accTODelete === this.activeAccount) {
+                            this.activeAccount = this.accounts[0];
+                        }
+                        this.changeAccount();
                         this.deleteModal = false
                         this.$message({
                             message: this.$msg.deleteSucc,

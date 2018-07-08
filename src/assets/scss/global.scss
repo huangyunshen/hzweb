@@ -392,6 +392,18 @@ input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
             background: #7167C4;
         }
     }
+    .el-select-dropdown__item.selected {
+        background: #6A62A7;
+    }
+    .el-select-dropdown__item.selected.hover {
+        background: #6A62A7;
+    }
+    .el-select-dropdown__item.hover{
+        background: none;
+    }
+    .el-select-dropdown__item:hover{
+        background: #6A62A7;
+    }
 }
 
 @keyframes toggleShowHide {
