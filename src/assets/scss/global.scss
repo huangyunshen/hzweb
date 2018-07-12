@@ -1,17 +1,17 @@
-@charset "utf-8";
+﻿@charset "utf-8";
 
 @import "reset";
 @import "common";
 
 #app {
     height: 100%;
-    min-height: 850px;
+    //min-height: 850px;
     //min-width: 100%;
     //min-width: 1700px;
     background: url("./assets/images/firstScreen/bg.jpg") no-repeat;
     background-size: cover;
     position: relative;
-    overflow: auto;
+    //overflow: auto;
 
     .logoImg {
         position: absolute;
@@ -88,7 +88,7 @@ textarea:read-only {
     background-color: #7a99be;
     color: #182f4a;
     position: relative;
-    left: -70px;
+    left: 0px;
     &:focus {
         border: none;
         background-color: #9DC1F0;
@@ -101,7 +101,7 @@ textarea:read-only {
     background-color: #7a99be;
     color: #182f4a;
     position: relative;
-    left: -70px;
+    left: 0px;
     top: 40px;
 
     &:focus {
@@ -111,31 +111,27 @@ textarea:read-only {
 }
 
 .transaction textarea {
-    height: 300px;
+    min-height: 200px!important;
 }
 
 .finishe-address {
     input {
-        height: 70px;
-        font-size: 24px;
+        height: 60px;
+        font-size: 20px;
     }
     label {
-        line-height: 70px;
+        line-height: 60px;
     }
 }
 
 #app .el-wallet-main-button {
-    width: 50%;
-    height: 64px;
+    width: 100%;
+    height: 50px;
     background-color: #5837ff;
-    font-size: 26px;
-    font-weight: 500;
+    font-size: 24px;
+    //font-weight: 500;
     color: #ffffff;
     border: none;
-    position: relative;
-    left: 150px;
-    top: 20px;
-
     &:hover {
         background-color: #6262FF;
         color: #ffffff;
@@ -403,6 +399,47 @@ input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
     }
     .el-select-dropdown__item:hover{
         background: #6A62A7;
+    }
+}
+
+.el-steps {
+    .el-step__head {
+        border-color:#312C5D;
+        color: #312C5D;
+        .el-step__icon {
+            background: #938BBC;
+        }
+    }
+    .is-finish {
+        border-color:#C1BCEA;
+        color: #C1BCEA;
+    }
+    .is-process, .is-wait {
+        color: #312C5D;
+    }
+}
+
+.el-picker-panel {
+    background: #403A6D;
+    border: 2px solid #403A6D;
+    .el-date-picker__time-header {
+        border-bottom: 1px solid #716AA7;
+    }
+    .el-time-panel {
+        background: #403A6D;
+        border: 1px solid #716AA7;
+    }
+    .el-time-spinner__item:hover:not(.disabled):not(.active) {
+        background: #716AA7;
+    }
+    .el-time-panel__footer {
+        border-top: 1px solid #716AA7;
+    }
+    .el-picker-panel__footer {
+        display: none;
+    }
+    .popper__arrow,.popper__arrow::after {
+        border-top-color:#403A6D!important;
     }
 }
 

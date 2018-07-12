@@ -40,6 +40,10 @@ export default {
                 let reg = /^[1-9]+\d*$/g
                 return n.replace(reg, '')
             },
+            onlyEnterNumIncludeZero(n) {
+                let reg = /^\d*$/g
+                return n.replace(reg, '')
+            },
 
             // linkToFirstScreenRep() {     //转到登录 / replace模式
             //     $router.replace({name: 'importWallet'})
@@ -138,6 +142,7 @@ export default {
             unlockAccount() {
                 return new Promise((resolve, reject) => {
                     WEB3OBJ.eth.personal.unlockAccount(this.getActiveAccount().address, this.getActiveAccountPwd(), (error, res) => {
+                    // WEB3OBJ.eth.personal.unlockAccount(this.getActiveAccount().address, 'hz123456', (error, res) => {
                         // Returned error: no key for given address or file             没有keystore
                         // Returned error: could not decrypt key with given passphrase  密码错误
                         if (error) {
@@ -145,9 +150,9 @@ export default {
                             if (error.message.indexOf('file') !== -1) {
                                 this.uploadKeyStore().then((flag) => {
                                     if (flag) {
-                                        WEB3OBJ.eth.personal.unlockAccount(this.getActiveAccount().address, this.getActiveAccountPwd(), (error, res) => {
-                                            resolve(res)
-                                            reject(error)
+                                        WEB3OBJ.eth.personal.unlockAccount(this.getActiveAccount().address, this.getActiveAccountPwd(), (err, data) => {
+                                            resolve(err)
+                                            reject(data)
                                         })
                                     }
                                 })
@@ -192,6 +197,97 @@ export default {
                         callback(balance)
                 })
             },
+            getV3Filename(address) {
+                let ts = new Date()
+                // return ['UTC--', ts.toJSON().replace(/:/g, '-'), '--', address.toString('hex')].join('')
+                return ['FOF-Wallet-', ts.toJSON().slice(0,11), ts.toTimeString().slice(0,8).replace(/:/g,"-")].join('')
+            },
+            getBlob(mime, str) {
+                str = (typeof str === 'object') ? JSON.stringify(str) : str
+                if (str == null) return ''
+                let blob = new Blob([str], {
+                    type: mime
+                })
+                return window.URL.createObjectURL(blob)
+            },
+            //上传部署成功的合约信息
+            uploadContractIns(type, user, receipt) {
+                axios.post('/api/addContract.php', {
+                    "type": type,
+                    "contractAddr": receipt.contractAddress,
+                    "createAddr": user,
+                    "createMoney": 0,
+                    "txHash": receipt.transactionHash
+                }).then((res) => {
+                    if (res.status === 200) {
+                    }
+                }).catch((error) => {
+
+                })
+            },
+            //上传交易信息
+            uploadTxData(type, receipt) {
+                axios.post('/api/addTx.php', {
+                    "type": type,
+                    "sendAddr": receipt.from,
+                    "revAddr": receipt.to,
+                    "txHash": receipt.transactionHash,
+                    "blockNum": receipt.blockNumber,
+                    "amount": "0"
+                }).then((res) => {
+                    if (res.status === 200) {
+                    }
+                }).catch((error) => {
+
+                })
+            },
+            magrationContract(type, user, contract, sol, args = []) {//部署类型，账户地址，合约json，合约源文件，部署参数
+                return new Promise((resolve => {
+                    WEB3OBJ.eth.estimateGas({data: contract.bytecode}).then((gas) => {
+                        new WEB3OBJ.eth.Contract(contract.abi)
+                            .deploy({
+                                data: contract.bytecode,
+                                arguments: args
+                            })
+                            .send({
+                                from: user,
+                                datasourcecode: WEB3OBJ.utils.toHex(sol), // 传入sol源码
+                                gas: gas * 2,
+                                txType: 0,
+                            })
+                            .on('error', (err) => {
+                                $store.commit('setCryptPercent', {percent: false, text: ''})
+                                reject(err.message)
+                            })
+                            .on('receipt', (receipt) => {
+                                this.uploadContractIns(type, user, receipt);
+                                this.uploadTxData("1", receipt);
+                            })
+                            .then((contractIns) => {
+                                resolve(contractIns)
+                            })
+                    })
+                }))
+            },
+            rechargeToContract(instance, user, value) {      //转账到合约
+                return new Promise((resolve, reject) => {
+                    instance.methods.deposit()
+                        .send({
+                            from: user,
+                            value: WEB3OBJ.utils.toWei(value, 'ether'),
+                            gas: 210000,
+                            txType: 0,
+                        })
+                        .on('error', (err) => {
+                            $store.commit('setCryptPercent', {percent: false, text: ''})
+                            reject(err)
+                        })
+                        .on('receipt', (receipt) => {
+                            $store.commit('setCryptPercent', {percent: false, text: ''})
+                            resolve(receipt)
+                        })
+                })
+            }
         }
     }
 }

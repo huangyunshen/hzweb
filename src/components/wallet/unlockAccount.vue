@@ -1,16 +1,16 @@
 <template>
     <div>
         <el-form
-                label-width="140px"
-                label-position="right"
-                @submit.native.prevent>
+            label-width="140px"
+            label-position="left"
+            @submit.native.prevent>
 
-            <el-form-item class="el-wallet-style" label="导入方式">
-                <div class="wallet-decrypt-type no-select-text">
+            <el-form-item class="el-wallet-style">
+                <div class="wallet-decrypt-type no-select-text" style="position: relative;left:-70px;">
                     <!--<span class="wallet-decrypt-item" :class="{active:form.decryptType==='4'}">-->
-                          <!--@click="selectDecryptType('4')" v-show="hasWalletCom">
-                        <i class="wallet-decrypt-type-icon icon3" :class="{'icon3-active':form.decryptType==='4'}"></i>
-                        钱包文件-->
+                    <!--@click="selectDecryptType('4')" v-show="hasWalletCom">
+                  <i class="wallet-decrypt-type-icon icon3" :class="{'icon3-active':form.decryptType==='4'}"></i>
+                  钱包文件-->
                     <!--</span>-->
                     <span class="wallet-decrypt-item" :class="{active:form.decryptType==='1'}"
                           @click="selectDecryptType('1')" v-show="!hasWalletCom">
@@ -31,7 +31,7 @@
                 <!--<p>{{decryptInfo}}</p>-->
             </el-form-item>
 
-            <div v-show="!hasWalletCom && form.decryptType==='1'">
+            <div v-show="!hasWalletCom && form.decryptType==='1'" style="position: relative;left:-70px;">
                 <el-form-item class="el-wallet-style mt-40">
                     <el-input class="el-wallet-account-input"
                               v-model="form.privateKey"
@@ -41,8 +41,8 @@
                 </el-form-item>
             </div>
 
-            <div v-show="!hasWalletCom && form.decryptType==='2'">
-                <el-form-item class="el-wallet-style mt-40" >
+            <div v-show="!hasWalletCom && form.decryptType==='2'" style="position: relative;left:-70px;">
+                <el-form-item class="el-wallet-style mt-40">
                     <input id="fileUpload1" type="file" style="display:none" @change="uploadFile1">
                     <el-button class="choose-file-btn" @click="selectFile1">选择账户文件...</el-button>
                 </el-form-item>
@@ -57,8 +57,8 @@
                 </el-form-item>
             </div>
 
-            <div v-show="!hasWalletCom && form.decryptType==='3'">
-                <el-form-item class="el-wallet-style mt-40">
+            <div v-show="!hasWalletCom && form.decryptType==='3'" style="position: relative;left:-70px;">
+                <el-form-item class="el-wallet-style">
                     <el-input class="el-wallet-account-input"
                               v-model="form.mnemonic"
                               type="textarea"
@@ -70,12 +70,12 @@
             </div>
 
             <div v-show="hasWalletCom && form.decryptType==='4'">
-                <el-form-item class="el-wallet-style mt-40">
+                <el-form-item class="el-wallet-style mt-40" label="选择文件：">
                     <input id="fileUpload2" type="file" style="display:none" @change="uploadFile2">
                     <el-button class="choose-file-btn" @click="selectFile2">选择钱包文件...</el-button>
                 </el-form-item>
 
-                <el-form-item class="el-wallet-style mt-40">
+                <el-form-item class="el-wallet-style mt-40" label="输入密码：">
                     <el-input class="el-wallet-input"
                               v-model="form.pwd"
                               type="password"
@@ -123,7 +123,7 @@
                 return new Promise((resolve, reject) => {
                     if (this.form.decryptType === '1') {          //私钥
                         try {
-                            if ( this.form.privateKey && this.form.privateKey.indexOf('0x') === -1) this.form.privateKey = '0x' + this.form.privateKey
+                            if (this.form.privateKey && this.form.privateKey.indexOf('0x') === -1) this.form.privateKey = '0x' + this.form.privateKey
                             if (this.form.privateKey.length !== 66) {
                                 this.$message({
                                     message: this.$msg.invalidPrivateKey,
@@ -233,25 +233,38 @@
                             reject(false)
                             return
                         }
-                        try {
-                            let wallet = this.$web3.eth.accounts.wallet
-                            wallet.decrypt(this.form.fileContent, this.form.pwd)
-                            wallet.save(this.form.pwd)
-                            this.$funs.setActiveAccount(wallet[0].address || wallet[1].address || wallet[2].address || wallet[3].address || wallet[4].address)
-                            this.$store.commit('setCryptPercent', {
-                                    percent: false,
-                                    text: ''
-                                }
-                            )
-                            resolve()
-                        } catch (err) {
-                            this.form.pwd = ''
-                            this.$message({
-                                message: this.$msg.unlockFailByPwd,
-                                type: 'error'
-                            })
-                            reject(false)
-                        }
+                        this.$store.commit('setCryptPercent', {
+                                percent: true,
+                                text: '正在导入账户，请稍等...'
+                            }
+                        )
+                        setTimeout(() => {
+                            try {
+                                let wallet = this.$web3.eth.accounts.wallet
+                                wallet.decrypt(this.form.fileContent, this.form.pwd)
+                                wallet.myPwd = this.form.pwd
+                                wallet.save(this.form.pwd)
+                                this.$funs.setActiveAccount(wallet[0].address || wallet[1].address || wallet[2].address || wallet[3].address || wallet[4].address)
+                                this.$store.commit('setCryptPercent', {
+                                        percent: false,
+                                        text: ''
+                                    }
+                                )
+                                resolve()
+                            } catch (err) {
+                                this.form.pwd = ''
+                                this.$store.commit('setCryptPercent', {
+                                        percent: false,
+                                        text: ''
+                                    }
+                                )
+                                this.$message({
+                                    message: this.$msg.unlockFailByPwd,
+                                    type: 'error'
+                                })
+                                reject(false)
+                            }
+                        }, 430)
                     }
                 })
             },
@@ -421,9 +434,9 @@
             border-style: solid;
             border-width: 1px;
             border-image-source: linear-gradient(-16deg,
-                    #3410f7 0%,
-                    #711bdc 59%,
-                    #ad25c0 100%);
+                #3410f7 0%,
+                #711bdc 59%,
+                #ad25c0 100%);
             border-image-slice: 1;
         }
     }
@@ -444,7 +457,7 @@
         font-size: 18px;
         color: #ffffff;
         position: relative;
-        left:-70px;
+        left: -0px;
     }
 
     .fileUploadTip {

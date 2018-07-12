@@ -1,181 +1,166 @@
 <template>
     <div class="transaction">
-        <div class="tranc-header no-select-text">
-            <p :class="{'header-active':steps==='1'}">生成交易</p>
-            <span></span>
-            <!--<p :class="{'header-active':steps==='2'}">解锁钱包</p>-->
-            <!--<span></span>-->
-            <p :class="{'header-active':steps==='3'}">签名信息</p>
-            <span></span>
-            <p :class="{'header-active':steps==='4'}">确认交易</p>
-            <span></span>
-            <p :class="{'header-active':steps==='5'}">交易完成</p>
-        </div>
-
-        <div class="tranc-body">
+        <div class="tranc-content">
+            <el-steps :active="Number(steps)" align-center class="tranc-header">
+                <el-step title="交易内容"></el-step>
+                <el-step title="签名信息"></el-step>
+                <el-step title="确认交易"></el-step>
+                <el-step title="交易完成"></el-step>
+            </el-steps>
+            <div class="middle-line">
+                <p></p>
+            </div>
             <!--step-1-->
             <transition name="fof-fade">
                 <div class="step-1" v-show="steps==='1'">
-                    <!--<div class="step-1-head">
-                        <div class="tranc-balance"><i></i>账户余额 : {{$store.state.balance | amountUnit}}</div>
-                        <div class="tranc-address"><i></i>账户地址 : {{$store.state.address}}</div>
-                    </div>-->
                     <div class="step-1-body">
                         <el-form ref="form" :model="form" label-position="left" label-width="150px">
                             <el-form-item class="mt-40" label="对方账户">
                                 <el-input
-                                        v-model="form.to"
+                                    v-model="form.to"
                                 ></el-input>
                             </el-form-item>
                             <el-form-item class="mt-40" label="转账金额">
                                 <el-input
-                                        placeholder="金额"
-                                        v-model="form.value">
+                                    placeholder="金额"
+                                    v-model="form.value">
                                     <template slot="append">FOF</template>
                                 </el-input>
                             </el-form-item>
                             <el-form-item class="mt-40" label="Gas Limit">
                                 <el-input
-                                        v-model="form.gas"
-                                        value="21000"
-                                        placeholder="21000"></el-input>
+                                    v-model="form.gas"
+                                    value="21000"
+                                    placeholder="21000"></el-input>
                             </el-form-item>
                         </el-form>
                     </div>
-                    <div class="step-1-footer">
-                        <el-button class="el-wallet-main-button mt-50" @click="typePwd">生成交易</el-button>
-                    </div>
                 </div>
             </transition>
-            <!--step-2-->
-            <!--<transition name="fof-fade">-->
-            <!--<div class="step-2" v-show="steps==='2'">-->
-            <!--<unlock-account ref="unlock" isTranc="isTranc"></unlock-account>-->
-
-            <!--<el-row :gutter="40">-->
-            <!--<el-col :span="12">-->
-            <!--<el-button class="el-wallet-main-button mt-50" @click="steps = '1'">上一步</el-button>-->
-            <!--</el-col>-->
-            <!--<el-col :span="12">-->
-            <!--<el-button class="el-wallet-main-button mt-50" @click=".importAccount">解锁钱包</el-button>-->
-            <!--</el-col>-->
-            <!--</el-row>-->
-            <!--</div>-->
-            <!--</transition>-->
-            <!--step3-->
             <transition name="fof-fade">
-                <div class="step-3" v-show="steps==='3'">
-                    <div class="step-3-content">
-                        <el-form label-position="top" class="emitTransaction">
-                            <el-form-item label="未生效交易" class="el-wallet-style">
-                                <el-input
+                <div class="step-2" v-show="steps==='2'">
+                    <div class="step-2-content">
+                        <div class="sined-textarea">
+                            <el-form label-position="top">
+                                <el-form-item label="未生效交易" class="el-wallet-style">
+                                    <el-input
                                         type="textarea"
                                         resize="none"
                                         readonly
                                         :value="transactionData"></el-input>
-                            </el-form-item>
-                        </el-form>
-                        <el-form label-position="top" class="emitTransaction">
-                            <el-form-item label="签名交易">
-                                <el-input
+                                </el-form-item>
+                            </el-form>
+                        </div>
+                        <div class="sined-textarea">
+                            <el-form label-position="top">
+                                <el-form-item label="签名交易">
+                                    <el-input
                                         type="textarea"
                                         resize="none"
                                         readonly
                                         :value="transactionSign"></el-input>
-                            </el-form-item>
-                        </el-form>
-                    </div>
-                    <div class="step-3-footer">
-                        <el-row :gutter="40">
-                            <el-col :span="12">
-                                <el-button class="el-wallet-main-button mt-50" @click="steps = '1'">上一步</el-button>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-button class="el-wallet-main-button mt-50" @click="emitTransaction">确认签名</el-button>
-                            </el-col>
-                        </el-row>
+                                </el-form-item>
+                            </el-form>
+                        </div>
                     </div>
                 </div>
             </transition>
             <!--step4-->
             <transition name="fof-fade">
-                <div class="step-4" v-show="steps==='4'">
-                    <ul class="transactionMsg">
-                        <li>
-                            <span>To Address:</span>
-                            <b>{{ transactionMsg.to }}</b>
-                        </li>
-                        <li>
-                            <span>From Address:</span>
-                            <b>{{ transactionMsg.from }}</b>
-                        </li>
-                        <li>
-                            <span>Amount to Send:</span>
-                            <b>{{ transactionMsg.value }}</b>
-                        </li>
-                        <li>
-                            <span>Account Balance:</span>
-                            <b>{{ transactionMsg.balance }}</b>
-                        </li>
-                        <li>
-                            <span>Coin:</span>
-                            <b>{{ transactionMsg.coin }}</b>
-                        </li>
-                        <!--<li>-->
-                        <!--<span>Network:</span>-->
-                        <!--<b>{{ transactionMsg.network }}</b>-->
-                        <!--</li>-->
-                        <li>
-                            <span>Gas Limit:</span>
-                            <b>{{ transactionMsg.gasLimit }}</b>
-                        </li>
-                        <li>
-                            <span>Gas Price:</span>
-                            <b>{{ transactionMsg.gasPrice }}</b>
-                        </li>
-                        <li>
-                            <span>Max TX Fee:</span>
-                            <b>{{ transactionMsg.maxTXFee }}</b>
-                        </li>
-                        <li>
-                            <span>Nonce:</span>
-                            <b>{{ transactionMsg.nonce }}</b>
-                        </li>
-                        <li>
-                            <span>Data:</span>
-                            <b>{{ transactionMsg.data }}</b>
-                        </li>
-                    </ul>
-                    <div class="tc">
-                        你将发送
-                        <span>{{ form.value | amountUnit}}</span>
-                        到地址
-                        <span>{{ form.to }}</span>
-                        <span>，请确认</span>
-                    </div>
-                    <div class="step-4-footer">
-                        <el-button class="abandon" @click="abandon">放弃</el-button>
-                        <el-button class="submit el-wallet-main-button" @click="confirmTransaction">发送交易</el-button>
+                <div class="step-3" v-show="steps==='3'">
+                    <div class="transaction-msg">
+                        <ul>
+                            <li>
+                                <span>To Address:</span>
+                                <b>{{ transactionMsg.to }}</b>
+                            </li>
+                            <li>
+                                <span>From Address:</span>
+                                <b>{{ transactionMsg.from }}</b>
+                            </li>
+                            <li>
+                                <span>Amount to Send:</span>
+                                <b>{{ transactionMsg.value | amountUnit}}</b>
+                            </li>
+                            <li>
+                                <span>Account Balance:</span>
+                                <b>{{ transactionMsg.balance | amountUnit}}</b>
+                            </li>
+                            <li>
+                                <span>Coin:</span>
+                                <b>{{ transactionMsg.coin}}</b>
+                            </li>
+                            <!--<li>-->
+                            <!--<span>Network:</span>-->
+                            <!--<b>{{ transactionMsg.network }}</b>-->
+                            <!--</li>-->
+                            <li>
+                                <span>Gas Limit:</span>
+                                <b>{{ transactionMsg.gasLimit }}</b>
+                            </li>
+                            <li>
+                                <span>Gas Price:</span>
+                                <b>{{ transactionMsg.gasPrice }}</b>
+                            </li>
+                            <li>
+                                <span>Max TX Fee:</span>
+                                <b>{{ transactionMsg.maxTXFee }}</b>
+                            </li>
+                            <li>
+                                <span>Nonce:</span>
+                                <b>{{ transactionMsg.nonce }}</b>
+                            </li>
+                            <li>
+                                <span>Data:</span>
+                                <b>{{ transactionMsg.data }}</b>
+                            </li>
+                        </ul>
+                        <div class="tc">
+                            你将发送
+                            <span>{{ form.value | amountUnit}}</span>
+                            到地址
+                            <span>{{ form.to }}</span>
+                            <span>，请确认</span>
+                        </div>
                     </div>
                 </div>
             </transition>
             <!--step5-->
             <transition name="fof-fade">
-                <div class="step-5" v-show="steps==='5'">
-                    <div class="step-5-body">
-                        <el-form label-position="top" class="emitTransaction">
+                <div class="step-4" v-show="steps==='4'">
+                    <div class="step-4-body">
+                        <el-form label-position="top">
                             <el-form-item label="交易Hash" class="el-wallet-style">
                                 <el-input
-                                        readonly
-                                        :value="transactionHash"></el-input>
+                                    readonly
+                                    :value="transactionHash"></el-input>
                             </el-form-item>
                         </el-form>
                     </div>
-                    <div class="step-5-footer">
-                        <el-button class="el-wallet-main-button mt-50" @click="finished">完成</el-button>
-                    </div>
                 </div>
             </transition>
+        </div>
+
+        <div class="middle-line">
+            <p></p>
+        </div>
+        <div class="trade-btn">
+            <div class="step-btn" v-show="steps==='1'">
+                <el-button @click="typePwd">生成交易</el-button>
+            </div>
+            <div class="step-btn" v-show="steps==='2'">
+                <el-row :gutter="40">
+                    <el-button class="abandon" @click="steps = '1'">上一步</el-button>
+                    <el-button @click="emitTransaction">确认签名</el-button>
+                </el-row>
+            </div>
+            <div class="step-btn" v-show="steps==='3'">
+                <el-button class="abandon" @click="abandon">放弃</el-button>
+                <el-button @click="confirmTransaction">发送交易</el-button>
+            </div>
+            <div class="step-btn" v-show="steps==='4'">
+                <el-button @click="finished">完成</el-button>
+            </div>
         </div>
     </div>
 </template>
@@ -253,27 +238,31 @@
                     return
                 }
                 this.getSignMsg().then(() => {
-                    this.steps = '3'
+                    this.steps = '2'
                 })
             },
             /**
              * 点击 发送交易
              */
             emitTransaction() {
-                this.transactionMsg = {
-                    from: this.$store.state.address,
-                    to: this.form.to,
-                    value: this.form.value + ' FOF',
-                    balance: this.$store.state.balance,
-                    coin: this.unit,
-                    network: '',
-                    gasLimit: this.form.gas,
-                    gasPrice: this.$store.state.gasPrice + ' Gwei',
-                    maxTXFee: this.form.gas * this.$store.state.gasPrice + ' Gwei',
-                    nonce: this.$web3.eth.getTransactionCount(this.$store.state.address),
-                    data: ''
-                }
-                this.steps = '4'
+                this.$web3.eth.getTransactionCount(this.$store.state.address).then((nonce) => {
+
+                    this.transactionMsg = {
+                        from: this.$store.state.address,
+                        to: this.form.to,
+                        value: this.form.value,
+                        balance: this.$store.state.balance,
+                        coin: this.unit,
+                        network: '',
+                        gasLimit: this.form.gas,
+                        gasPrice: this.$store.state.gasPrice + ' Gwei',
+                        maxTXFee: this.form.gas * this.$store.state.gasPrice + ' Gwei',
+                        nonce: nonce,
+                        data: ''
+                    }
+                    console.log(this.transactionMsg);
+                    this.steps = '3'
+                })
             },
             abandon() {
                 this.steps = '1'
@@ -301,7 +290,7 @@
                     })
                     .then((receipt) => {
                         this.transactionHash = receipt.transactionHash
-                        this.steps = '5'
+                        this.steps = '4'
                         this.$store.commit('setCryptPercent', {
                                 percent: false,
                                 text: ''
@@ -348,10 +337,10 @@
                         }
                         this.transactionData = JSON.stringify(rawTx)
                         this.$web3.eth.accounts.signTransaction(rawTx, this.$funs.getActiveAccount().privateKey, (err, data) => {
-                            if(err){
+                            if (err) {
                                 this.$message.error(String(err))
-                            }else {
-                                if(data){
+                            } else {
+                                if (data) {
                                     this.transactionSign = data.rawTransaction
                                 }
                             }
@@ -391,159 +380,118 @@
     $content_color: #8abdec;
 
     .transaction {
-        .tranc-header {
-            display: flex;
-            text-align: center;
-            p {
-                flex-grow: 1;
-                line-height: 70px;
-                background-color: #221D44;
-                box-shadow: 1px 0 0 0 #272345;
-                font-size: 15px;
-                color: #d3ceff;
+        height: 100%;
 
-            }
-            .header-active {
-                line-height: 68px;
-                border-bottom-style: solid;
-                border-bottom-width: 2px;
-                border-image-source: linear-gradient(105deg,
-                        #3410f7 0%,
-                        #711bdc 59%,
-                        #ad25c0 100%);
-                border-image-slice: 1;
-                background-color: #3a346a;
-            }
-            span {
-                display: inline-block;
-                height: 70px;
-                border-right: 2px solid #272345;
+        .middle-line {
+            padding: 0 5%;
+            p {
+                border-bottom: 1px solid #28234D;
             }
         }
-
-        .tranc-body {
-            padding: 20px 90px;
+        .tranc-content {
             font-size: 20px;
+            height: calc(100% - 100px);
+            overflow-y: auto;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
 
+            .tranc-header {
+                margin: 20px 0;
+            }
             .step-1 {
-
-                .step-1-head {
-                    padding: 20px 0;
-                    line-height: 60px;
-                    color: #8490c5;
-                    i {
-                        display: inline-block;
-                        height: 30px;
-                        width: 30px;
-                        margin-right: 10px;
-                        margin-left: 50px;
-                        vertical-align: text-top;
-                    }
-                    .tranc-balance {
-                        display: inline-block;
-                        i {
-                            background: url("../../assets/images/transaction/icon_zz_zhye.png") no-repeat;
-                        }
-                    }
-                    .tranc-address {
-                        display: inline-block;
-                        i {
-                            background: url("../../assets/images/transaction/icon_zz_zhdz.png") no-repeat;
-                        }
-                    }
-                }
+                min-height: calc(100% - 100px);
+                display: flex;
+                justify-content: center;
+                align-items: center;
                 .step-1-body {
-                    border-top: 1px solid #28234D;
-                    border-bottom: 1px solid #28234D;
-                    padding-bottom: 20px;
                     .el-form {
-
                         width: 850px;
                         margin: 0 auto;
                     }
                 }
-                .step-1-footer {
-                    width: 850px;
-                    margin: 0 auto;
-                }
             }
             .step-2 {
-                width: 850px;
-                margin: 50px auto 0;
-            }
-        }
-
-        /*.el-select .el-input {*/
-        /*width: 130px;*/
-        /*}*/
-        .step-3 {
-            .step-3-content {
+                min-height: calc(100% - 100px);
                 display: flex;
-                padding: 30px 0 20px 0;
-                border-bottom: 1px solid #28234D;
-                justify-content: space-around;
-                .emitTransaction {
-                    width: 40%;
-                }
-            }
-            .step-3-footer {
-                width: 850px;
-                margin: 0 auto;
-            }
-        }
-        .step-4 {
-            .transactionMsg {
-                margin: 0 auto;
-                li {
-                    line-height: 40px;
-                    span {
-                        color: $title_color;
-                        display: inline-block;
-                        width: 300px;
-                        text-align: right;
-                    }
-                    b {
-                        color: $content_color;
+                justify-content: center;
+                align-items: center;
+                .step-2-content {
+                    width: 100%;
+                    .sined-textarea {
+                        float: left;
+                        width: 40%;
+                        margin-left: 7%;
                     }
                 }
             }
-            .tc {
-                border-bottom: 1px solid #28234D;
-                padding-top: 20px;
-                padding-bottom: 30px;
-                color: #f39eff;
+            .step-3 {
+                min-height: calc(100% - 100px);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                .transaction-msg {
+                    li {
+                        line-height: 35px;
+                        span {
+                            color: $title_color;
+                            display: inline-block;
+                            width: 30%;
+                            text-align: right;
+                        }
+                        b {
+                            color: $content_color;
+                        }
+                    }
+                }
+                .tc {
+                    padding: 20px 0;
+                    color: #f39eff;
+                }
             }
-            .step-4-footer {
+            .step-4 {
+                min-height: calc(100% - 100px);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                .step-4-body {
+                    width: 80%;
+                    margin: 0 auto;
+                    .el-form {
+                        margin: 0 30px;
+                    }
+                }
+            }
+        }
+        .trade-btn {
+            height: 60px;
+            padding: 20px 0;
+            .step-btn {
                 width: 850px;
                 margin: 0 auto;
-                display: flex;
-                justify-content: space-between;
-                .abandon {
-                    width: 300px;
-                    height: 64px;
-                    margin-top: 15px;
-                    border: solid 1px #443e67;
+                text-align: center;
+                .el-button {
+                    width: 350px;
+                    height: 60px;
+                    background-color: #5837ff;
                     font-size: 26px;
+                    font-weight: 500;
+                    color: #ffffff;
+                    border: none;
+                    &:hover {
+                        background-color: #6262FF;
+                        color: #ffffff;
+                    }
+                    &:disabled {
+                        background: #9386CE;
+                    }
+                }
+                .abandon {
+                    width: 250px;
+                    border: solid 1px #443e67;
                     color: #7e78a5;
                     background: none;
                 }
-                .submit {
-                    margin-top: 15px;
-                    width: 500px !important;
-                }
-            }
-        }
-        .step-5 {
-            .step-5-body {
-                .el-form {
-                    margin: 50px;
-                    height: 300px;
-                }
-                border-bottom: 1px solid #28234D;
-            }
-            .step-5-footer {
-                width: 850px;
-                margin: 0 auto;
             }
         }
     }

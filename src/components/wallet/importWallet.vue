@@ -28,7 +28,7 @@
                         message: this.$msg.importSucc,
                         type: 'success'
                     })
-                    this.$router.replace({name: 'accountInfo', params: {loadAcc: true}})
+                    this.$router.replace({name: 'assetManage', params: {loadAcc: true}})
                     this.$funs.loadActivWallet()
                 }, (err) => {
                 });
@@ -55,10 +55,10 @@
         padding-right: 0px;
         position: relative;
         bottom: -30px;
-        left: -255px;
+        left: 0px;
         font-size: 24px;
         a{
-            color: greenyellow;
+            color: white;
             text-decoration: underline;
             &:hover{
                 color: #2A9CE7;

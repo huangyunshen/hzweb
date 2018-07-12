@@ -38,7 +38,7 @@
 
 <style lang="scss" type="text/scss" scoped>
     .asset-manage {
-        height: 80%;
+        height: 100%;
     }
 
     .tranc-header {
@@ -74,6 +74,6 @@
 
     .asset-content {
         border: 1px solid #322D5D;
-        height: 100%;
+        height: calc(100% - 70px);
     }
 </style>

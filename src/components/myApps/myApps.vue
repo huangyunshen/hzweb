@@ -94,9 +94,9 @@
 <style lang="scss" type="text/scss" scoped>
     .my-apps {
         height: 100%;
-        overflow: auto;
+        overflow-y: auto;
         .app-info {
-            height: 85%;
+            height: calc(100% - 60px);
             ul {
                 width: 100%;
                 li {
@@ -108,6 +108,10 @@
                     }
                 }
             }
+        }
+        .tc {
+            height: 32px;
+            padding: 14px;
         }
     }
 </style>

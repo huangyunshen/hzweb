@@ -5,16 +5,18 @@
             <el-button size="mini" class="mini">赛事</el-button>
             <el-button size="mini" class="mini">棋牌</el-button>
             <el-button size="mini" class="mini">博彩</el-button>
-            <el-input placeholder="输入应用地址或者创建人地址查找" style="width: 40%;margin-left: calc(100% - 900px)">
-                <el-button slot="append" icon="el-icon-search"></el-button>
-            </el-input>
+            <div class="search-app">
+                <el-input placeholder="输入应用地址或者创建人地址查找">
+                    <el-button slot="append" icon="el-icon-search"></el-button>
+                </el-input>
+            </div>
         </div>
         <el-row class="row-content">
             <el-col style="padding: 0 15px;"
                     :span="12"
                     v-for="(item,index) in appList"
                     :key="index">
-                <a :href="host + item.contractAddr" target="_blank">
+                <a :href="getUrl(item)" target="_blank">
                     <div class="panel">
                         <el-row>
                             <el-col :span="5">
@@ -49,11 +51,11 @@
         </el-row>
         <div class="pagination">
             <el-pagination
-                    background
-                    layout="prev, pager, next"
-                    :page-size="pageSize"
-                    @current-change="sendMsgToServer"
-                    :total="totalNum">
+                background
+                layout="prev, pager, next"
+                :page-size="pageSize"
+                @current-change="sendMsgToServer"
+                :total="totalNum">
             </el-pagination>
         </div>
     </div>
@@ -71,7 +73,6 @@
             return {
                 appList: [],
                 blankHref: '',
-                host: '',
                 pageSize: 6,
                 totalNum: 0,
             }
@@ -106,10 +107,17 @@
                     }, 3000)
                 })
             },
+            getUrl(item) {
+                switch (item.type) {
+                    case "1":
+                        return 'http://39.104.81.103:8891?' + item.contractAddr;
+                    case "2":
+                        return 'http://39.104.81.103:8892?' + item.contractAddr
+                }
+            }
         },
         mounted() {
             this.sendMsgToServer(1)
-            this.host = 'http://' + location.host + '/#/appDetail?'
         }
     }
 </script>
@@ -118,13 +126,16 @@
 <style lang="scss" type="text/scss" scoped>
     .app-list {
         height: 100%;
-        padding: 1%;
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
-        .btn-list{
-            padding: 0 10px 10px 10px;
-            white-space: nowrap;
+        /*padding: 1%;*/
+        /*-webkit-box-sizing: border-box;*/
+        /*-moz-box-sizing: border-box;*/
+        /*box-sizing: border-box;*/
+        .btn-list {
+            height: 44px;
+            text-align: center;
+            margin: 0 16px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #28234D;
             .mini {
                 height: 28px;
                 margin-right: 30px;
@@ -138,10 +149,15 @@
                     border-color: #726bab;
                 }
             }
+            .search-app {
+                display: inline-block;
+                width: 50%;
+            }
         }
         .row-content {
             max-height: calc(100% - 100px);
             overflow-y: auto;
+            padding-top: 20px;
             .el-col {
                 padding: 0 5px;
                 .panel {
@@ -177,9 +193,9 @@
             }
         }
         .pagination {
-            margin: 0 15px;
-            margin-top: 10px;
-            padding-top: 20px;
+            height: 32px;
+            margin: 0 16px;
+            padding-top: 14px;
             border-top: 1px solid #28234D;
             .el-pagination {
                 text-align: center;

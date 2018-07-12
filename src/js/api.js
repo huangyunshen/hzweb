@@ -4,7 +4,7 @@ const PRODUCT = 'http://39.104.81.103'
 const TEST = 'http://120.79.88.105'
 const LOCAL = '/url'
 
-const HOST = LOCAL
+const HOST = PRODUCT
 
 axios.defaults.baseURL = HOST
 

@@ -1,0 +1,28 @@
+/*
+游戏配置通用样式
+ */
+.game-config {
+    padding-top: 20px;
+    .explain {
+        border-top: solid 1px #28234D;
+        margin-top: 20px;
+    }
+}
+
+/*
+游戏规则样式
+ */
+.rule-content {
+    background: #1c173e;
+    padding: 10px;
+    h3 {
+        line-height: 50px;
+    }
+    h4 {
+        line-height: 40px;
+    }
+    p {
+        line-height: 30px;
+    }
+
+}

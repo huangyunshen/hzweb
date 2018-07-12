@@ -2,7 +2,7 @@
     <div class="content">
         <div class="content-body">
             <section class="wrapper">
-                <p class="strong mb">尊敬的用户111：</p>
+                <p class="strong mb">尊敬的用户：</p>
 
                 <p class="strong mb">感谢您选择FOF服务。《FOF服务协议》（以下简称“本协议”）由FOF基金会（以下简称“基金会”或“我们”）和用户（以下简称“您”或“用户”）签订，本协议在您与FOF基金会之间具有合同上的法律效力。</p>
                 <p class="strong mb">FOF基金会在此特别提醒您在使用FOF（以下简称“FOF” 或“本软件”）之前，请认真阅读《FOF服务协议》及后文提到的相关协议，尤其是本协议规定的“免责及责任限制”等条款将以加粗的形式体现，确保您充分理解本协议中各条款，并自主考虑风险。</p>

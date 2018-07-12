@@ -87,7 +87,7 @@
                 }, 1000)
             },
             lockWallet() {
-                this.$web3.eth.accounts.wallet.clear()
+                this.$web3.eth.accounts.wallet.clear().myPwd = null
                 this.lockModal = true
                 this.$store.commit('setLock', true)
                 this.$store.commit('setBalance', 0)
@@ -100,7 +100,7 @@
                 this.lockModal = false
             } else {
                 if (this.$route.name === 'createWallet' || this.$route.name === 'importWallet') {
-                    this.$router.replace({name: 'accountInfo'})
+                    this.$router.replace({name: 'assetManage'})
                 }
             }
             if (wallet && !this.$store.state.isLock) {

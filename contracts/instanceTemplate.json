@@ -1,0 +1,84 @@
+{
+    "abi":[
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "creator",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_coin",
+                    "type": "uint256"
+                }
+            ],
+            "name": "drawings",
+            "outputs": [],
+            "payable": true,
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "gameType",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [],
+            "name": "deposit",
+            "outputs": [],
+            "payable": true,
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "creationTime",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "historyTotalCoins",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }
+    ],
+    "bytecode":"0x608060405233600160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550600060035534801561005657600080fd5b506101e8806100666000396000f300608060405260043610610078576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806302d05d3f1461007d5780630366fc49146100d4578063bbdc02db146100f4578063d0e30db01461011f578063d8270dce14610129578063dd6e46cf14610154575b600080fd5b34801561008957600080fd5b5061009261017f565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6100f2600480360381019080803590602001909291905050506101a5565b005b34801561010057600080fd5b506101096101a8565b6040518082815260200191505060405180910390f35b6101276101ae565b005b34801561013557600080fd5b5061013e6101b0565b6040518082815260200191505060405180910390f35b34801561016057600080fd5b506101696101b6565b6040518082815260200191505060405180910390f35b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b50565b60005481565b565b60025481565b600354815600a165627a7a723058207b137c868bbcf68197a3f60e57348046d8a47bbb6a069349e4f48bf57ac222180029"
+}

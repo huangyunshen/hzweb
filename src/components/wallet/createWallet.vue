@@ -1,11 +1,11 @@
 <template>
     <div class="create-wallet">
         <el-form
-                label-width="150px"
+                label-width="140px"
                 label-position="left"
                 @submit.native.prevent>
 
-            <el-form-item class="el-wallet-style" prop="pwd">
+            <el-form-item class="el-wallet-style" prop="pwd" label="输入密码：">
                 <el-input class="el-wallet-input"
                           type="password"
                           v-model="formRulesCreate.pwd"
@@ -15,11 +15,11 @@
             </el-form-item>
         </el-form>
         <el-form class="mt-50"
-                 label-width="150px"
+                 label-width="140px"
                  label-position="left"
                  @submit.native.prevent>
 
-            <el-form-item class="el-wallet-style"  prop="pwd">
+            <el-form-item class="el-wallet-style"  prop="pwd" label="确认密码：">
                 <el-input class="el-wallet-input"
                           type="password"
                           v-model="formRulesCreate.confirmPwd"
@@ -81,7 +81,7 @@
             <div class="wallet-dialog-footer">
                 <p>千万不要弄丢它！因为它是无法恢复的</p>
                 <p>千万不要上传给别人！如果你在一个恶意/钓鱼网站上使用这个文件，你的资金将被窃取</p>
-                <p>最好做一个备份！确保它像价值数百万的资金一样安全</p>
+                <p>请做好备份并记住它的密码！确保它像价值数百万的资金一样安全</p>
             </div>
 
         </el-dialog>
@@ -157,11 +157,13 @@
                     setTimeout(() => {
                         let wallet = this.$web3.eth.accounts.wallet.create(1)
                         let encryptedJSON = this.$web3.eth.accounts.wallet.encrypt(this.formRulesCreate.pwd)
+                        wallet.myPwd = this.formRulesCreate.pwd
 
                         let address = wallet[0].address
-                        this.walletInfo.fileName = this.getV3Filename(address)
+                        // this.walletInfo.fileName = this.$funs.getV3Filename(address)
+                        this.walletInfo.fileName = this.$funs.getV3Filename()
 
-                        this.walletInfo.blobEnc = this.getBlob("text/json;charset=UTF-8", encryptedJSON)
+                        this.walletInfo.blobEnc = this.$funs.getBlob("text/json;charset=UTF-8", encryptedJSON)
                         this.$store.commit('setCryptPercent', {
                                 percent: false,
                                 text: ''
@@ -179,21 +181,8 @@
                 }
             },
             unlockNewAccount() {
-                this.$router.replace({name: 'accountInfo',params:{loadAcc:true}})
+                this.$router.replace({name: 'assetManage',params:{loadAcc:true}})
                 this.$funs.loadActivWallet()
-            },
-            getBlob(mime, str) {
-                str = (typeof str === 'object') ? JSON.stringify(str) : str
-                if (str == null) return ''
-                let blob = new Blob([str], {
-                    type: mime
-                })
-                return window.URL.createObjectURL(blob)
-            },
-            getV3Filename(address) {
-                let ts = new Date()
-                // return ['UTC--', ts.toJSON().replace(/:/g, '-'), '--', address.toString('hex')].join('')
-                return ['FOF-Wallet-', ts.toJSON().slice(0,11), ts.toTimeString().slice(0,8).replace(/:/g,"-")].join('')
             },
             importWallet(){
                 this.$emit('getTitle', "导入钱包");
@@ -208,10 +197,10 @@
         padding-right: 0px;
         position: relative;
         bottom: -35px;
-        left: -255px;
+        left: 0px;
         font-size: 24px;
         a{
-            color: greenyellow;
+            color: white;
             text-decoration: underline;
             &:hover{
                 color: #2A9CE7;
@@ -251,7 +240,7 @@
             justify-content: space-between;
             a {
                 height: 64px;
-                line-height: 36px;
+                line-height: 40px;
                 background-color: #5837ff;
                 -webkit-border-radius: 2px;
                 -moz-border-radius: 2px;

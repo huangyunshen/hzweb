@@ -1,0 +1,60 @@
+{
+    "reason": "查询成功",
+    "result": {
+        "key": "法甲",
+        "tabs": {
+            "saicheng1": "第17轮赛程",
+            "saicheng2": "第18轮赛程",
+            "saicheng3": null,
+            "jifenbang": "积分榜",
+            "sheshoubang": "射手榜"
+        },
+        "views": {
+            "saicheng1": [
+                {
+                    "liveId": 1998,
+                    "c1": "未开赛",
+                    "c2": "12-06周六",
+                    "c3": "03:30",
+                    "c4R": "VS",
+                    "c4T1": "图卢兹",
+                    "c4T1URL": "http://match.sports.sina.com.cn/football/team.php?id=486",
+                    "c4T2": "摩纳哥",
+                    "c4T2URL": "http://match.sports.sina.com.cn/football/team.php?id=317",
+                    "c51": "视频暂无",
+                    "c51Link": "",
+                    "c52": "图文直播",
+                    "c52Link": "http://match.sports.sina.com.cn/livecast/g/live.php?id=111967"
+                },
+                {
+                    "liveId": 1999,
+                    "c2": "12-07周日",
+                    "c3": "00:00",
+                    "c4R": "VS",
+                    "c4T1": "巴黎圣日耳曼",
+                    "c4T1URL": "http://match.sports.sina.com.cn/football/team.php?id=316",
+                    "c4T2": "南特",
+                    "c4T2URL": "http://match.sports.sina.com.cn/football/team.php?id=480",
+                    "c51": "视频暂无",
+                    "c51Link": "",
+                    "c52": "图文直播",
+                    "c52Link": "http://match.sports.sina.com.cn/livecast/g/live.php?id=111963"
+                },
+                {
+                    "liveId": 2000,
+                    "c2": "12-07周日",
+                    "c3": "03:00",
+                    "c4R": "VS",
+                    "c4T1": "波尔多",
+                    "c4T1URL": "http://match.sports.sina.com.cn/football/team.php?id=476",
+                    "c4T2": "洛里昂",
+                    "c4T2URL": "http://match.sports.sina.com.cn/football/team.php?id=1385",
+                    "c51": "视频暂无",
+                    "c51Link": "",
+                    "c52": "图文直播",
+                    "c52Link": "http://match.sports.sina.com.cn/livecast/g/live.php?id=111958"
+                }
+            ]
+        }
+    }
+}

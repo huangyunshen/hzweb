@@ -30,17 +30,5 @@
 </script>
 
 <style lang="scss" scoped>
-    .rule-content {
-        padding: 10px;
-        h3 {
-            line-height: 50px;
-        }
-        h4 {
-            line-height: 40px;
-        }
-        p {
-            line-height: 30px;
-        }
-
-    }
+    @import "../../assets/scss/gameConfig";
 </style>

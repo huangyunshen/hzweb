@@ -1,13 +1,13 @@
 <template>
     <div class="app-info">
-        <el-row :gutter="20">
+        <el-row>
             <el-col :span="4">
                 <application :item="filterAppInfo"
                              :index="0"
                 ></application>
             </el-col>
             <el-col :span="20" style="padding-top: 25px">
-                <el-form label-width="100px" style="width: 70%">
+                <el-form label-width="100px" style="width: 90%">
                     <el-form-item label="应用类型">
                         <el-input v-model="filterAppInfo.typeZh" readonly></el-input>
                     </el-form-item>
@@ -17,16 +17,16 @@
                         </el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button class="el-wallet-main-button" @click="goPlay">进入游戏</el-button>
+                        <el-button class="el-wallet-main-button" @click="goPlay" style="width: 100%;">进入游戏</el-button>
                         <a id="linkToApp" :href="filterAppInfo.addr" target="_blank"></a>
                     </el-form-item>
                 </el-form>
             </el-col>
         </el-row>
         <div class="tranc-header">
-            <p :class="{'header-active':tabActive==='1'}"><span @click="tabActive='1'">应用奖池</span></p>
+            <p :class="{'header-active':tabActive==='1'}" @click="tabActive='1'">应用奖池</p>
             <b></b>
-            <p :class="{'header-active':tabActive==='2'}"><span @click="tabActive='2'">收支记录</span></p>
+            <p :class="{'header-active':tabActive==='2'}" @click="tabActive='2'">收支记录</p>
         </div>
         <transition name="fof-fade">
             <div v-show="tabActive==='1'" class="tab-content">
@@ -87,14 +87,16 @@
                         </el-table-column>
                     </el-table>
                 </div>
-                <el-pagination
-                        style="text-align: center"
+                <div class="record-page">
+                    <el-pagination
+                        class="tc"
                         background
                         layout="prev, pager, next"
                         :page-size="pageSize"
                         @current-change="currentPage"
                         :total="totalNum">
-                </el-pagination>
+                    </el-pagination>
+                </div>
             </div>
         </transition>
     </div>
@@ -102,7 +104,8 @@
 
 <script>
     import application from '../createApp/apps'
-    import playGameContract from '../../../contracts/playGame.json'
+    // import playGameContract from '../../../contracts/longhudou/playGame.json'
+    import playGameContract from '../../../contracts/instanceTemplate.json'
 
     export default {
         name: "app-info",
@@ -127,17 +130,19 @@
                 switch (type) {
                     case "1":
                         result = '龙虎斗'
+                        this.appInfo.addr = 'http://39.104.81.103:8891?' + this.appInfo.contractAddr
                         break
                     case "2":
                         result = '竞猜'
+                        this.appInfo.addr = 'http://39.104.81.103:8892?' + this.appInfo.contractAddr
                         break
                     default:
                         result = '游戏'
                         break
                 }
                 this.appInfo.typeZh = result
-                let host = location.host
-                this.appInfo.addr = 'http://' + host + '#/appDetail?' + this.appInfo.contractAddr
+
+                // this.appInfo.addr = 'http://39.104.81.103:8891?' + this.appInfo.contractAddr
                 return this.appInfo
             }
         },
@@ -242,15 +247,7 @@
                             this.$alert(`交易hash为：${receipt.transactionHash}`, '充值成功', {
                                 confirmButtonText: '确定',
                             })
-                            let timer = setTimeout(() => {
-                                clearTimeout(timer)
-                                this.myContractInstance.methods.getCurrentBalance().call().then((data) => {
-                                    this.filterAppInfo.currentCoin = this.$web3.utils.fromWei(data, 'ether')
-                                },(err)=>{
-                                    this.$message.error(err.message)
-                                    this.filterAppInfo.currentCoin = ''
-                                })
-                            }, 1000)
+                            this.getContractBalance()
                             this.$axios.post('/api/addTx.php', {
                                 "type": "1",
                                 "sendAddr": receipt.from,
@@ -336,12 +333,7 @@
                         this.$alert(`交易hash为：${receipt.transactionHash}`, '提现成功', {
                             confirmButtonText: '确定',
                         })
-                        let timer = setTimeout(() => {
-                            clearTimeout(timer)
-                            this.myContractInstance.methods.getCurrentBalance().call().then((data) => {
-                                this.form.currentCoin = this.$web3.utils.fromWei(data, 'ether')
-                            })
-                        }, 5000)
+                        this.getContractBalance()
                         this.$axios.post('/api/addTx.php', {
                             "type": "1",
                             "sendAddr": receipt.from,
@@ -373,28 +365,29 @@
                     clearTimeout(timer)
                     a.click()
                 }, 1)
+            },
+            getContractBalance() {
+                this.$funs.getBalanceByWei(this.appInfo.contractAddr, balance => {
+                    this.filterAppInfo.currentCoin = this.$web3.utils.fromWei(balance, 'ether')
+                })
             }
         },
-        beforeMount() {
+        mounted() {
             if (!this.$store.state.appInfo) {
                 this.$router.replace({name: 'myApps'})
             } else {
                 this.appInfo = this.$store.state.appInfo
                 this.contactContract(this.appInfo.contractAddr).then((instance) => {
-                    this.myContractInstance.methods.getPrice().call().then((data) => {
-                        if (data.length === 0) {
+                    this.myContractInstance.methods.gameType().call().then((data) => {
+                        console.log(data);
+                        if (!data) {
                             this.$message({
                                 type: 'error',
                                 message: "合约地址有误，请检查合约地址是否正确",
                             })
                             this.isDisabled = true
                         } else {
-                            instance.methods.getCurrentBalance().call().then((data) => {
-                                this.filterAppInfo.currentCoin = this.$web3.utils.fromWei(data, 'ether')
-                            },(err)=>{
-                                this.$message.error(err.message)
-                                this.filterAppInfo.currentCoin = ''
-                            })
+                            this.getContractBalance()
                         }
                     })
                 })
@@ -409,10 +402,10 @@
     }
 
     .app-info {
+        height: 100%;
         .tranc-header {
             display: flex;
             text-align: center;
-            width: 50%;
             p {
                 flex-grow: 1;
                 line-height: 40px;
@@ -420,9 +413,7 @@
                 box-shadow: 1px 0 0 0 #272345;
                 font-size: 20px;
                 color: #d3ceff;
-                span {
-                    cursor: pointer;
-                }
+                cursor: pointer;
             }
             .header-active {
                 line-height: 40px;
@@ -442,17 +433,18 @@
             }
         }
         .tab-content {
+            height: calc(100% - 280px);
+            overflow-y: auto;
             .el-form {
                 width: 60%;
                 margin: 0 auto;
-                padding-top: 50px;
             }
-            &.tab-table {
-                height: 450px;
-                .table-content {
-                    height: calc(100% - 70px);
-                    margin-bottom: 20px;
-                }
+            .table-content {
+                height: calc(100% - 60px);
+            }
+            .record-page {
+                height: 32px;
+                padding: 14px;
             }
         }
     }

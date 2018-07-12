@@ -26,15 +26,21 @@
                         <i class="nav-icon5"></i>
                         <span>交易查询</span>
                     </li>
+                    <!--<router-link tag="li" :to="{name:'createInterval'}" @click.native="selectAnItem('3')"-->
+                                 <!--class="pass-enter3" :class="{active:itemSelected==='3'}">-->
+                        <!--<i class="nav-icon3" :class="{'nav-icon3-active':itemSelected==='3'}"></i>-->
+                        <!--<span>创建定时器</span>-->
+                    <!--</router-link>-->
                 </ul>
             </nav>
         </div>
 
         <div class="container">
             <header class="header">
+                <language></language>
+                <el-button size="mini" @click="exitWallet">退出</el-button>
                 <el-button size="mini" @click="dialog = true">导入账户</el-button>
-                <language class="language"></language>
-                <el-button size="mini" @click="exit">锁定</el-button>
+                <el-button size="mini" @click="lockOut">锁定</el-button>
             </header>
             <div class="account-nav">
                 <div class="tranc-balance">
@@ -82,8 +88,9 @@
                 </div>
                 <div class="footer">
                     <el-button @click="importAcc" v-show="importing">导入到钱包</el-button>
+                    <a @click="createNewAcc" v-show="importing">创建新账户</a>
                     <span v-if="!importing"
-                          style="line-height: 40px; font-size: 20px; animation: toggleShowHide 2s linear infinite;">正在导入 . . . </span>
+                          style="line-height: 40px; font-size: 20px; animation: toggleShowHide 2s linear infinite;">{{runingText}} . . . </span>
                 </div>
             </el-dialog>
             <el-dialog class="wallet-agreement personal-info"
@@ -95,9 +102,7 @@
                     <account-info ref="changeAcc"></account-info>
                 </div>
             </el-dialog>
-        </div>
 
-        <div class="create-wallet">
             <el-dialog class="create-wallet-dialog"
                        title="警告！"
                        :visible.sync="deleteModal"
@@ -118,6 +123,31 @@
                     <span v-if="!deleting"
                           style="line-height: 40px; font-size: 20px; animation: toggleShowHide 2s linear infinite;">正在移除 . . . </span>
                 </div>
+            </el-dialog>
+
+            <el-dialog class="create-wallet-dialog exit-wallet"
+                       title="请备份钱包文件"
+                       :visible.sync="exitDialog"
+                       width="800px"
+                       top="30vh"
+                       center>
+                <h2>退出前请保存你的钱包备份文件！退出后可以使用此<span class="important-content">备份文件+当前钱包密码</span>重新导入该钱包！</h2>
+
+                <div class="wallet-dialog-body">
+                    <a class="el-button" :href="walletInfo.blobEnc" :download="walletInfo.fileName"
+                       @click="walletInfo.fileDownloaded=false" style="width: 280px;">下载钱包备份文件</a>
+
+                    <el-button type="danger" @click.native="reloadView" :disabled="walletInfo.fileDownloaded"
+                               style="width: 280px;">
+                        点我退出
+                    </el-button>
+                </div>
+                <div class="wallet-dialog-footer">
+                    <p>千万不要弄丢它！因为它是无法恢复的</p>
+                    <p>千万不要上传给别人！如果你在一个恶意/钓鱼网站上使用这个文件，你的资金将被窃取</p>
+                    <p>请做好备份并记住它的密码！确保它像价值数百万的资金一样安全</p>
+                </div>
+
             </el-dialog>
         </div>
     </div>
@@ -149,6 +179,13 @@
                 delAccBalance: 0,
                 importing: true,
                 deleting: true,
+                runingText: '正在导入',
+                exitDialog: false,
+                walletInfo: {
+                    fileName: '',
+                    blobEnc: '',
+                    fileDownloaded: true
+                },
             }
         },
         computed: {
@@ -186,6 +223,7 @@
                     this.activeAccount = newAcc.address;
                     this.changeAccount();
 
+                    this.runingText = "正在导入";
                     this.importing = false;
                     setTimeout(() => {
                         wallet.save(wallet.myPwd);
@@ -198,6 +236,27 @@
                     }, 50)
                 })
             },
+            createNewAcc() {
+                let wallet = this.$web3.eth.accounts.wallet;
+                let newAcc = this.$web3.eth.accounts.create();
+                wallet.add(newAcc);
+
+                this.loadAccounts()
+                this.activeAccount = newAcc.address;
+                this.changeAccount();
+
+                this.runingText = "正在创建";
+                this.importing = false;
+                setTimeout(() => {
+                    wallet.save(wallet.myPwd);
+                    this.dialog = false
+                    this.$message({
+                        message: this.$msg.createSucc,
+                        type: 'success'
+                    });
+                    this.importing = true;
+                }, 50)
+            },
             selectAnItem(index) {
                 this.itemSelected = index
                 this.$funs.getBalance()
@@ -205,8 +264,19 @@
             openUrl(url) {
                 window.open(url);
             },
-            exit() {
+            lockOut() {
                 this.$emit('lockOut')
+            },
+            exitWallet() {
+                this.walletInfo.fileDownloaded = this.exitDialog = true
+                let encryptedJSON = this.$funs.ifWalletExist();
+                this.walletInfo.fileName = this.$funs.getV3Filename()
+                this.walletInfo.blobEnc = this.$funs.getBlob("text/json;charset=UTF-8", encryptedJSON)
+            },
+            reloadView() {
+                localStorage.removeItem('web3js_wallet');
+                localStorage.removeItem('active_account');
+                window.location.reload()
             },
             changeAccount() {
                 this.$funs.setActiveAccount(this.activeAccount)
@@ -309,7 +379,7 @@
     .mainScreen {
         height: $height;
         min-width: 1300px;
-        overflow: hidden;
+        /*overflow: hidden;*/
 
         /**  侧边栏   **/
         .left-nav {
@@ -440,22 +510,23 @@
             -webkit-box-sizing: border-box;
             -moz-box-sizing: border-box;
             box-sizing: border-box;
-            flex-direction: column;
 
             .header {
                 width: 100%;
                 height: 69px;
                 border-bottom: 1px solid $border_color;
-                display: flex;
-                align-items: center;
-                justify-content: flex-end;
 
                 .el-select {
                     margin-right: 30px;
+                    padding-top: 20px;
+                    float: right;
                 }
                 .el-button {
+                    float: right;
                     height: 28px;
+                    margin-top: 20px;
                     margin-right: 30px;
+                    margin-left: 0;
                     background: #403A6D;
                     color: #CEC8FF;
                     font-size: 12px;
@@ -466,29 +537,16 @@
                         border-color: #726bab;
                     }
                 }
-                .language {
-                    margin-right: 30px;
-                }
             }
             .account-nav {
-                border-bottom: 1px solid #322D5D;
-                height: 92px;
+                border-bottom: 2px solid #322D5D;
+                height: 82px;
                 line-height: 32px;
                 color: #8490c5;
-                box-sizing: border-box;
                 font-size: 20px;
                 padding-top: 8px;
-                /*i {
-                    display: inline-block;
-                    height: 30px;
-                    width: 30px;
-                    margin-right: 10px;
-                    margin-left: 30px;
-                    vertical-align: text-top;
-                }*/
                 .tranc-balance {
                     margin-left: 70px;
-                    /*margin-top:10px;*/
                     .el-icon-refresh {
                         margin-left: 20px;
                         cursor: pointer;
@@ -496,16 +554,10 @@
                             color: #A0CBF5;
                         }
                     }
-                    /*i {*/
-                    /*background: url("../../assets/images/transaction/icon_zz_zhye.png") no-repeat;*/
-                    /*}*/
                 }
                 .tranc-address {
                     margin-left: 70px;
                     margin-top: 5px;
-                    /*i {*/
-                    /*background: url("../../assets/images/transaction/icon_zz_zhdz.png") no-repeat;*/
-                    /*}*/
                 }
                 .el-button {
                     height: 28px;
@@ -521,16 +573,74 @@
                 }
             }
             .content {
-                height: calc(100% - 125px);
-                min-height: 700px;
-                -webkit-box-sizing: border-box;
-                -moz-box-sizing: border-box;
-                box-sizing: border-box;
-                margin: 30px;
-                &.border {
+                margin: 15px;
+                height:calc(100% - 192px);
+                /*&.border {
                     border: solid 1px $border_color;
+                }*/
+            }
+        }
+        .wallet-agreement {
+            .footer {
+                a {
+                    margin-left: 20px;
+                    font-size: 16px;
+                    vertical-align: -webkit-baseline-middle;
+                    color: #a2b4db;
+                    &:hover {
+                        color: #D1DEF5;
+                    }
                 }
             }
+        }
+        .exit-wallet {
+            h2 {
+                margin-top: 30px;
+                font-size: 16px;
+                color: #8490c5;
+            }
+            .wallet-dialog-body {
+                margin-top: 20px;
+                display: flex;
+                justify-content: space-between;
+                a {
+                    height: 64px;
+                    line-height: 40px;
+                    background-color: #5837ff;
+                    -webkit-border-radius: 2px;
+                    -moz-border-radius: 2px;
+                    border-radius: 2px;
+                    font-size: 18px;
+                    font-weight: 100;
+                    border: none;
+                    color: #fff;
+                }
+                a:hover, a:focus {
+                    background-color: #6262FF;
+                    color: #ffffff;
+                }
+                .el-button {
+                    height: 64px;
+                    -webkit-border-radius: 2px;
+                    -moz-border-radius: 2px;
+                    border-radius: 2px;
+                    font-size: 18px;
+                }
+            }
+            .important-content {
+                color: #f39eff;
+            }
+            .wallet-dialog-footer {
+                margin-top: 30px;
+                padding: 10px;
+                border: 1px dotted $inner_border_color;
+                p {
+                    font-size: 16px;
+                    line-height: 30px;
+                    color: #f39eff;
+                }
+            }
+
         }
         .del-warning {
             font-size: 17px;

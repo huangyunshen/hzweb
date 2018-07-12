@@ -230,7 +230,8 @@
 </template>
 
 <script>
-    import playGameContract from '../../../contracts/playGame.json'
+
+    import playGameContract from '../../../contracts/longhudou/playGame.json'
     import axios from 'axios'
 
     export default {
@@ -492,16 +493,19 @@
                 }
                 try {
                     this.loading = {flag: true, text: '正在下注···'}
-                    this.$funs.unlockAccount().then((res,err) => {
-                        if(res){
+                    this.$funs.unlockAccount().then((res, err) => {
+                        if (res) {
                             this.betFun(user, params)
                         } else {
+                            this.loading = {flag: false, text: ''}
                             this.$message.error(String(err))
                         }
                     }).catch((reason) => {
-                        console.log(reason)
+                        this.loading = {flag: false, text: ''}
+                        this.$message.error(String(reason))
                     })
                 } catch (err) {
+                    this.loading = {flag: false, text: ''}
                     this.$message.error(String(err))
                 }
             },
@@ -659,6 +663,7 @@
                             }
                         }).catch((error) => {
                             this.$message.error(String(error))
+                            this.loading = {flag: false, text: ''}
                         })
                     })
             },
@@ -807,6 +812,16 @@
                         this.getCoinsTimer = setInterval(() => {
                             // this.getCoinsTimer = setTimeout(() => {
                             // 实时获取下注币数
+                            if (this.countDown > 5 && this.countDown % 6 === 0) {
+                                axios.get('http://39.104.81.103:8089')
+                                    .then((res) => {
+                                        this.countDown = res.data <= 0 ? 0 : res.data
+                                    })
+                                    .catch(() => {
+                                        this.$message.error('节点异常，无法获取时间')
+                                        clearInterval(this.getCoinsTimer)
+                                    })
+                            }
                             this.myContractInstance.methods.getTotalCoins().call()
                                 .then((arr) => {
                                     let result = []
@@ -855,6 +870,9 @@
                             }
                             if (this.countDown > 1) {
                                 this.countDown--
+                            }
+                            if (this.countDown < 0) {
+                                this.countDown++
                             }
                             this.myContractInstance.methods.getCurrentBalance().call().then((coins) => {
                                 this.contractBalance = this.$web3.utils.fromWei(coins, 'ether')

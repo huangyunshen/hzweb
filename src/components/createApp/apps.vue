@@ -29,6 +29,9 @@
                     case "1":
                         result = '龙虎斗'
                         break;
+                    case "2":
+                        result = '世界杯'
+                        break;
                 }
                 return result
             },
@@ -40,6 +43,9 @@
                         break;
                     case "1":
                         result = require('../../assets/images/apps/longhudou.jpg')
+                        break;
+                    case "2":
+                        result = require('../../assets/images/apps/ssjc.png')
                         break;
                 }
                 return result
