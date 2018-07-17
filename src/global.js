@@ -211,39 +211,23 @@ export default {
                 return window.URL.createObjectURL(blob)
             },
             //上传部署成功的合约信息
-            uploadContractIns(type, user, receipt) {
-                axios.post('/api/addContract.php', {
-                    "type": type,
-                    "contractAddr": receipt.contractAddress,
-                    "createAddr": user,
-                    "createMoney": 0,
-                    "txHash": receipt.transactionHash
-                }).then((res) => {
-                    if (res.status === 200) {
-                    }
-                }).catch((error) => {
-
-                })
-            },
-            //上传交易信息
-            uploadTxData(type, receipt) {
-                axios.post('/api/addTx.php', {
-                    "type": type,
-                    "sendAddr": receipt.from,
-                    "revAddr": receipt.to,
-                    "txHash": receipt.transactionHash,
-                    "blockNum": receipt.blockNumber,
-                    "amount": "0"
-                }).then((res) => {
-                    if (res.status === 200) {
-                    }
-                }).catch((error) => {
-
-                })
-            },
-            magrationContract(type, user, contract, sol, args = []) {//部署类型，账户地址，合约json，合约源文件，部署参数
+            // uploadContractIns(type, user, receipt) {
+            //     axios.post('/api/addContract.php', {
+            //         "type": type,
+            //         "contractAddr": receipt.contractAddress,
+            //         "createAddr": user,
+            //         "createMoney": 0,
+            //         "txHash": receipt.transactionHash
+            //     }).then((res) => {
+            //         if (res.status === 200) {
+            //         }
+            //     }).catch((error) => {
+            //
+            //     })
+            // },
+            magrationContract( user, contract, sol, args = [], gas) {//部署类型，账户地址，合约json，合约源文件，部署参数
                 return new Promise((resolve => {
-                    WEB3OBJ.eth.estimateGas({data: contract.bytecode}).then((gas) => {
+                    WEB3OBJ.eth.estimateGas({data: contract.bytecode}).then((gasLimit) => {
                         new WEB3OBJ.eth.Contract(contract.abi)
                             .deploy({
                                 data: contract.bytecode,
@@ -252,7 +236,7 @@ export default {
                             .send({
                                 from: user,
                                 datasourcecode: WEB3OBJ.utils.toHex(sol), // 传入sol源码
-                                gas: gas * 2,
+                                gas: gas || gasLimit * 2,
                                 txType: 0,
                             })
                             .on('error', (err) => {
@@ -260,8 +244,7 @@ export default {
                                 reject(err.message)
                             })
                             .on('receipt', (receipt) => {
-                                this.uploadContractIns(type, user, receipt);
-                                this.uploadTxData("1", receipt);
+                                // this.uploadContractIns(type, user, receipt);
                             })
                             .then((contractIns) => {
                                 resolve(contractIns)

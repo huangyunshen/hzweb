@@ -650,21 +650,6 @@
                         this.$message.error(String(err))
                     })
                     .on('receipt', (receipt) => {
-                        this.$axios.post('/api/addTx.php', {
-                            "type": "1",
-                            "sendAddr": receipt.from,
-                            "revAddr": receipt.to,
-                            "txHash": receipt.transactionHash,
-                            "blockNum": receipt.blockNumber,
-                            "amount": params.coin
-                        }).then((res) => {
-                            if (res.status === 200) {
-                                // console.log(res)
-                            }
-                        }).catch((error) => {
-                            this.$message.error(String(error))
-                            this.loading = {flag: false, text: ''}
-                        })
                     })
             },
             // 获取服务器定时器时间

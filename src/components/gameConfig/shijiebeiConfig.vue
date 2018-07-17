@@ -13,7 +13,7 @@
                                 <el-input
                                     auto-complete="off"
                                     v-model="configData.name"
-                                    maxlength="10"
+                                    maxlength="15"
                                 >
                                 </el-input>
                             </el-form-item>
@@ -153,9 +153,9 @@
     import shijiebeiRule from "./shijiebeiRule" // TODO  待更改世界杯游戏规则
     import gameData from "./data"
 
-    import contract from '../../../contracts/shijiebei/playGame.json'
-    // import contract from '../../../contracts/shijiebei/instanceTemplate.json'
-    import sol from '../../../contracts/shijiebei/playGame.sol'
+    import contract from '../../../contracts/saishijingcai/playGame.json'
+    // import baccarat from '../../../contracts/saishijingcai/instanceTemplate.json'
+    import sol from '../../../contracts/saishijingcai/playGame.sol'
 
     export default {
         name: "shijiebeiConfig",
@@ -165,7 +165,7 @@
         data() {
             return {
                 configData: {
-                    name: '',
+                    name: '赛事竞猜',
                     type: '',
                     recharge: '',
                     deadline: '',
@@ -179,23 +179,12 @@
                     liveId: null,
                 },
                 types: [
-                    {type: 2, name: '世界杯'}
+                    {type: 2, name: '中超'}
                 ],
                 gameData: []
             }
         },
         methods: {
-            // deploy() {  //test
-            //     let c = new this.$web3.eth.Contract(contract.abi, "0xd417C764cC10816b041b32C0575F08b95866Cb35")
-            //     c.methods.gameType().call().then(console.log)
-
-                // let user = this.$store.state.address
-                // this.$funs.magrationContract(0, user, contract, sol, [44])
-                //     .then((contractIns) => {
-                //         console.log(contractIns);
-                //         0xd417C764cC10816b041b32C0575F08b95866Cb35
-                //     })
-            // },
             deploy() {
                 let user = this.$store.state.address
                 return new Promise((resolve, reject) => {
@@ -215,44 +204,28 @@
                         this.$store.commit('setCryptPercent', {percent: true, text: '创建中···'})
                         this.$funs.unlockAccount().then((res) => {
                             let args = [
-                                Number(this.configData.type),
-                                1,
+                                String(this.configData.name) || "赛事竞猜",
                                 hTeam,
                                 vTeam,
                                 Number(this.configData.oddsH) * 100,
                                 Number(this.configData.oddsD) * 100,
                                 Number(this.configData.oddsV) * 100,
                                 Date.parse(new Date(this.configData.deadline)),
-                                String(this.configData.singleBetCoin),
+                                Number(this.configData.singleBetCoin),
                                 Number(this.configData.hConcedePoints),
                                 Number(this.configData.vConcedePoints),
                                 Number(this.configData.liveId),
                             ];
-                            this.$funs.magrationContract(Number(this.configData.type), user, contract, sol, args)
+                            this.$funs.magrationContract(user, contract, sol, args)
                                 .then((contractIns) => {
                                     this.$store.commit('setCryptPercent', {percent: true, text: '创建成功！正在充值···'})
-                                    // 每次部署完合约，需要向定时器合约中注册当前合约地址
-                                    // contractIns.methods.registerInterval('0xb8e1d5B380A87A9Ab8e305267C5eD808bBA4e795')
-                                    //     .send({
-                                    //         from: user,
-                                    //         gas: 4712388,
-                                    //         txType: 0,
-                                    //     })
-                                    //     .on('error', (err) => {
-                                    //         this.$store.commit('setCryptPercent', {percent: false, text: ''})
-                                    //         this.$message.error(err.message)
-                                    //         reject(err)
-                                    //     })
-                                    //     .on('receipt', (receipt) => {
-                                    //         this.$funs.uploadTxData("1", receipt);
-                                            this.$funs.rechargeToContract(contractIns, user, this.configData.recharge)
-                                                .then((data) => {
-                                                    contractIns.contractAddressUrl = 'http://39.104.81.103:8892?' + contractIns._address
-                                                    resolve(contractIns)
-                                                }, (err) => {
-                                                    console.log(err);
-                                                })
-                                        // })
+                                    this.$funs.rechargeToContract(contractIns, user, this.configData.recharge)
+                                        .then((data) => {
+                                            contractIns.contractAddressUrl = `/quiz/?${contractIns._address}`
+                                            resolve(contractIns)
+                                        }, (err) => {
+                                            console.log(err);
+                                        })
                                 }, (err) => {
                                     console.log(err);
                                 })
@@ -266,6 +239,9 @@
             },
             verifyData() {
                 let balance = Number(this.$store.state.balance)
+                // if (!this.configData.name) {
+                //     return new Error('请输入游戏名称！');
+                // }
                 if (!this.configData.type) {
                     return new Error('请选择赛事类型！');
                 }

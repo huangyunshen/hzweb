@@ -300,22 +300,6 @@
                             message: this.$msg.transactionSucc,
                             type: 'success'
                         })
-
-                        //保存交易记录到中心服务器
-                        this.$axios.post('/api/addTx.php', {
-                            "type": "1",
-                            "sendAddr": receipt.from,
-                            "revAddr": receipt.to,
-                            "txHash": receipt.transactionHash,
-                            "blockNum": receipt.blockNumber,
-                            "amount": this.form.value
-                        }).then((res) => {
-                            if (res.status === 200) {
-                                // console.log(res)
-                            }
-                        }).catch((error) => {
-                            this.$message.error(String(error))
-                        })
                     })
 
             },

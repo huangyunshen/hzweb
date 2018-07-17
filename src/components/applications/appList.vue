@@ -28,7 +28,7 @@
                                 <ul class="info-list">
                                     <li>
                                         <span class="label">创建时间：</span>
-                                        <span class="data">{{ item.time }}</span>
+                                        <span class="data">{{ item.creationTime }}</span>
                                     </li>
                                     <li>
                                         <span class="label">创建人地址：</span>
@@ -87,14 +87,14 @@
                     "pageNum": page,
                 }).then((res) => {
                     if (res.status === 200) {
-                        this.appList = res.data
+                        this.appList = res.data.result
                         for (let i = 0; i < this.appList.length; i++) {
                             this.$web3.eth.getBalance(this.appList[i].contractAddr).then((coin) => {
                                 this.appList[i].currentCoin = this.$web3.utils.fromWei(coin, 'ether')
                             })
                         }
-                        if (res.data.length > 0) {
-                            this.totalNum = Number(res.data[0].dataCount)
+                        if (res.data.result.length > 0) {
+                            this.totalNum = Number(res.data.dataCount)
                         } else {
                             this.$message.error('查询结果为0')
                         }
@@ -108,11 +108,13 @@
                 })
             },
             getUrl(item) {
-                switch (item.type) {
+                switch (item.gameType) {
                     case "1":
-                        return 'http://39.104.81.103:8891?' + item.contractAddr;
+                        return `/DragonTigerFight/?${item.contractAddr}`
                     case "2":
-                        return 'http://39.104.81.103:8892?' + item.contractAddr
+                        return `/quiz/?${item.contractAddr}`
+                    case "3":
+                        return `/baccarat/?${item.contractAddr}`
                 }
             }
         },

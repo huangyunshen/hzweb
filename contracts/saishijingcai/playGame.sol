@@ -1,12 +1,12 @@
 pragma solidity ^0.4.0;
 
 contract Quiz {
-    uint public gameType;
+    string public contractName;
+    uint public gameType = 2;
     address public creator = msg.sender;
     uint public creationTime;
     uint public historyTotalCoins = 0; // 历史下注总额
 
-    uint id; //
     uint liveId;//赛事ID
     string homeTeam; //主队
     string visitingTeam; //客队
@@ -14,7 +14,7 @@ contract Quiz {
     uint oddsD; //平赔率
     uint oddsV; //客胜赔率
     uint deadline; // 截止日期
-    string singleBetCoin; //单注金额
+    uint singleBetCoin; //单注金额
     uint hConcedePoints = 0; //主队让球
     uint vConcedePoints = 0; //客队让球
     address [] hVictory;  // 保存选主胜0的地址
@@ -32,7 +32,11 @@ contract Quiz {
         availableBalance = availableBalance + balance;
     }
 
-    function getNow() public constant returns(uint){     //获取当前时间
+    function getPublicData() public constant returns (string, uint, address, uint, uint){
+        return (contractName, gameType, creator, creationTime, historyTotalCoins);
+    }
+
+    function getNow() public constant returns (uint){//获取当前时间
         uint Now = block.timestamp * 1000;
         return Now;
     }
@@ -46,9 +50,8 @@ contract Quiz {
     * solidity里面不支持小数计算
     * 传入的赔率扩大了100倍，最后的结果需要除以100
     */
-    constructor(uint _type, uint _id, string _homeTeam, string _visitingTeam, uint _oddsH, uint _oddsD, uint _oddsV, uint _deadline, string _singleCoin, uint _hConcedePoints, uint _vConcedePoints, uint _liveId) public{
-        gameType = _type;
-        id = _id;
+    constructor(string _name, string _homeTeam, string _visitingTeam, uint _oddsH, uint _oddsD, uint _oddsV, uint _deadline, uint _singleCoin, uint _hConcedePoints, uint _vConcedePoints, uint _liveId) public{
+        contractName = _name;
         homeTeam = _homeTeam;
         visitingTeam = _visitingTeam;
         oddsH = _oddsH;
@@ -72,8 +75,8 @@ contract Quiz {
     }
 
     // 返回配置参数
-    function getSetting() public constant returns (uint, uint, string, string, uint, uint, uint, uint, string, uint, uint, uint) {
-        return (gameType, id, homeTeam, visitingTeam, oddsH, oddsD, oddsV, deadline, singleBetCoin, hConcedePoints, vConcedePoints, liveId);
+    function getSetting() public constant returns (uint, string, string, string, uint, uint, uint, uint, uint, uint, uint, uint) {
+        return (gameType, contractName, homeTeam, visitingTeam, oddsH, oddsD, oddsV, deadline, singleBetCoin, hConcedePoints, vConcedePoints, liveId);
     }
 
     // 下注函数
@@ -129,15 +132,18 @@ contract Quiz {
                     drawMap[addr] = drawMap[addr] + coin / num;
                 }
             }
-            availableBalance = availableBalance + coin - maximum; //奖池可用余额 = 当前可用余额 + 下注总金额 - 最大奖金
+            availableBalance = availableBalance + coin - maximum;
+            //奖池可用余额 = 当前可用余额 + 下注总金额 - 最大奖金
         }
     }
 
     // 结算函数
     // @_result 传入谁赢 0 1 2 / 主胜 客胜 平
     function getResult(uint _hCore, uint _vCore) public {
-        uint h = _hCore + vConcedePoints; //主队得分+让球分数
-        uint v = _vCore + hConcedePoints; //客队得分+让球分数
+        uint h = _hCore + vConcedePoints;
+        //主队得分+让球分数
+        uint v = _vCore + hConcedePoints;
+        //客队得分+让球分数
         if (h > v) {
             for (uint i = 0; i < hVictory.length; i++) {
                 transferCoin(hVictory[i], hVictoryMap[hVictory[i]] * oddsH / 100);

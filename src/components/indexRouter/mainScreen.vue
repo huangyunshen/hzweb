@@ -26,11 +26,6 @@
                         <i class="nav-icon5"></i>
                         <span>交易查询</span>
                     </li>
-                    <!--<router-link tag="li" :to="{name:'createInterval'}" @click.native="selectAnItem('3')"-->
-                                 <!--class="pass-enter3" :class="{active:itemSelected==='3'}">-->
-                        <!--<i class="nav-icon3" :class="{'nav-icon3-active':itemSelected==='3'}"></i>-->
-                        <!--<span>创建定时器</span>-->
-                    <!--</router-link>-->
                 </ul>
             </nav>
         </div>
@@ -352,15 +347,6 @@
                 case 'applications':
                     this.itemSelected = '3'
                     break
-                // case 'tradeRecord':
-                //     this.itemSelected = '2'
-                //     break
-                // case 'transaction':
-                //     this.itemSelected = '3'
-                //     break
-                // case 'createApp':
-                //     this.itemSelected = '5'
-                //     break
                 default:
                     break
             }

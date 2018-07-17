@@ -1,7 +1,8 @@
 pragma solidity ^0.4.0;
 
 contract PlayGame {
-    uint public gameType;
+    string public contractName;
+    uint public gameType = 1;
     address public creator = msg.sender;
     uint public creationTime;
     uint public historyTotalCoins = 0; // 历史下注总额
@@ -34,10 +35,14 @@ contract PlayGame {
 
     }
 
-    function PlayGame(uint price1, uint price2, uint price3, uint price4, uint _type){
+    function getPublicData() public constant returns (string, uint, address, uint, uint){
+        return (contractName, gameType, creator, creationTime, historyTotalCoins);
+    }
+
+    function PlayGame(uint price1, uint price2, uint price3, uint price4, string _name){
         creationTime = getTimestamp();
-        gameType = _type;
-        price = [price1, price2, price3, price4, _type];
+        contractName = _name;
+        price = [price1, price2, price3, price4, gameType];
     }
     // 获取自己设置的下注金额列表
     function getPrice() constant returns (uint []){

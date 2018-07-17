@@ -3,7 +3,7 @@
         <el-main class="app-info">
             <ul>
                 <li class="app-item" @click="goCreate">
-                    <application :item="{type: '0'}"
+                    <application :item="{gameType: '0'}"
                                  :index="0"
                     ></application>
                 </li>
@@ -55,13 +55,14 @@
             getAppsList() {
                 if (this.address) {
                     this.$axios.post('/api/requestContract.php', {
-                        "createAddr": this.$store.state.address,
-                        "contractAddr": "",
+                        "addr": this.$store.state.address,
                         "pageSize": 1000,
                         "pageNum": 1
                     }).then((res) => {
                         if (res.status === 200) {
-                            this.appList = res.data
+                            if (res.data) {
+                                this.appList = res.data.result
+                            }
                         }
                     }).catch((error) => {
                         this.$message.error(String(error))

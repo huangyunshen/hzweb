@@ -85,7 +85,7 @@
         <el-row>
             <el-col :offset="2" :span="20">
                 <div class="explain">
-                    <longhudou-rule></longhudou-rule>
+                    <baccarat-rule></baccarat-rule>
                 </div>
             </el-col>
         </el-row>
@@ -93,20 +93,19 @@
 </template>
 
 <script>
-    import longhudouRule from "./longhudouRule"
-
-    import contract from '../../../contracts/longhudou/playGame.json'
-    import sol from '../../../contracts/longhudou/playGame.sol'
+    import baccaratRule from "./baccaratRule"
+    import contract from '../../../contracts/baccarat/baccarat.json'
+    import sol from '../../../contracts/baccarat/Baccarat.sol'
 
     export default {
         name: "longhudouConfig",
         components: {
-            longhudouRule,
+            baccaratRule,
         },
         data() {
             return {
                 rechargeData: {
-                    name: "龙虎斗",
+                    name: "百家乐",
                     value: '100',
                     gasPrice: '41',
                     gas: '21000',
@@ -134,17 +133,20 @@
                                 Number(this.rechargeData.price2),
                                 Number(this.rechargeData.price3),
                                 Number(this.rechargeData.price4),
-                                String(this.rechargeData.name) || "龙虎斗",
+                                String(this.rechargeData.name) || "百家乐",
                             ];
-                            this.$funs.magrationContract( user, contract, sol, args)
-                                .then((contractIns) => {
-                                    this.$store.commit('setCryptPercent', {percent: true, text: '创建成功！正在充值···'})
-                                    this.$funs.rechargeToContract(contractIns, user, this.rechargeData.value)
-                                        .then((data) => {
-                                            contractIns.contractAddressUrl = `/DragonTigerFight/?${contractIns._address}`
-                                            resolve(contractIns)
-                                        })
-                                })
+                            this.$web3.eth.estimateGas({data: contract.bytecode}).then((gas) => {
+                                gas = gas + 100000
+                                this.$funs.magrationContract(user, contract, sol, args, gas)
+                                    .then((contractIns) => {
+                                        this.$store.commit('setCryptPercent', {percent: true, text: '创建成功！正在充值···'})
+                                        this.$funs.rechargeToContract(contractIns, user, this.rechargeData.value)
+                                            .then((data) => {
+                                                contractIns.contractAddressUrl = `/baccarat/?${contractIns._address}`
+                                                resolve(contractIns)
+                                            })
+                                    })
+                            })
                         }).catch((reason) => {
                             reject(reason)
                         })
@@ -186,12 +188,6 @@
                     || Number(this.rechargeData.price3) === 0
                     || Number(this.rechargeData.price4) === 0) {
                     return new Error('下注金额不能为空和不能为0！');
-                }
-                if (this.rechargeData.price1.length > 2
-                    || this.rechargeData.price2.length > 2
-                    || this.rechargeData.price3.length > 2
-                    || this.rechargeData.price4.length > 2) {
-                    return new Error('每个下注金额不能大于99！');
                 }
                 return true
             }

@@ -104,7 +104,6 @@
 
 <script>
     import application from '../createApp/apps'
-    // import playGameContract from '../../../contracts/longhudou/playGame.json'
     import playGameContract from '../../../contracts/instanceTemplate.json'
 
     export default {
@@ -126,15 +125,19 @@
         computed: {
             filterAppInfo() {
                 let result = ''
-                let type = this.appInfo.type
+                let type = this.appInfo.gameType
                 switch (type) {
                     case "1":
-                        result = '龙虎斗'
-                        this.appInfo.addr = 'http://39.104.81.103:8891?' + this.appInfo.contractAddr
+                        result = this.appInfo.contractName
+                        this.appInfo.addr = `/DragonTigerFight/?${this.appInfo.contractAddr}`
                         break
                     case "2":
-                        result = '竞猜'
-                        this.appInfo.addr = 'http://39.104.81.103:8892?' + this.appInfo.contractAddr
+                        result = this.appInfo.contractName
+                        this.appInfo.addr = `/quiz/?${this.appInfo.contractAddr}`
+                        break
+                    case "3":
+                        result = this.appInfo.contractName
+                        this.appInfo.addr = `/baccarat/?${this.appInfo.contractAddr}`
                         break
                     default:
                         result = '游戏'
@@ -142,7 +145,6 @@
                 }
                 this.appInfo.typeZh = result
 
-                // this.appInfo.addr = 'http://39.104.81.103:8891?' + this.appInfo.contractAddr
                 return this.appInfo
             }
         },
@@ -207,7 +209,6 @@
                                 text: ''
                             }
                         )
-                        console.log(reason)
                     })
                 }).catch((error) => {
                     if (error !== 'cancel') {
@@ -248,20 +249,6 @@
                                 confirmButtonText: '确定',
                             })
                             this.getContractBalance()
-                            this.$axios.post('/api/addTx.php', {
-                                "type": "1",
-                                "sendAddr": receipt.from,
-                                "revAddr": receipt.to,
-                                "txHash": receipt.transactionHash,
-                                "blockNum": receipt.blockNumber,
-                                "amount": this.form.rechargeVal
-                            }).then((res) => {
-                                if (res.status === 200) {
-                                    // console.log(res)
-                                }
-                            }).catch((error) => {
-                                this.$message.error(String(error))
-                            })
                         }
                     })
             },
@@ -334,20 +321,6 @@
                             confirmButtonText: '确定',
                         })
                         this.getContractBalance()
-                        this.$axios.post('/api/addTx.php', {
-                            "type": "1",
-                            "sendAddr": receipt.from,
-                            "revAddr": receipt.to,
-                            "txHash": receipt.transactionHash,
-                            "blockNum": receipt.blockNumber,
-                            "amount": this.form.drawingVal
-                        }).then((res) => {
-                            if (res.status === 200) {
-                                // console.log(res)
-                            }
-                        }).catch((error) => {
-                            this.$message.error(String(error))
-                        })
                     })
             },
             currentPage(page) {
@@ -379,7 +352,6 @@
                 this.appInfo = this.$store.state.appInfo
                 this.contactContract(this.appInfo.contractAddr).then((instance) => {
                     this.myContractInstance.methods.gameType().call().then((data) => {
-                        console.log(data);
                         if (!data) {
                             this.$message({
                                 type: 'error',

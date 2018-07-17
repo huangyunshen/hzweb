@@ -1,11 +1,11 @@
 <template>
     <div class="apps no-select-text">
         <div class="icon" :class="{active:isSelected}">
-            <img :src="item.type | getImg">
+            <img :src="item.gameType | getImg">
             <i :class="{selected:isSelected}"></i>
         </div>
         <div class="title">
-            <p>{{item.type | getTitle}}</p>
+            <p>{{item | getTitle}}</p>
         </div>
     </div>
 </template>
@@ -20,9 +20,13 @@
             }
         },
         filters: {
-            getTitle: (value)=> {
+            getTitle: (item)=> {
+                if(item.contractName){
+                    return item.contractName
+                }
+
                 let result = ''
-                switch (value){
+                switch (item.gameType){
                     case "0":
                         result = '点击创建应用'
                         break;
@@ -30,7 +34,10 @@
                         result = '龙虎斗'
                         break;
                     case "2":
-                        result = '世界杯'
+                        result = '赛事竞猜'
+                        break;
+                    case "3":
+                        result = '百家乐'
                         break;
                 }
                 return result
@@ -46,6 +53,9 @@
                         break;
                     case "2":
                         result = require('../../assets/images/apps/ssjc.png')
+                        break;
+                    case "3":
+                        result = require('../../assets/images/apps/baijiale.png')
                         break;
                 }
                 return result

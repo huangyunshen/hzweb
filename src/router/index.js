@@ -14,8 +14,6 @@ import createApp from '@/components/createApp/createApp'
 import myApps from '@/components/myApps/myApps'
 import appInfo from '@/components/myApps/appInfo'
 import assetManage from '@/components/assetManage/assetManage'
-import createInterval from '@/components/createApp/createInterval'
-
 
 import appDetail from '@/components/applications/appDetail'
 
@@ -88,11 +86,6 @@ export default new Router({
                     path: 'assetManage',
                     name: 'assetManage',
                     component: assetManage
-                },
-                {
-                    path: 'createInterval',
-                    name: 'createInterval',
-                    component: createInterval
                 }
             ]
         },
