@@ -186,10 +186,15 @@
                                 this.steps++
                                 this.btnVal = '完成'
                             } else {
+                                this.$store.commit('setCryptPercent', {percent: false, text: ''})
                                 this.$message.error('请在配置组件配置跳转路径')
                             }
-                        }, error => {
-                            this.$message.error(error.message)
+                        }).catch((err)=>{
+                            this.$store.commit('setCryptPercent', {percent: false, text: ''})
+                            if(err.message)
+                            this.$message.error(err.message)
+                            else 
+                            this.$message.error(err)
                         })
                     }
                 } else {

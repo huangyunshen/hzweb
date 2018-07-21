@@ -7,7 +7,7 @@ contract Quiz {
     uint public creationTime;
     uint public historyTotalCoins = 0; // 历史下注总额
 
-    uint liveId;//赛事ID
+    uint public liveId;//赛事ID
     string homeTeam; //主队
     string visitingTeam; //客队
     uint oddsH; //主胜赔率
@@ -63,6 +63,10 @@ contract Quiz {
         vConcedePoints = _vConcedePoints;
         liveId = _liveId;
         creationTime = getTimestamp();
+    }
+
+    function getLiveId() returns(uint){
+        return liveId;
     }
 
     // 获取当前出块时间戳 (单位是秒)

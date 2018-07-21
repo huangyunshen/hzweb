@@ -12,12 +12,15 @@ contract Baccarat {
     uint totalCoins = 0; // 当前一局下注总额
     uint [] randomNum; // 保存传入的随机数
     uint xorNum = 0; // 保存异或的值
+
+    uint[] private pokerList;//当前这局的6张牌
+
     uint [] private resultHistory; // 保存历史结果 60 局
     uint [] private currentResult1 = [0, 0, 0]; // 保存当前局结算后庄家的三张牌
     uint [] private currentResult2 = [0, 0, 0]; // 保存当前局结算后闲家的三张牌
     uint [] private finalPoint = [0, 0]; // 最后结果点数，调试用
     uint [2] pokerNum = [2, 2];  // 闲庄最后牌数
-    uint nSize = 88;  // 保存最近15局结果
+    uint nSize = 88;  // 保存最近88局结果
     /**
     * 庄 1 闲 2 和 3
     *
@@ -88,7 +91,7 @@ contract Baccarat {
     function sendBetInfo(address _addr, uint _cho, uint _ran, uint _coin) public payable {
         totalCoins += _coin;
         deposit();
-        if (getCurrentBalance() / 32 < totalCoins) {
+        if (getCurrentBalance() / 66 < totalCoins) {
             totalCoins -= _coin;
             transferCoin(_addr, _coin);
             emit returnBetResult(false, _addr, "下注失败");
@@ -148,11 +151,36 @@ contract Baccarat {
         reset();
     }
 
+    function getPokerResult(uint index) public returns (uint){
+        uint nNum = 0;
+        for (uint i = 0; i < pokerList.length - 1; i++)
+        {
+            if (index != i)
+            {
+                if (pokerList[i] < pokerList[index])
+                {
+                    nNum++;
+                }
+            }
+        }
+        return (pokerList[index] - nNum) % 52;
+    }
+
+    function getPokerList() public {
+        for (uint i = 0; i < 6; i++)
+        {
+            pokerList.push(getXorPerson(xorNum, 1 + i * 3, 3) % (52 * 8));
+        }
+    }
+
     // 结算赔钱  先闲后庄
     function settleFun() public payable {
         pokerNum = [2, 2];
-        currentResult1 = [getXorPerson(xorNum, 1, 3) % 52, getXorPerson(xorNum, 4, 3) % 52, getXorPerson(xorNum, 7, 3) % 52];
-        currentResult2 = [getXorPerson(xorNum, 10, 3) % 52, getXorPerson(xorNum, 13, 3) % 52, getXorPerson(xorNum, 16, 3) % 52];
+
+        getPokerList();
+
+        currentResult1 = [getPokerResult(0), getPokerResult(1), getPokerResult(2)];
+        currentResult2 = [getPokerResult(3), getPokerResult(4), getPokerResult(5)];
 
         // A ~ K  1 ~ 13
         uint poker1 = (currentResult1[0] % 13 + 1) >= 10 ? 0 : (currentResult1[0] % 13 + 1);
@@ -275,7 +303,11 @@ contract Baccarat {
                 }
             }
             if (pokerNum[0] == 3) {
-                // todo
+                if ((currentResult1[0] % 13 == currentResult2[0] % 13 || currentResult1[0] % 13 == currentResult2[1] % 13 || currentResult1[0] % 13 == currentResult2[2] % 13)
+                && (currentResult1[1] % 13 == currentResult2[0] % 13 || currentResult1[1] % 13 == currentResult2[1] % 13 || currentResult1[1] % 13 == currentResult2[2] % 13)
+                    && (currentResult1[2] % 13 == currentResult2[0] % 13 || currentResult1[2] % 13 == currentResult2[1] % 13 || currentResult1[2] % 13 == currentResult2[2] % 13)) {
+                    transferFun(30);
+                }
             }
         }
     }
@@ -345,7 +377,7 @@ contract Baccarat {
 
     // 处理这个随机数,得到3个值
     function getXorPerson(uint number, uint start, uint long) public returns (uint) {
-        return (number % (10 ** (19 - start))) / (10 ** (19 - start - long));
+        return (number / (10 ** start)) % (10 ** long);
     }
 
     // 返回当前合约账户的余额
@@ -357,7 +389,7 @@ contract Baccarat {
     function getSetting() public constant returns (uint[]) {
         return priceArr;
     }
-    // 返回最后60场结果
+    // 返回最后88场结果
     function getHistoryRes() public constant returns (uint[]) {
         return resultHistory;
     }
@@ -403,9 +435,6 @@ contract Baccarat {
         drawCoins = 0;
         pointDraw.length = 0;
         pointDrawCoins = 0;
-    }
-
-    function aaa() constant returns (uint, uint, uint [], uint [], uint [], uint [], uint){
-        return (xorNum, totalCoins, randomNum, currentResult1, currentResult2, finalPoint, bankerD.length);
+        pokerList.length = 0;
     }
 }

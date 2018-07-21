@@ -14,6 +14,8 @@ import createApp from '@/components/createApp/createApp'
 import myApps from '@/components/myApps/myApps'
 import appInfo from '@/components/myApps/appInfo'
 import assetManage from '@/components/assetManage/assetManage'
+import voteMain from '@/components/dposVote/voteMain'
+// import createInterval from '@/components/createApp/createInterval'
 
 import appDetail from '@/components/applications/appDetail'
 
@@ -86,7 +88,17 @@ export default new Router({
                     path: 'assetManage',
                     name: 'assetManage',
                     component: assetManage
+                },
+                {
+                    path: 'voteMain',
+                    name: 'voteMain',
+                    component: voteMain
                 }
+                // {
+                //     path: 'createInterval',
+                //     name: 'createInterval',
+                //     component: createInterval
+                // }
             ]
         },
         {

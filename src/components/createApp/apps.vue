@@ -111,6 +111,9 @@
             margin-top: 20px;
             font-size: 17px;
             color: #8490c5;
+            p{
+                white-space: nowrap;
+            }
         }
     }
 

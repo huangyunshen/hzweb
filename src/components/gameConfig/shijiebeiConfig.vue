@@ -19,23 +19,23 @@
                             </el-form-item>
 
                             <el-form-item class="el-wallet-style" label="赛事类型">
-                                <el-select v-model="configData.type" placeholder="请选择" style="width: 100%;">
+                                <el-select v-model="configData.type" placeholder="请选择" style="width: 100%;" @change="setSession(configData.type)">
                                     <el-option
                                         v-for="item in types"
-                                        :key="item.type"
-                                        :label="item.name"
-                                        :value="item.type">
+                                        :key="item"
+                                        :label="item"
+                                        :value="item">
                                     </el-option>
                                 </el-select>
                             </el-form-item>
 
                             <el-form-item class="el-wallet-style" label="比赛场次">
-                                <el-select v-model="configData.liveId" placeholder="请选择" style="width: 100%;">
+                                <el-select v-model="configData.id" placeholder="请选择" style="width: 100%;" @change="setDefaultDeadline" no-data-text="请选择赛事类型">
                                     <el-option
-                                        v-for="item in gameData"
-                                        :key="item.liveId"
-                                        :label="item.c4T1 + ' VS ' + item.c4T2"
-                                        :value="item.liveId">
+                                        v-for="(item, key) in gameData"
+                                        :key="key"
+                                        :label="item.zhuTeam + ' VS ' + item.keTeam"
+                                        :value="key">
                                     </el-option>
                                 </el-select>
                             </el-form-item>
@@ -150,11 +150,8 @@
 </template>
 
 <script>
-    import shijiebeiRule from "./shijiebeiRule" // TODO  待更改世界杯游戏规则
-    import gameData from "./data"
-
+    import shijiebeiRule from "./shijiebeiRule" 
     import contract from '../../../contracts/saishijingcai/playGame.json'
-    // import baccarat from '../../../contracts/saishijingcai/instanceTemplate.json'
     import sol from '../../../contracts/saishijingcai/playGame.sol'
 
     export default {
@@ -177,14 +174,22 @@
                     hConcedePoints: 0,
                     vConcedePoints: 0,
                     liveId: null,
+                    id:""
                 },
-                types: [
-                    {type: 2, name: '中超'}
-                ],
-                gameData: []
+                types: {},
+                gameData: {},
+                totalData:{},
             }
         },
         methods: {
+            setDefaultDeadline() {
+                this.configData.deadline = new Date( this.gameData[this.configData.id].gameTime)                
+            },
+            setSession(type) {
+                this.configData.id = this.configData.deadline = ''
+                this.gameData = {}
+                this.gameData = this.totalData[type]
+            },
             deploy() {
                 let user = this.$store.state.address
                 return new Promise((resolve, reject) => {
@@ -194,12 +199,8 @@
                         return
                     }
                     let hTeam, vTeam;
-                    for (let key in this.gameData) {
-                        if (this.gameData[key].liveId == this.configData.liveId) {
-                            hTeam = this.gameData[key].c4T1
-                            vTeam = this.gameData[key].c4T2
-                        }
-                    }
+                    hTeam = this.gameData[this.configData.id].zhuTeam                    
+                    vTeam = this.gameData[this.configData.id].keTeam                    
                     try {
                         this.$store.commit('setCryptPercent', {percent: true, text: '创建中···'})
                         this.$funs.unlockAccount().then((res) => {
@@ -216,6 +217,7 @@
                                 Number(this.configData.vConcedePoints),
                                 Number(this.configData.liveId),
                             ];
+                            
                             this.$funs.magrationContract(user, contract, sol, args)
                                 .then((contractIns) => {
                                     this.$store.commit('setCryptPercent', {percent: true, text: '创建成功！正在充值···'})
@@ -237,15 +239,15 @@
                     }
                 })
             },
-            verifyData() {
+            verifyData() {                
                 let balance = Number(this.$store.state.balance)
-                // if (!this.configData.name) {
-                //     return new Error('请输入游戏名称！');
-                // }
+                if (!this.configData.name) {
+                    return new Error('请输入游戏名称！');
+                }
                 if (!this.configData.type) {
                     return new Error('请选择赛事类型！');
                 }
-                if (!this.configData.liveId) {
+                if (!this.configData.id && this.configData.id != 0) {
                     return new Error('请选择比赛场次！');
                 }
                 if (!this.$funs.validateFloatNum(this.configData.recharge)) {
@@ -270,6 +272,13 @@
                 if (!this.configData.deadline) {
                     return new Error('请选择下注截止时间！');
                 }
+                let now = new Date();
+                if (this.configData.deadline < now) {   
+                    return new Error('下注截止时间应在当前时间之后！');
+                }
+                if (this.configData.deadline > new Date( this.gameData[this.configData.id].gameTime)) {   
+                    return new Error('下注截止时间应在比赛开始时间之前！');
+                }
                 if (!this.$funs.validateFloatNum(this.configData.oddsH) || !this.$funs.validateFloatNum(this.configData.oddsD) || !this.$funs.validateFloatNum(this.configData.oddsV)) {
                     return new Error('请输入正确的赔率！');
                 }
@@ -290,8 +299,35 @@
                 return String(str).split(point)[n] || ''
             }
         },
+        beforeMount() {
+            this.$axios.post('/api/getResults.php')
+            .then((res) => {
+                if(res.data.code == 200) {
+                    let result = res.data.result
+                    let len = result.length
+                    if(result.length) {
+                        this.types = {}
+                        this.totalData = {}
+                        for (let i = 0; i < len; i++) {
+                            if(result[i].type === "未开赛"){
+                                let name = result[i].name
+                                if(!this.types[name]) {
+                                    this.types[name] = name
+                                    this.totalData[name] = []
+                                }
+                                this.totalData[name].push(result[i])          
+                            }                  
+                        }
+                    } else {
+                        this.$message.error("目前没有进行中的比赛")
+                    }
+                }
+                
+            }).catch((error) => {
+                this.$message.error(String(error))
+            })
+        },
         mounted() {
-            this.gameData = gameData.result.views.saicheng1
         }
     }
 </script>

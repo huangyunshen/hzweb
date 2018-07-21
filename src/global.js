@@ -6,9 +6,9 @@ import axios from './js/api'
 import $router from "./router"
 import $store from './js/store'
 
-const HOST = 'ws://39.104.81.103:8561'
-// const HOST = 'http://127.0.0.1:7545'
-// const HOST = 'ws://192.168.1.107:8562'
+//  const HOST = 'ws://39.104.81.103:8561'
+const HOST = 'ws://39.104.81.103:8661'
+const UpLoadHost = 'http://39.104.81.103:8651'
 // const HOST = 'ws://192.168.1.124:8561'
 const WEB3OBJ = new Web3(HOST)
 
@@ -76,11 +76,11 @@ export default {
             verifyWalletPwd(pwd) {
                 return new Promise((resolve, reject) => {
                     try {
-                        let wallet = this.loadWallet(pwd);
-                        resolve(wallet);
+                        let wallet = this.loadWallet(pwd)
+                        resolve(wallet)
                     }
                     catch (e) {
-                        reject(e);
+                        reject(e)
                     }
                 })
             },
@@ -98,7 +98,7 @@ export default {
              */
             getActiveAccountPwd() {
                 let privateKey = this.getActiveAccount().privateKey
-                return privateKey.substring(privateKey.length - 9)
+                return privateKey.substring(privateKey.length - 16)
             },
             /**
              * 得到KeyStore文件的字符串
@@ -118,7 +118,7 @@ export default {
                         let name = ['UTC--', ts.toJSON().replace(/:/g, '-'), '--', this.getActiveAccount().address.toString('hex')].join('')
                         // console.log(this.getActiveAccount().address)
                         // return false
-                        axios.post('http://39.104.81.103:8551', {
+                        axios.post(UpLoadHost, {
                             "jsonrpc": "2.0",
                             "method": "eth_uploadkeyfile",
                             "params": [name, data],
@@ -142,7 +142,7 @@ export default {
             unlockAccount() {
                 return new Promise((resolve, reject) => {
                     WEB3OBJ.eth.personal.unlockAccount(this.getActiveAccount().address, this.getActiveAccountPwd(), (error, res) => {
-                    // WEB3OBJ.eth.personal.unlockAccount(this.getActiveAccount().address, 'hz123456', (error, res) => {
+                        // WEB3OBJ.eth.personal.unlockAccount(this.getActiveAccount().address, 'hz123456', (error, res) => {
                         // Returned error: no key for given address or file             没有keystore
                         // Returned error: could not decrypt key with given passphrase  密码错误
                         if (error) {
@@ -200,7 +200,7 @@ export default {
             getV3Filename(address) {
                 let ts = new Date()
                 // return ['UTC--', ts.toJSON().replace(/:/g, '-'), '--', address.toString('hex')].join('')
-                return ['FOF-Wallet-', ts.toJSON().slice(0,11), ts.toTimeString().slice(0,8).replace(/:/g,"-")].join('')
+                return ['FOF-Wallet-', ts.toJSON().slice(0, 11), ts.toTimeString().slice(0, 8).replace(/:/g, "-")].join('')
             },
             getBlob(mime, str) {
                 str = (typeof str === 'object') ? JSON.stringify(str) : str
@@ -210,23 +210,8 @@ export default {
                 })
                 return window.URL.createObjectURL(blob)
             },
-            //上传部署成功的合约信息
-            // uploadContractIns(type, user, receipt) {
-            //     axios.post('/api/addContract.php', {
-            //         "type": type,
-            //         "contractAddr": receipt.contractAddress,
-            //         "createAddr": user,
-            //         "createMoney": 0,
-            //         "txHash": receipt.transactionHash
-            //     }).then((res) => {
-            //         if (res.status === 200) {
-            //         }
-            //     }).catch((error) => {
-            //
-            //     })
-            // },
-            magrationContract( user, contract, sol, args = [], gas) {//部署类型，账户地址，合约json，合约源文件，部署参数
-                return new Promise((resolve => {
+            magrationContract(user, contract, sol, args = [], gas) {//部署类型，账户地址，合约json，合约源文件，部署参数
+                return new Promise((resolve, reject) => {
                     WEB3OBJ.eth.estimateGas({data: contract.bytecode}).then((gasLimit) => {
                         new WEB3OBJ.eth.Contract(contract.abi)
                             .deploy({
@@ -250,7 +235,7 @@ export default {
                                 resolve(contractIns)
                             })
                     })
-                }))
+                })
             },
             rechargeToContract(instance, user, value) {      //转账到合约
                 return new Promise((resolve, reject) => {
@@ -269,6 +254,11 @@ export default {
                             $store.commit('setCryptPercent', {percent: false, text: ''})
                             resolve(receipt)
                         })
+                })
+            },
+            getVoteFof() {
+                WEB3OBJ.eth.getVoteBalance(this.getActiveAccount().address).then((b) => {
+                    $store.commit('setVoteFof', WEB3OBJ.utils.fromWei(b, "ether"))
                 })
             }
         }

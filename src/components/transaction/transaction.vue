@@ -331,28 +331,6 @@
                             resolve()
                         })
                     })
-                    // let Tx = require('ethereumjs-tx')
-                    // let privateKey = this.$funs.getActiveAccount().privateKey
-                    // privateKey = new Buffer(privateKey.replace('0x', ''), 'hex')
-                    // this.$web3.eth.getTransactionCount(this.$store.state.address).then((nonce) => {
-                    //     let rawTx = {
-                    //         from: this.$store.state.address,
-                    //         nonce: this.$web3.utils.toHex(nonce),
-                    //         gasPrice: this.$web3.utils.toHex(this.$store.state.gasPrice * (Math.pow(10, 9))),
-                    //         gasLimit: this.$web3.utils.toHex(this.form.gas),
-                    //         to: this.form.to,
-                    //         value: this.$web3.utils.toHex(this.$web3.utils.toWei(this.form.value, 'ether')),
-                    //         data: "",
-                    //         txType: 2
-                    //     }
-                    //     console.log(rawTx)
-                    //     let tx = new Tx(rawTx)
-                    //     tx.sign(privateKey)
-                    //     let serializedTx = tx.serialize()
-
-                    //     resolve()
-                    // })
-
                 })
             }
         }

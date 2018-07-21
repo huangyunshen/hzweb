@@ -1,13 +1,13 @@
 <template>
     <div class="app-list">
         <div class="btn-list">
-            <el-button size="mini" class="mini">全部</el-button>
-            <el-button size="mini" class="mini">赛事</el-button>
-            <el-button size="mini" class="mini">棋牌</el-button>
-            <el-button size="mini" class="mini">博彩</el-button>
+            <el-button size="mini" class="mini" :class="{active:searchType === 0}" @click="filter(0)">全部</el-button>
+            <el-button size="mini" class="mini" :class="{active:searchType === 1}" @click="filter(1)">棋牌</el-button>
+            <el-button size="mini" class="mini" :class="{active:searchType === 2}" @click="filter(2)">竞猜</el-button>
+            <el-button size="mini" class="mini" :class="{active:searchType === 3}" @click="filter(3)" disabled>博彩</el-button>
             <div class="search-app">
-                <el-input placeholder="输入应用地址或者创建人地址查找">
-                    <el-button slot="append" icon="el-icon-search"></el-button>
+                <el-input placeholder="输入应用地址或者创建人地址" v-model="searchAddr" @keyup.enter.native="search">
+                    <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
                 </el-input>
             </div>
         </div>
@@ -51,10 +51,13 @@
         </el-row>
         <div class="pagination">
             <el-pagination
+                class="tc"
                 background
-                layout="prev, pager, next"
+                @size-change="sizeChange"
+                @current-change="currentChange"
+                :current-page="currentPage"
                 :page-size="pageSize"
-                @current-change="sendMsgToServer"
+                layout="total, sizes, prev, pager, next, jumper"
                 :total="totalNum">
             </el-pagination>
         </div>
@@ -73,27 +76,57 @@
             return {
                 appList: [],
                 blankHref: '',
-                pageSize: 6,
+                pageSize:10,
                 totalNum: 0,
+                currentPage:1,
+                searchAddr:'',
+                searchType:0,
             }
         },
         methods: {
+            filter(type) {
+                this.searchType = type
+                this.getData()
+            },
+            search() {
+                if(this.$web3.utils.isAddress(this.searchAddr)) {    
+                    this.getData() 
+                } else if(this.searchAddr.trim() === '') {
+                    this.$message.error('请输入创建者地址或合约地址')
+                } else {                    
+                    this.$message.error('地址错误')
+                }
+            },
             /**
-             * 获取所有应用
+             * pageSize 改变时会触发
              */
-            sendMsgToServer(page) {
+            sizeChange(pageSize) {
+                this.pageSize = pageSize
+                this.getData()
+            },
+            /**
+             * currentChange
+             */
+            currentChange(index) {
+                this.currentPage = index
+                this.getData()
+            },
+            getData() {
                 this.$axios.post('/api/requestContract.php', {
+                    "type": this.searchType,
+                    "addr": this.searchAddr,
                     "pageSize": this.pageSize,
-                    "pageNum": page,
-                }).then((res) => {
-                    if (res.status === 200) {
-                        this.appList = res.data.result
-                        for (let i = 0; i < this.appList.length; i++) {
-                            this.$web3.eth.getBalance(this.appList[i].contractAddr).then((coin) => {
-                                this.appList[i].currentCoin = this.$web3.utils.fromWei(coin, 'ether')
-                            })
-                        }
-                        if (res.data.result.length > 0) {
+                    "pageNum": this.currentPage,
+                }).then((res) => {            
+                    if (res.data.code == 200) {                        
+                        if (res.data.result.length) {
+                            this.appList = []
+                            this.appList = this.appList.concat(res.data.result)
+                            for (let i = 0; i < this.appList.length; i++) {
+                                this.$web3.eth.getBalance(this.appList[i].contractAddr).then((coin) => {
+                                    this.appList[i].currentCoin = this.$web3.utils.fromWei(coin, 'ether')
+                                })
+                            }
                             this.totalNum = Number(res.data.dataCount)
                         } else {
                             this.$message.error('查询结果为0')
@@ -101,10 +134,6 @@
                     }
                 }).catch((error) => {
                     this.$message.error(String(error))
-                    let timer = setTimeout(() => {
-                        clearTimeout(timer)
-                        this.$message.error('无法获取应用列表')
-                    }, 3000)
                 })
             },
             getUrl(item) {
@@ -119,7 +148,7 @@
             }
         },
         mounted() {
-            this.sendMsgToServer(1)
+            this.getData()
         }
     }
 </script>
@@ -150,6 +179,9 @@
                 &:hover {
                     border-color: #726bab;
                 }
+            }
+            .active {
+                background:  #6A62A7;
             }
             .search-app {
                 display: inline-block;

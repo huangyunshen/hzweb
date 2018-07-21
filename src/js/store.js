@@ -12,8 +12,9 @@ const store = new Vuex.Store({
             text: ''
         },
         balance: '0', //账户余额
-        isLock:true,
-        appInfo:null
+        isLock: true,
+        appInfo: null,
+        voteFof: '' // 投票额度
     },
     mutations: {
         setGasPrice(state, data) {
@@ -32,8 +33,11 @@ const store = new Vuex.Store({
         setLock(state, data) {
             state.isLock = data
         },
-        setAppInfo(state, data){
+        setAppInfo(state, data) {
             state.appInfo = data
+        },
+        setVoteFof(state, data) {
+            state.voteFof = data
         }
     }
 })

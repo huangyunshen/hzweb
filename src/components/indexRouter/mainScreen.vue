@@ -18,14 +18,20 @@
                         <i class="nav-icon3" :class="{'nav-icon3-active':itemSelected==='3'}"></i>
                         <span>应用中心</span>
                     </router-link>
-                    <li @click="openUrl('http://39.104.81.103:8890')" class="pass-enter4">
+                    <li @click="openUrl('/blockQuery/#/blocksList')" class="pass-enter4">
                         <i class="nav-icon4"></i>
                         <span>区块查询</span>
                     </li>
-                    <li @click="openUrl('http://39.104.81.103:8890')" class="pass-enter5">
-                        <i class="nav-icon5"></i>
-                        <span>交易查询</span>
-                    </li>
+                    <router-link tag="li" :to="{name:'voteMain'}" @click.native="selectAnItem('5')"
+                                 class="pass-enter5" :class="{active:itemSelected==='5'}">
+                        <i class="nav-icon5" :class="{'nav-icon3-active':itemSelected==='5'}"></i>
+                        <span>DPOS投票</span>
+                    </router-link>
+                    <!--<router-link tag="li" :to="{name:'createInterval'}" @click.native="selectAnItem('5')"-->
+                                 <!--class="pass-enter5" :class="{active:itemSelected==='5'}">-->
+                        <!--<i class="nav-icon5" :class="{'nav-icon3-active':itemSelected==='5'}"></i>-->
+                        <!--<span>部署</span>-->
+                    <!--</router-link>-->
                 </ul>
             </nav>
         </div>
@@ -42,6 +48,11 @@
                     <!--<i></i>-->
                     账户余额 : {{$store.state.balance | amountUnit}}
                     <b class="el-icon-refresh" title="点击刷新余额" @click="$funs.getBalance()"></b>
+                    &nbsp;
+                    &nbsp;
+                    <span v-if="showVoteBalance">
+                          投票总额：{{ $store.state.voteFof | amountUnit}}
+                    </span>
                 </div>
                 <div class="tranc-address">
 
@@ -49,10 +60,10 @@
                         账户地址 :
                         <el-select v-model="activeAccount" @change="changeAccount">
                             <el-option
-                                v-for="(item,index) in accounts"
-                                :key="index"
-                                :label="item"
-                                :value="item"
+                                    v-for="(item,index) in accounts"
+                                    :key="index"
+                                    :label="item"
+                                    :value="item"
                             >
                                 <span class="fl">{{ item }}</span>
                                 <el-button type="primary" class="deleteMe fr" size="mini"
@@ -181,12 +192,17 @@
                     blobEnc: '',
                     fileDownloaded: true
                 },
+                voteFof: 0,
+                showVoteBalance: false
             }
         },
         computed: {
             lockFlag() {
                 return this.$store.state.isLock
             },
+            address() {
+                return this.$store.state.address
+            }
         },
         watch: {
             lockFlag() {
@@ -197,6 +213,13 @@
             },
             $route(to, from) {
                 this.isBorder = to.path !== '/mainScreen/assetManage'
+                this.showVoteBalance = this.$route.name === "voteMain"
+                if (this.$route.name === "voteMain") {
+                    this.$funs.getVoteFof()
+                }
+            },
+            address() {
+                this.$funs.getVoteFof()
             }
         },
         methods: {
@@ -212,44 +235,44 @@
                             return
                         }
                     }
-                    let newAcc = this.$web3.eth.accounts.privateKeyToAccount(privkey);
-                    wallet.add(newAcc);
+                    let newAcc = this.$web3.eth.accounts.privateKeyToAccount(privkey)
+                    wallet.add(newAcc)
                     this.loadAccounts()
-                    this.activeAccount = newAcc.address;
-                    this.changeAccount();
+                    this.activeAccount = newAcc.address
+                    this.changeAccount()
 
-                    this.runingText = "正在导入";
-                    this.importing = false;
+                    this.runingText = "正在导入"
+                    this.importing = false
                     setTimeout(() => {
-                        wallet.save(wallet.myPwd);
+                        wallet.save(wallet.myPwd)
                         this.dialog = false
                         this.$message({
                             message: this.$msg.importSucc,
                             type: 'success'
-                        });
-                        this.importing = true;
+                        })
+                        this.importing = true
                     }, 50)
                 })
             },
             createNewAcc() {
-                let wallet = this.$web3.eth.accounts.wallet;
-                let newAcc = this.$web3.eth.accounts.create();
-                wallet.add(newAcc);
+                let wallet = this.$web3.eth.accounts.wallet
+                let newAcc = this.$web3.eth.accounts.create()
+                wallet.add(newAcc)
 
                 this.loadAccounts()
-                this.activeAccount = newAcc.address;
-                this.changeAccount();
+                this.activeAccount = newAcc.address
+                this.changeAccount()
 
-                this.runingText = "正在创建";
-                this.importing = false;
+                this.runingText = "正在创建"
+                this.importing = false
                 setTimeout(() => {
-                    wallet.save(wallet.myPwd);
+                    wallet.save(wallet.myPwd)
                     this.dialog = false
                     this.$message({
                         message: this.$msg.createSucc,
                         type: 'success'
-                    });
-                    this.importing = true;
+                    })
+                    this.importing = true
                 }, 50)
             },
             selectAnItem(index) {
@@ -257,20 +280,20 @@
                 this.$funs.getBalance()
             },
             openUrl(url) {
-                window.open(url);
+                window.open(url)
             },
             lockOut() {
                 this.$emit('lockOut')
             },
             exitWallet() {
                 this.walletInfo.fileDownloaded = this.exitDialog = true
-                let encryptedJSON = this.$funs.ifWalletExist();
+                let encryptedJSON = this.$funs.ifWalletExist()
                 this.walletInfo.fileName = this.$funs.getV3Filename()
                 this.walletInfo.blobEnc = this.$funs.getBlob("text/json;charset=UTF-8", encryptedJSON)
             },
             reloadView() {
-                localStorage.removeItem('web3js_wallet');
-                localStorage.removeItem('active_account');
+                localStorage.removeItem('web3js_wallet')
+                localStorage.removeItem('active_account')
                 window.location.reload()
             },
             changeAccount() {
@@ -288,51 +311,51 @@
                 }
             },
             getMore() {
-                this.personalDialog = true;
+                this.personalDialog = true
                 setTimeout(() => {
-                    this.$refs.changeAcc.getWallet();
+                    this.$refs.changeAcc.getWallet()
                 }, 0)
             },
             showRemoveAcc(acc) {
                 this.$funs.getBalanceByWei(acc, (balance) => {
                     if (typeof balance === 'string') {
-                        this.delAccBalance = this.$web3.utils.fromWei(balance, 'ether');
+                        this.delAccBalance = this.$web3.utils.fromWei(balance, 'ether')
                     } else {
-                        this.delAccBalance = 0;
+                        this.delAccBalance = 0
                     }
-                    this.accTODelete = acc;
-                    this.deleteModal = true;
-                    this.pwd = "";
+                    this.accTODelete = acc
+                    this.deleteModal = true
+                    this.pwd = ""
                 })
             },
             removeAcc() {
                 let wallet = this.$web3.eth.accounts.wallet
                 if (this.pwd === wallet.myPwd) {
-                    wallet.remove(this.accTODelete);
+                    wallet.remove(this.accTODelete)
 
-                    this.deleting = false;
+                    this.deleting = false
                     setTimeout(() => {
-                        wallet.save(wallet.myPwd);
+                        wallet.save(wallet.myPwd)
                         // let pwd = wallet.myPwd;
                         // wallet = this.$funs.loadWallet(pwd);
                         // wallet.myPwd = pwd;
-                        this.loadAccounts();
+                        this.loadAccounts()
                         if (this.accTODelete === this.activeAccount) {
-                            this.activeAccount = this.accounts[0];
+                            this.activeAccount = this.accounts[0]
                         }
-                        this.changeAccount();
+                        this.changeAccount()
                         this.deleteModal = false
                         this.$message({
                             message: this.$msg.deleteSucc,
                             type: 'success'
-                        });
-                        this.deleting = true;
+                        })
+                        this.deleting = true
                     }, 50)
                 } else {
                     this.$message({
                         message: this.$msg.unlockFailByPwd,
                         type: 'error'
-                    });
+                    })
                 }
             }
         },
@@ -347,6 +370,9 @@
                 case 'applications':
                     this.itemSelected = '3'
                     break
+                case 'voteMain':
+                    this.itemSelected = '5'
+                    break
                 default:
                     break
             }
@@ -355,7 +381,7 @@
                 this.loadAccounts()
                 this.activeAccount = localStorage.getItem('active_account')
             }
-        }
+        },
     }
 </script>
 
@@ -384,9 +410,9 @@
                 border-top-style: solid;
                 border-top-width: 2px;
                 border-image-source: linear-gradient(-85deg,
-                    #3410f7 0%,
-                    #711bdc 59%,
-                    #ad25c0 100%);
+                        #3410f7 0%,
+                        #711bdc 59%,
+                        #ad25c0 100%);
                 border-image-slice: 1;
                 -webkit-box-sizing: border-box;
                 -moz-box-sizing: border-box;
@@ -560,7 +586,7 @@
             }
             .content {
                 margin: 15px;
-                height:calc(100% - 192px);
+                height: calc(100% - 192px);
                 /*&.border {
                     border: solid 1px $border_color;
                 }*/

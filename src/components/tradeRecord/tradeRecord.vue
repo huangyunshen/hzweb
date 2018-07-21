@@ -3,7 +3,7 @@
         <!--<el-input placeholder="Search by Address / Txhash" v-model="searchParams">-->
         <!--<el-button slot="append" icon="el-icon-search" @click="getTransaction(searchParams)"></el-button>-->
         <!--</el-input>-->
-        <div v-if="showSwitch==='table'" class="table-list">
+        <div v-show="showSwitch==='table'" class="table-list">
             <div class="table-content">
                 <el-table class="trade-record-table"
                           :data="transactionsList"
@@ -25,26 +25,31 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column
-                            prop="id"
+                    <!-- <el-table-column
+                            prop="blockNum"
                             sortable
                             label="区块值">
+                    </el-table-column> -->
+                    <el-table-column
+                            prop="txFrom"
+                            label="转出方"
+                            min-width="200px">
+                    </el-table-column>
+                    <el-table-column
+                            prop="txTo"
+                            label="转入方"
+                            min-width="200px">
+                    </el-table-column>
+                    <el-table-column
+                            prop="txValue"
+                            label="金额"
+                            :formatter="valueFilter">
                     </el-table-column>
                     <el-table-column
                             prop="time"
                             sortable
                             width="180px"
                             label="时间">
-                    </el-table-column>
-                    <el-table-column
-                            prop="sendAddr"
-                            label="转出方"
-                            min-width="300px">
-                    </el-table-column>
-                    <el-table-column
-                            prop="revAddr"
-                            label="转入方"
-                            min-width="300px">
                     </el-table-column>
                 </el-table>
             </div>
@@ -57,21 +62,23 @@
             </el-pagination>
         </div>
 
-        <div v-if="showSwitch==='list'" class="tx-list">
-            <p class="title">交易信息</p>
-            <el-row :gutter="20" v-for="(value,key) in transactionsData" :key="key">
-                <el-col :span="6">
-                    <div>
-                        {{ key + " :" }}
-                    </div>
-                </el-col>
-                <el-col :span="17" :offset="1">
-                    <div>
-                        {{ value }}
-                    </div>
-                </el-col>
-            </el-row>
-            <div class="return-back">
+        <div v-show="showSwitch==='list'" class="tx-list">
+            <div class="list-content">
+                <p class="title">交易信息</p>
+                <el-row v-for="(value,key) in transactionsData" :key="key">
+                    <el-col :span="6">
+                        <div>
+                            {{ key + " :" }}
+                        </div>
+                    </el-col>
+                    <el-col :span="17" :offset="1">
+                        <div>
+                            {{ value }}
+                        </div>
+                    </el-col>
+                </el-row>
+            </div>
+            <div v-show="showSwitch==='list'" class="return-back">
                 <el-button @click="showSwitch='table'">返回</el-button>
             </div>
         </div>
@@ -130,18 +137,19 @@
             },
             currentPage(page) {
                 if (this.address) {
-                    this.transactionsList = []
                     let userAddr = this.$store.state.address
                     this.$axios.post('/api/requestTx.php', {
                         "addr": userAddr,
                         "pageSize": this.pageSize,
                         "pageNum": page,
                     }).then((res) => {
-                        if (res.status === 200) {
-                            if (res.data.length > 0) {
-                                this.transactionsList = res.data
-                                this.totalNum = Number(res.data[0].dataCount)
-                            }
+                        console.log(res)
+                        if (res.data.code == 200) {
+                            if (res.data.result.length) {
+                                this.transactionsList = []
+                                this.transactionsList = res.data.result
+                                this.totalNum = Number(res.data.dataCount)
+                            } 
                             // else {
                             //     this.$message.error("未查询到相关信息")
                             // }
@@ -150,6 +158,9 @@
                         this.$message.error(String(error))
                     })
                 }
+            },
+            valueFilter(row) {
+                return this.$web3.utils.fromWei(row.txValue, 'ether');
             }
         },
         mounted() {
@@ -184,26 +195,28 @@
             }
         }
         .tx-list {
-            padding: 20px;
             color: #8490c5;
             font-size: 16px;
-            .title {
-                width: 100%;
-                height: 50px;
-                line-height: 50px;
-                background: #342C67;
-                margin: -20px 0 10px -20px;
-                padding: 0 20px;
-                font-size: 20px;
-            }
-            .el-row {
-                line-height: 45px;
+            height: 100%;
+            .list-content {
+                height: calc(100% - 60px);
+                overflow-y: auto;
+                .title {
+                    height: 50px;
+                    line-height: 50px;
+                    background: #342C67;
+                    font-size: 20px;
+                    text-align: center;
+                }
+                .el-row {
+                    line-height: 35px;
 
-                .el-col:first-child {
-                    text-align: right;
+                    .el-col:first-child {
+                        text-align: right;
+                    }
                 }
             }
-            .return-back {
+            .return-back { 
                 text-align: center;
                 margin-top: 10px;
                 .el-button {
@@ -217,6 +230,6 @@
                     }
                 }
             }
-        }
+    }
     }
 </style>

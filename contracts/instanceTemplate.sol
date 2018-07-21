@@ -1,19 +1,23 @@
 pragma solidity ^0.4.0;
 
 contract instanceTemplate {
+    string public contractName;
     uint public gameType;
-    address public creator = msg.sender;
+    address public creator;
     uint public creationTime;
-    uint public historyTotalCoins = 0; // 历史下注总额
+    uint public historyTotalCoins;
+    uint public liveId;
+
+    function getPublicData() public constant returns (string, uint, address, uint, uint){
+        return (contractName, gameType, creator, creationTime, historyTotalCoins);
+    }
+
+    //获取liveID
+    function getLiveId() public constant returns(uint){
+        return liveId;
+    }
 
     function deposit() public payable { }
 
-    function drawings(uint _coin) payable {
-//        if (msg.sender == creator) {
-//            uint _balance = getCurrentBalance();
-//            if ((_balance - _coin) / 10 > totalCoins) {
-//                transferCoin(creator, _coin);
-//            }
-//        }
-    }
+    function drawings(uint _coin) payable { }
 }

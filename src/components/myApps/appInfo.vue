@@ -37,7 +37,7 @@
                                 v-model="filterAppInfo.currentCoin"
                                 placeholder=""
                         >
-                            <template slot="append">FOF</template>
+                            <el-button slot="append" @click="getContractBalance">FOF</el-button>
                         </el-input>
                     </el-form-item>
                     <el-form-item class="mt-40" label="奖池充值">
@@ -71,19 +71,37 @@
                             :row-style="rowStyle"
                             :cell-style="{'border-bottom':'none'}"
                     >
-                        <el-table-column
-                                prop="date"
-                                label="日期"
-                                width="180">
+                       <el-table-column
+                                prop="txHash"
+                                width="400"
+                                label="交易hash">
+                            <template slot-scope="scope">
+                                <a style="color: #B9B4E8"
+                                :title="scope.row.txHash"
+                                href="javascript:void(0)">
+                                    {{ scope.row.txHash }}
+                                </a>
+                            </template>
                         </el-table-column>
                         <el-table-column
-                                prop="name"
-                                label="姓名"
-                                width="180">
+                                prop="txFrom"
+                                label="发送方"
+                                min-width="350px">
                         </el-table-column>
                         <el-table-column
-                                prop="address"
-                                label="地址">
+                                prop="txTo"
+                                label="接收方"
+                                min-width="350px">
+                        </el-table-column>
+                        <el-table-column
+                                prop="txValue"
+                                label="金额"
+                                :formatter="valueFilter">
+                        </el-table-column>
+                        <el-table-column
+                                prop="time"
+                                label="时间"
+                                width="180">
                         </el-table-column>
                     </el-table>
                 </div>
@@ -91,9 +109,11 @@
                     <el-pagination
                         class="tc"
                         background
-                        layout="prev, pager, next"
+                        layout="total, sizes, prev, pager, next, jumper"
                         :page-size="pageSize"
-                        @current-change="currentPage"
+                        :current-page="currentPage"
+                        @size-change="sizeChange"
+                        @current-change="currentChange"
                         :total="totalNum">
                     </el-pagination>
                 </div>
@@ -112,8 +132,9 @@
             return {
                 tabActive: '1',
                 form: {},
-                pageSize: 20,
-                totalNum: 1,
+                pageSize: 10,
+                currentPage:1,
+                totalNum: 0,
                 tableData: [],
                 appInfo: {},
                 isDisabled: false
@@ -128,15 +149,15 @@
                 let type = this.appInfo.gameType
                 switch (type) {
                     case "1":
-                        result = this.appInfo.contractName
+                        result = this.appInfo.contractName || "龙虎斗"
                         this.appInfo.addr = `/DragonTigerFight/?${this.appInfo.contractAddr}`
                         break
                     case "2":
-                        result = this.appInfo.contractName
+                        result = this.appInfo.contractName || "赛事竞猜"
                         this.appInfo.addr = `/quiz/?${this.appInfo.contractAddr}`
                         break
                     case "3":
-                        result = this.appInfo.contractName
+                        result = this.appInfo.contractName || "百家乐"
                         this.appInfo.addr = `/baccarat/?${this.appInfo.contractAddr}`
                         break
                     default:
@@ -204,6 +225,7 @@
                     this.$funs.unlockAccount().then((res) => {
                         this.rechargefun(this.$store.state.address)
                     }).catch((reason) => {
+                        console.log(reason);
                         this.$store.commit('setCryptPercent', {
                                 percent: false,
                                 text: ''
@@ -267,6 +289,12 @@
                     this.$message.error('请先选泽一个应用！')
                     return
                 }
+
+                if (this.appInfo.createAddr !== this.$store.state.address) {
+                    this.$message.error('不是应用创建者，不能提现！')
+                    return
+                }
+
                 if (this.form.drawingVal === undefined || this.form.drawingVal === '') {
                     this.$message.error('请输入提现金额！')
                     return
@@ -323,7 +351,16 @@
                         this.getContractBalance()
                     })
             },
-            currentPage(page) {
+            /**
+             * pageSize 改变时会触发
+             */
+            sizeChange(pageSize) {
+                this.pageSize = pageSize
+                this.getData()
+            },
+            currentChange(index) {
+                this.currentPage = index
+                this.getData()
             },
             goPlay() {
                 if(this.isDisabled){
@@ -343,6 +380,31 @@
                 this.$funs.getBalanceByWei(this.appInfo.contractAddr, balance => {
                     this.filterAppInfo.currentCoin = this.$web3.utils.fromWei(balance, 'ether')
                 })
+            },            
+            getData() {
+                let addr = this.appInfo.contractAddr
+                if(addr) {
+                    this.$axios.post('/api/requestTx.php', {
+                        "addr": addr,
+                        "pageSize": this.pageSize,
+                        "pageNum": this.currentPage,
+                    }).then((res) => {
+                        if (res.data.code == 200) {
+                            if (res.data.result.length) {
+                                this.totalNum = Number(res.data.dataCount)
+                                this.tableData = []
+                                this.tableData = this.tableData.concat(res.data.result)                               
+                            } else {
+                                this.$message.error("没有相关数据")
+                            }
+                        }
+                    }).catch((error) => {
+                        this.$message.error(String(error))
+                    })
+                }
+            },
+            valueFilter(row) {
+                return this.$web3.utils.fromWei(row.txValue, 'ether');
             }
         },
         mounted() {
@@ -360,6 +422,7 @@
                             this.isDisabled = true
                         } else {
                             this.getContractBalance()
+                            this.getData()
                         }
                     })
                 })

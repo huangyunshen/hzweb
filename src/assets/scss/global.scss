@@ -193,6 +193,12 @@ textarea:read-only {
         padding: 0 30px;
         border: solid 1px $outside_border_color;
         background: rgba(32, 27, 67, 0.97) !important;
+        .el-input-number{
+            span{
+                background: #211750;
+                border-color: #211750;
+            }
+        }
     }
     .create-wallet-dialog {
         &.app-detail-font {
@@ -400,6 +406,9 @@ input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
     .el-select-dropdown__item:hover{
         background: #6A62A7;
     }
+}
+.el-select-dropdown__empty {
+    color:#726BAB;
 }
 
 .el-steps {
