@@ -258,7 +258,6 @@
                 })
             },
             getList() {
-                console.log("succ")
                 this.isCandidate = false
                 this.voterBtnTxt = '申请成为候选人'
                 this.$axios.post('/api/requestDeleGate.php', {
@@ -272,11 +271,11 @@
                             }).then((res) => {
                                 let vote = res.data
                                 if (vote.code === "200") {
-                                    if (vote.result) {
-                                        for (let i = 0; i < vote.result.length; i++) {
+                                   if (vote.result) {
+                                        for(let k in vote.result){
                                             for (let j = 0; j < data.result.length; j++) {
-                                                if (data.result[j].delegate === vote.result[i].txTo) {
-                                                    data.result[j].myVote = vote.result[i].txValue
+                                                if (data.result[j].delegate === k) {
+                                                    data.result[j].myVote = vote.result[k]
                                                 }
                                             }
                                         }
@@ -295,6 +294,7 @@
                                         this.voterList = data.result
                                         this.allList = JSON.parse(JSON.stringify(this.voterList))
                                     }
+
                                 } else {
                                     this.$message.error(vote.msg)
                                 }
