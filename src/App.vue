@@ -42,7 +42,7 @@
                 timeRemaining: 0,   //倒计时时间
                 duration: 1800,       //多久后锁定（s）
                 lockModal: true,
-                pwd: '111111111',
+                pwd: '',
                 unlocking: true,
             }
         },

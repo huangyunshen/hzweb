@@ -1,64 +1,49 @@
 <template>
     <div class="trade-record">
-        <!--<el-input placeholder="Search by Address / Txhash" v-model="searchParams">-->
-        <!--<el-button slot="append" icon="el-icon-search" @click="getTransaction(searchParams)"></el-button>-->
-        <!--</el-input>-->
         <div v-show="showSwitch==='table'" class="table-list">
             <div class="table-content">
-                <el-table class="trade-record-table"
-                          :data="transactionsList"
-                          height="100%"
-                          style="color:#8490c5;font-size: 16px;background:#191131;text-align:center;"
-                          :header-cell-style="headerCellStyle"
-                          :row-style="rowStyle"
-                          :cell-style="{'border-bottom':'none'}"
+                <el-table
+                    :data="transactionsList"
+                    height="100%"
+                    style="color:#8490c5;font-size: 16px;background:#191131;text-align:center;"
+                    :header-cell-style="headerCellStyle"
+                    :row-style="rowStyle"
+                    :cell-style="{'border-bottom':'none'}"
+                    @row-click="showDetail"
                 >
-                    <el-table-column
-                            prop="txHash"
-                            label="交易hash"
-                    >
+                    <!--<el-table-column-->
+                    <!--prop="txHash"-->
+                    <!--label="交易hash"-->
+                    <!--&gt;-->
+                    <!--<template slot-scope="scope">-->
+                    <!--<a style="color:#8490c5;"-->
+                    <!--:title="scope.row.txHash"-->
+                    <!--:href="scope.row.txHash"-->
+                    <!--@click.prevent="getTransaction(scope.row.txHash)">{{ scope.row.txHash }}</a>-->
+                    <!--</template>-->
+                    <!--</el-table-column>-->
+                    <el-table-column label="类型" :formatter="tradeType" width="200px"></el-table-column>
+                    <el-table-column label="时间" prop="time" sortable width="200px"></el-table-column>
+                    <el-table-column label="对方账号" :formatter="otherAccount" min-width="200px"></el-table-column>
+                    <el-table-column label="应用" :formatter="appName"></el-table-column>
+                    <el-table-column label="金额">
                         <template slot-scope="scope">
-                            <a style="color:#8490c5;"
-                               :title="scope.row.txHash"
-                               :href="scope.row.txHash"
-                               @click.prevent="getTransaction(scope.row.txHash)">{{ scope.row.txHash }}</a>
+                            <div class="amount-in" v-if="scope.row.txFrom.toLowerCase() != myAddr">{{"+ " + $web3.utils.fromWei(scope.row.txValue, 'ether') + " FOF"}}</div>
+                            <div class="amount-out" v-if="scope.row.txFrom.toLowerCase() == myAddr">{{"- " + $web3.utils.fromWei(scope.row.txValue, 'ether') + " FOF"}}</div>
                         </template>
-                    </el-table-column>
-
-                    <!-- <el-table-column
-                            prop="blockNum"
-                            sortable
-                            label="区块值">
-                    </el-table-column> -->
-                    <el-table-column
-                            prop="txFrom"
-                            label="转出方"
-                            min-width="200px">
-                    </el-table-column>
-                    <el-table-column
-                            prop="txTo"
-                            label="转入方"
-                            min-width="200px">
-                    </el-table-column>
-                    <el-table-column
-                            prop="txValue"
-                            label="金额"
-                            :formatter="valueFilter">
-                    </el-table-column>
-                    <el-table-column
-                            prop="time"
-                            sortable
-                            width="180px"
-                            label="时间">
                     </el-table-column>
                 </el-table>
             </div>
+
             <el-pagination
-                    background
-                    layout="prev, pager, next"
-                    :page-size="pageSize"
-                    @current-change="currentPage"
-                    :total="totalNum">
+                class="tc"
+                background
+                layout="total, sizes, prev, pager, next, jumper"
+                :page-size="pageSize"
+                :current-page="currentPage"
+                @size-change="sizeChange"
+                @current-change="currentChange"
+                :total="totalNum">
             </el-pagination>
         </div>
 
@@ -66,12 +51,12 @@
             <div class="list-content">
                 <p class="title">交易信息</p>
                 <el-row v-for="(value,key) in transactionsData" :key="key">
-                    <el-col :span="6">
+                    <el-col :span="4">
                         <div>
                             {{ key + " :" }}
                         </div>
                     </el-col>
-                    <el-col :span="17" :offset="1">
+                    <el-col :span="18" :offset="1" style="word-break:break-all; word-wrap:break-word;">
                         <div>
                             {{ value }}
                         </div>
@@ -92,41 +77,82 @@
             return {
                 transactionsList: [],
                 transactionsData: null,
-                // searchParams: '', // 搜索参数
                 showSwitch: 'table',// 显示表格还是列表
                 totalNum: 0,
-                pageSize: 20
+                pageSize: 10,
+                currentPage: 1,
+                myAddr: ''
             }
         },
         computed: {
             address() {
-                return this.$store.state.address
+                let addr = this.$store.state.address
+                this.myAddr = addr.toLowerCase()
+                return addr
+            },
+            amount(row) {
+                return row.txValue
             }
         },
         watch: {
             address() {
-                this.currentPage(1)
+                this.currentPage = 1
+                this.getData()
             }
         },
         methods: {
+            /*
+                表格数据处理
+            */
+            tradeType(row) {
+                let fromAddr = row.txFrom.toLowerCase()
+                if (row.txToType === '0') {
+                    if (this.myAddr === fromAddr) {
+                        return "转账-转出"
+                    } else {
+                        return "转账-转入"
+                    }
+                } else if (!row.txToType) {
+                    return "创建"
+                } else {
+                    return "下注"
+                }
+            },
+            otherAccount(row) {
+                let fromAddr = row.txFrom.toLowerCase()
+                if (this.myAddr === fromAddr) {
+                    return row.txTo || "创建应用"
+                } else {
+                    return row.txFrom
+                }
+            },
+            appName(row) {
+                let type = row.txToType
+                switch (type) {
+                    case "1":
+                        return "龙虎斗";
+                    case "2":
+                        return "赛事竞猜";
+                    case "3":
+                        return "百家乐";
+                    default:
+                        return "-"
+                }
+            },
             /**
              * 获取交易信息
              * @param hash
              */
-            getTransaction(hash) {
-                if (hash) {
-                    this.$web3.eth.getTransaction(hash)
-                        .then((data) => {
-                            delete data.datasourcecode
-                            this.transactionsData = data
-                            this.showSwitch = 'list'
-                        })
-                } else {
-                    this.showSwitch = 'table'
-                }
+            showDetail(row) {
+                this.$web3.eth.getTransaction(row.txHash)
+                    .then((data) => {
+                        delete data.datasourcecode
+                        this.transactionsData = data
+                        this.showSwitch = 'list'
+                    })
             },
             headerCellStyle({row, rowIndex}) {
-                return 'background:#342C67;border-bottom:0;font-size: 20px;color: #d3ceff;height:70px;text-align:center;'
+                return 'background:#342C67;border-bottom:0;font-size: 20px;color: #d3ceff;height:40px;text-align:center;'
             },
             rowStyle({row, rowIndex}) {
                 if (rowIndex & 1) {
@@ -135,13 +161,25 @@
                     return 'background:#221d44;'
                 }
             },
-            currentPage(page) {
+
+            /**
+             * pageSize 改变时会触发
+             */
+            sizeChange(pageSize) {
+                this.pageSize = pageSize
+                this.getData()
+            },
+            currentChange(index) {
+                this.currentPage = index
+                this.getData()
+            },
+            getData() {
                 if (this.address) {
                     let userAddr = this.$store.state.address
                     this.$axios.post('/api/requestTx.php', {
                         "addr": userAddr,
                         "pageSize": this.pageSize,
-                        "pageNum": page,
+                        "pageNum": this.currentPage,
                     }).then((res) => {
                         console.log(res)
                         if (res.data.code == 200) {
@@ -149,7 +187,7 @@
                                 this.transactionsList = []
                                 this.transactionsList = res.data.result
                                 this.totalNum = Number(res.data.dataCount)
-                            } 
+                            }
                             // else {
                             //     this.$message.error("未查询到相关信息")
                             // }
@@ -159,12 +197,11 @@
                     })
                 }
             },
-            valueFilter(row) {
-                return this.$web3.utils.fromWei(row.txValue, 'ether');
-            }
         },
         mounted() {
-            this.currentPage(1)
+            if (this.address) {
+                this.getData()
+            }
         }
     }
 </script>
@@ -216,7 +253,7 @@
                     }
                 }
             }
-            .return-back { 
+            .return-back {
                 text-align: center;
                 margin-top: 10px;
                 .el-button {
@@ -230,6 +267,6 @@
                     }
                 }
             }
-    }
+        }
     }
 </style>

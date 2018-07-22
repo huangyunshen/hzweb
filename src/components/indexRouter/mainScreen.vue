@@ -367,6 +367,9 @@
                 case 'myApps':
                     this.itemSelected = '2'
                     break
+                case 'createApp':
+                    this.itemSelected = '2'
+                    break
                 case 'applications':
                     this.itemSelected = '3'
                     break

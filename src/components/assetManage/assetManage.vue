@@ -6,7 +6,7 @@
             <p :class="{'header-active':choose==='2'}" @click="choose='2'"><span>对外转账</span></p>
         </div>
         <transition name="fof-fade">
-            <div v-show="choose==='1'" class="asset-content">
+            <div v-show="choose==='1'" class="asset-content" style="padding: 20px; box-sizing: border-box;">
                 <trade-record></trade-record>
             </div>
         </transition>
@@ -42,38 +42,29 @@
     }
 
     .tranc-header {
-        display: flex;
-        text-align: center;
-        /*width: 50%;*/
         p {
-            flex-grow: 1;
-            line-height: 70px;
+            text-align: center;
+            display: inline-block;
+            width: 200px;
+            line-height: 56px;
             background-color: #221D44;
-            box-shadow: 1px 0 0 0 #272345;
             font-size: 20px;
             color: #d3ceff;
             cursor: pointer;
+            box-sizing: border-box;
+            position: relative;
+            bottom: -2px;
+            z-index: 100;
         }
         .header-active {
-            line-height: 68px;
-            border-bottom-style: solid;
-            border-bottom-width: 2px;
-            border-image-source: linear-gradient(105deg,
-                    #3410f7 0%,
-                    #711bdc 59%,
-                    #ad25c0 100%);
-            border-image-slice: 1;
-            background-color: #3a346a;
-        }
-        b {
-            display: inline-block;
-            height: 70px;
-            border-right: 2px solid #272345;
+            border: 2px solid #322D5D;
+            border-bottom-color: #19133C;
+            background-color: #19133C;
         }
     }
 
     .asset-content {
-        border: 1px solid #322D5D;
+        border: 2px solid #322D5D;
         height: calc(100% - 70px);
     }
 </style>

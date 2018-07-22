@@ -4,9 +4,9 @@ const PRODUCT = 'http://39.104.81.103'
 const TEST = 'http://120.79.88.105'
 const LOCAL = '/url'
 
-const HOST = PRODUCT
+const HOST = LOCAL
 
-axios.defaults.baseURL = HOST
+axios.defaults.baseURL = PRODUCT
 
 // 设置请求头
 axios.defaults.headers.post['Content-Type'] = 'application/json'

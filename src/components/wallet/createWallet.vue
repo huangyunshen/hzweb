@@ -102,8 +102,8 @@
             return {
                 createDialog: false,  //创建成功后显示模态框
                 formRulesCreate: {       //创建钱包的数据绑定对象
-                    pwd: '111111111',
-                    confirmPwd: '111111111'
+                    pwd: '',
+                    confirmPwd: ''
                 },
                 walletInfo: {
                     fileName: '',
@@ -122,6 +122,13 @@
                     this.$message({
                         message: this.$msg.walletIsExist,
                         type: 'warning'
+                    })
+                    return
+                }
+                if (this.formRulesCreate.pwd.trim().length < 9) {
+                    this.$message({
+                        message: this.$msg.createPwd,
+                        type: 'error'
                     })
                     return
                 }

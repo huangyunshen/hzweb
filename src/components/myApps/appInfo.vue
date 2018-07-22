@@ -71,37 +71,16 @@
                             :row-style="rowStyle"
                             :cell-style="{'border-bottom':'none'}"
                     >
-                       <el-table-column
-                                prop="txHash"
-                                width="400"
-                                label="交易hash">
+                        <el-table-column label="类型" :formatter="tradeType" width="100px"></el-table-column>
+                        <el-table-column label="时间" prop="time" sortable width="180px"></el-table-column>
+                        <el-table-column label="对方账号" :formatter="otherAccount" min-width="200px"></el-table-column>
+                        <el-table-column label="交易hash" prop="txHash" min-width="200px"></el-table-column>
+                        <!--<el-table-column label="应用" :formatter="appName"></el-table-column>-->
+                        <el-table-column label="金额">
                             <template slot-scope="scope">
-                                <a style="color: #B9B4E8"
-                                :title="scope.row.txHash"
-                                href="javascript:void(0)">
-                                    {{ scope.row.txHash }}
-                                </a>
+                                <div class="amount-in" v-if="scope.row.txFrom.toLowerCase() != myAddr">{{"+ " + $web3.utils.fromWei(scope.row.txValue, 'ether') + " FOF"}}</div>
+                                <div class="amount-out" v-if="scope.row.txFrom.toLowerCase() == myAddr">{{"- " + $web3.utils.fromWei(scope.row.txValue, 'ether') + " FOF"}}</div>
                             </template>
-                        </el-table-column>
-                        <el-table-column
-                                prop="txFrom"
-                                label="发送方"
-                                min-width="350px">
-                        </el-table-column>
-                        <el-table-column
-                                prop="txTo"
-                                label="接收方"
-                                min-width="350px">
-                        </el-table-column>
-                        <el-table-column
-                                prop="txValue"
-                                label="金额"
-                                :formatter="valueFilter">
-                        </el-table-column>
-                        <el-table-column
-                                prop="time"
-                                label="时间"
-                                width="180">
                         </el-table-column>
                     </el-table>
                 </div>
@@ -137,7 +116,8 @@
                 totalNum: 0,
                 tableData: [],
                 appInfo: {},
-                isDisabled: false
+                isDisabled: false,
+                myAddr:''
             }
         },
         components: {
@@ -170,6 +150,45 @@
             }
         },
         methods: {
+            /*
+                表格数据处理
+            */
+            tradeType(row) {
+                console.log(row)
+                let fromAddr = row.txFrom.toLowerCase()
+                if (row.txToType === '0') {
+                    if (this.myAddr === fromAddr) {
+                        return "转账-转出"
+                    } else {
+                        return "转账-转入"
+                    }
+                } else if (!row.txToType) {
+                    return "创建"
+                } else {
+                    return "下注"
+                }
+            },
+            otherAccount(row) {
+                let fromAddr = row.txFrom.toLowerCase()
+                if (this.myAddr === fromAddr) {
+                    return row.txTo || "创建应用"
+                } else {
+                    return row.txFrom
+                }
+            },
+            // appName(row) {
+            //     let type = row.txToType
+            //     switch (type) {
+            //         case "1":
+            //             return "龙虎斗";
+            //         case "2":
+            //             return "赛事竞猜";
+            //         case "3":
+            //             return "百家乐";
+            //         default:
+            //             return "-"
+            //     }
+            // },
             /**
              * 连接合约
              */
@@ -380,7 +399,7 @@
                 this.$funs.getBalanceByWei(this.appInfo.contractAddr, balance => {
                     this.filterAppInfo.currentCoin = this.$web3.utils.fromWei(balance, 'ether')
                 })
-            },            
+            },
             getData() {
                 let addr = this.appInfo.contractAddr
                 if(addr) {
@@ -393,7 +412,7 @@
                             if (res.data.result.length) {
                                 this.totalNum = Number(res.data.dataCount)
                                 this.tableData = []
-                                this.tableData = this.tableData.concat(res.data.result)                               
+                                this.tableData = this.tableData.concat(res.data.result)
                             } else {
                                 this.$message.error("没有相关数据")
                             }
@@ -403,15 +422,13 @@
                     })
                 }
             },
-            valueFilter(row) {
-                return this.$web3.utils.fromWei(row.txValue, 'ether');
-            }
         },
         mounted() {
             if (!this.$store.state.appInfo) {
                 this.$router.replace({name: 'myApps'})
             } else {
                 this.appInfo = this.$store.state.appInfo
+                this.myAddr = this.appInfo.contractAddr
                 this.contactContract(this.appInfo.contractAddr).then((instance) => {
                     this.myContractInstance.methods.gameType().call().then((data) => {
                         if (!data) {
