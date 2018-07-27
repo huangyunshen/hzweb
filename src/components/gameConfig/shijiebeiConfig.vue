@@ -173,7 +173,6 @@
                     oddsV: '',
                     hConcedePoints: 0,
                     vConcedePoints: 0,
-                    liveId: null,
                     id:""
                 },
                 types: {},
@@ -198,9 +197,10 @@
                         reject(result)
                         return
                     }
-                    let hTeam, vTeam;
+                    let hTeam, vTeam, liveId;
                     hTeam = this.gameData[this.configData.id].zhuTeam                    
-                    vTeam = this.gameData[this.configData.id].keTeam                    
+                    vTeam = this.gameData[this.configData.id].keTeam
+                    liveId = Number(this.gameData[this.configData.id].liveId)
                     try {
                         this.$store.commit('setCryptPercent', {percent: true, text: '创建中···'})
                         this.$funs.unlockAccount().then((res) => {
@@ -215,9 +215,8 @@
                                 Number(this.configData.singleBetCoin),
                                 Number(this.configData.hConcedePoints),
                                 Number(this.configData.vConcedePoints),
-                                Number(this.configData.liveId),
+                                Number(liveId),
                             ];
-                            
                             this.$funs.magrationContract(user, contract, sol, args)
                                 .then((contractIns) => {
                                     this.$store.commit('setCryptPercent', {percent: true, text: '创建成功！正在充值···'})

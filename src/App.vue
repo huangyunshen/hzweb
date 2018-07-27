@@ -13,7 +13,7 @@
 
         <div class="create-wallet">
             <el-dialog class="create-wallet-dialog"
-                       title="钱包已锁定！请输入密码！"
+                       :title="$t('walletIsLocked')"
                        :visible.sync="lockModal"
                        :show-close="false"
                        :close-on-click-modal="false"
@@ -42,7 +42,7 @@
                 timeRemaining: 0,   //倒计时时间
                 duration: 1800,       //多久后锁定（s）
                 lockModal: true,
-                pwd: '',
+                pwd: '111111111',
                 unlocking: true,
             }
         },

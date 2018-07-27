@@ -1,5 +1,5 @@
 <template>
-    <el-select class="language-style" v-model="value" size="mini">
+    <el-select class="language-style" v-model="value" size="mini" @change="changeLang">
         <el-option
                 v-for="(item,index) in options"
                 :key="index"
@@ -14,11 +14,16 @@
         name: "language",
         data() {
             return {
-                value: 'ch',
+                value: 'zh-CN',
                 options: [
-                    {title: '中文', label: 'ch'},
-                    {title: 'English', label: 'en'}
+                    {title: '中文', label: 'zh-CN'},
+                    {title: 'English', label: 'en-US'},
                 ]
+            }
+        },
+        methods: {
+            changeLang(val) {
+                this.$i18n.locale = val;
             }
         }
     }

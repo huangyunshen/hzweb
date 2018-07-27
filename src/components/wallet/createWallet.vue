@@ -102,8 +102,8 @@
             return {
                 createDialog: false,  //创建成功后显示模态框
                 formRulesCreate: {       //创建钱包的数据绑定对象
-                    pwd: '',
-                    confirmPwd: ''
+                    pwd: '111111111',
+                    confirmPwd: '111111111'
                 },
                 walletInfo: {
                     fileName: '',

@@ -9,17 +9,18 @@ contract Baccarat {
 
     uint [] private priceArr; // 下注额度1,5,10,20
 
-    uint totalCoins = 0; // 当前一局下注总额
+    uint public totalCoins = 0; // 当前一局下注总额
     uint [] randomNum; // 保存传入的随机数
     uint xorNum = 0; // 保存异或的值
 
-    uint[] private pokerList;//当前这局的6张牌
+    uint[] private pokerList;//当前这局的6张牌    
 
     uint [] private resultHistory; // 保存历史结果 60 局
     uint [] private currentResult1 = [0, 0, 0]; // 保存当前局结算后庄家的三张牌
     uint [] private currentResult2 = [0, 0, 0]; // 保存当前局结算后闲家的三张牌
     uint [] private finalPoint = [0, 0]; // 最后结果点数，调试用
     uint [2] pokerNum = [2, 2];  // 闲庄最后牌数
+    uint [][] sortArr;
     uint nSize = 88;  // 保存最近88局结果
     /**
     * 庄 1 闲 2 和 3
@@ -35,35 +36,35 @@ contract Baccarat {
     */
     address [] bankerD;  // 保存选 庄对 的地址double  11
     mapping(address => uint) bankerDMap; // 选 庄对 用户的下注金额 需要清空
-    uint bankerDCoins = 0; // 下注总币
+    uint public bankerDCoins = 0; // 下注总币
 
     address [] playerD;  // 保存选 闲对 的地址  22
     mapping(address => uint) playerDMap; // 选 闲对 用户的下注金额 需要清空
-    uint playerDCoins = 0; // 下注总币
+    uint public playerDCoins = 0; // 下注总币
 
     address [] bankerM;  // 保存选 庄大 的地址more  10
     mapping(address => uint) bankerMMap; // 选 庄大 用户的下注金额 需要清空
-    uint bankerMCoins = 0; // 下注总币
+    uint public bankerMCoins = 0; // 下注总币
 
     address [] playerM;  // 保存选 闲大 的地址  20
     mapping(address => uint) playerMMap; // 选 闲大 用户的下注金额 需要清空
-    uint playerMCoins = 0; // 下注总币
+    uint public playerMCoins = 0; // 下注总币
 
     address [] bankerB;  // 保存选 庄天王 的地址biggest  12
     mapping(address => uint) bankerBMap; // 选 庄天王 用户的下注金额 需要清空
-    uint bankerBCoins = 0; // 下注总币
+    uint public bankerBCoins = 0; // 下注总币
 
     address [] playerB;  // 保存选 闲天王 的地址  21
     mapping(address => uint) playerBMap; // 选 闲天王 用户的下注金额 需要清空
-    uint playerBCoins = 0; // 下注总币
+    uint public playerBCoins = 0; // 下注总币
 
     address [] draw;     // 保存选 和 的地址 33
     mapping(address => uint) drawMap; // 选 和 用户的下注金额 需要清空
-    uint drawCoins = 0; // 下注总币
+    uint public drawCoins = 0; // 下注总币
 
     address [] pointDraw;// 保存选 点和 的地址  30
     mapping(address => uint) pointDrawMap; // 选 点和 用户的下注金额 需要清空
-    uint pointDrawCoins = 0; // 下注总币
+    uint public pointDrawCoins = 0; // 下注总币
 
     event returnBetResult(bool _bool, address _addr, string _msg); // 返回是否下注成功
     event returnSettleRes(uint[], uint[], uint[], uint[2]); // 返回最后的出牌结果
@@ -294,28 +295,46 @@ contract Baccarat {
         }
         //点和
         if (pokerNum[0] == pokerNum[1]) {
+            getSortResult();
             if (pokerNum[0] == 2) {
-                if (((currentResult1[0] % 13 == currentResult2[0] % 13)
-                || (currentResult1[0] % 13 == currentResult2[1] % 13))
-                    && ((currentResult1[1] % 13 == currentResult2[0] % 13)
-                    || (currentResult1[1] % 13 == currentResult2[1] % 13))) {
+                if (sortArr[0][0] == sortArr[1][0] && sortArr[0][1] == sortArr[1][1]) {
                     transferFun(30);
                 }
             }
             if (pokerNum[0] == 3) {
-                if ((currentResult1[0] % 13 == currentResult2[0] % 13 || currentResult1[0] % 13 == currentResult2[1] % 13 || currentResult1[0] % 13 == currentResult2[2] % 13)
-                && (currentResult1[1] % 13 == currentResult2[0] % 13 || currentResult1[1] % 13 == currentResult2[1] % 13 || currentResult1[1] % 13 == currentResult2[2] % 13)
-                    && (currentResult1[2] % 13 == currentResult2[0] % 13 || currentResult1[2] % 13 == currentResult2[1] % 13 || currentResult1[2] % 13 == currentResult2[2] % 13)) {
+                if (sortArr[0][0] == sortArr[1][0] && sortArr[0][1] == sortArr[1][1] && sortArr[0][2] == sortArr[1][2]) {
                     transferFun(30);
                 }
             }
         }
     }
 
+    function getSortResult() private {
+        currentResult1 = [getPokerResult(0) % 13, getPokerResult(1) % 13, getPokerResult(2) % 13];
+        currentResult2 = [getPokerResult(3) % 13, getPokerResult(4) % 13, getPokerResult(5) % 13];
+        sortArr = [sort(currentResult1), sort(currentResult2)];
+    }
     /*
-      * 根据不同结果进行赔付
-      * @_res 最后结果
-      */
+    * 数组排序
+    * @arr 排序前数组
+    */
+    function sort(uint [] arr) private pure returns (uint []){
+        for (uint j = 0; j < arr.length - 1; j++) {
+            for (uint i = 0; i < arr.length - 1 - j; i++) {
+                if (arr[i] > arr[i + 1]) {
+                    uint temp = arr[i];
+                    arr[i] = arr[i + 1];
+                    arr[i + 1] = temp;
+                }
+            }
+        }
+        return arr;
+    }
+
+    /*
+    * 根据不同结果进行赔付
+    * @_res 最后结果
+    */
     function transferFun(uint _res) public payable {
         if (_res == 11) {//庄对
             for (uint i = 0; i < bankerD.length; i++) {

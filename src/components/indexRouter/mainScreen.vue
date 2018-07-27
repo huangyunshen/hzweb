@@ -18,15 +18,15 @@
                         <i class="nav-icon3" :class="{'nav-icon3-active':itemSelected==='3'}"></i>
                         <span>应用中心</span>
                     </router-link>
-                    <li @click="openUrl('/blockQuery/#/blocksList')" class="pass-enter4">
-                        <i class="nav-icon4"></i>
-                        <span>区块查询</span>
-                    </li>
                     <router-link tag="li" :to="{name:'voteMain'}" @click.native="selectAnItem('5')"
-                                 class="pass-enter5" :class="{active:itemSelected==='5'}">
-                        <i class="nav-icon5" :class="{'nav-icon3-active':itemSelected==='5'}"></i>
+                                 class="pass-enter4" :class="{active:itemSelected==='5'}">
+                        <i class="nav-icon4" :class="{'nav-icon3-active':itemSelected==='5'}"></i>
                         <span>DPOS投票</span>
                     </router-link>
+                    <li @click="openUrl('/blockQuery/#/blocksList')" class="pass-enter5">
+                        <i class="nav-icon5"></i>
+                        <span>区块查询</span>
+                    </li>
                     <!--<router-link tag="li" :to="{name:'createInterval'}" @click.native="selectAnItem('5')"-->
                                  <!--class="pass-enter5" :class="{active:itemSelected==='5'}">-->
                         <!--<i class="nav-icon5" :class="{'nav-icon3-active':itemSelected==='5'}"></i>-->
@@ -491,16 +491,16 @@
                             background: url("../../assets/images/mainScreen/icon_yysc_xz.png") no-repeat;
                         }
                         .nav-icon4 {
-                            background: url("../../assets/images/mainScreen/icon_cjyy.png") no-repeat;
+                            background: url("../../assets/images/mainScreen/icon_tp.png") no-repeat;
                         }
                         .nav-icon4-active {
-                            background: url("../../assets/images/mainScreen/icon_cjyy_xz.png") no-repeat;
+                            background: url("../../assets/images/mainScreen/icon_tp_xz.png") no-repeat;
                         }
                         .nav-icon5 {
-                            background: url("../../assets/images/mainScreen/icon_cjyy.png") no-repeat;
+                            background: url("../../assets/images/mainScreen/icon_qkcx.png") no-repeat;
                         }
                         .nav-icon5-active {
-                            background: url("../../assets/images/mainScreen/icon_cjyy_xz.png") no-repeat;
+                            background: url("../../assets/images/mainScreen/icon_qkcx_xz.png") no-repeat;
                         }
                     }
                     .active {
