@@ -2,9 +2,9 @@
     <div>
         <unlock-account ref="unlock" isTranc="no"></unlock-account>
 
-        <el-button class="el-wallet-main-button mt-50" @click="importWallet">导入钱包</el-button>
-        <p class="tr create-wallet"><router-link tag="a" @click.native="createWallet" :to="{name:'createWallet'}">创建钱包</router-link></p>
-        <p class="wallet-safety">fof.com不会保留您的私钥。我们无法访问帐户，恢复密钥，重置密码，也无法撤销交易。保护您的密钥并检查您的网址是否正确。</p>
+        <el-button class="el-wallet-main-button mt-50" @click="importWallet"> {{ $t('importWallet') }} </el-button>
+        <p class="tr create-wallet"><router-link tag="a" @click.native="createWallet" :to="{name:'createWallet'}"> {{ $t('createWallet') }} </router-link></p>
+        <p class="wallet-safety">fof.com{{$t('wontkeepyourprivatekeyWecannotaccesstheaccountrestorethekeyresetthepasswordorcancelthetransactionProtectyourkeyandcheckifyouraddressiscorrect')}}</p>
     </div>
 </template>
 
@@ -34,7 +34,7 @@
                 });
             },
             createWallet(){
-                this.$emit('getTitle', "创建钱包");
+                this.$emit('getTitle');
             }
         }
     }

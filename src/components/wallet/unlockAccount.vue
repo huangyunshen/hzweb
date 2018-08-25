@@ -15,17 +15,17 @@
                     <span class="wallet-decrypt-item" :class="{active:form.decryptType==='1'}"
                           @click="selectDecryptType('1')" v-show="!hasWalletCom">
                         <i class="wallet-decrypt-type-icon icon1" :class="{'icon1-active':form.decryptType==='1'}"></i>
-                        私钥
+                        {{$t('privatekey')}}
                     </span>
                     <span class="wallet-decrypt-item" :class="{active:form.decryptType==='2'}"
                           @click="selectDecryptType('2')" v-show="!hasWalletCom">
                         <i class="wallet-decrypt-type-icon icon2" :class="{'icon2-active':form.decryptType==='2'}"></i>
-                        账户文件
+                        {{$t('accountfile')}}
                     </span>
                     <span class="wallet-decrypt-item" :class="{active:form.decryptType==='3'}"
                           @click="selectDecryptType('3')" v-show="!hasWalletCom">
                         <i class="wallet-decrypt-type-icon icon3" :class="{'icon3-active':form.decryptType==='3'}"></i>
-                        助记词
+                        {{$t('mnemonic')}}
                     </span>
                 </div>
                 <!--<p>{{decryptInfo}}</p>-->
@@ -35,7 +35,7 @@
                 <el-form-item class="el-wallet-style mt-40">
                     <el-input class="el-wallet-account-input"
                               v-model="form.privateKey"
-                              placeholder="请输入私钥"
+                              :placeholder="$t('enterPrivatekey')"
                               auto-complete="off"
                     ></el-input>
                 </el-form-item>
@@ -44,14 +44,14 @@
             <div v-show="!hasWalletCom && form.decryptType==='2'" style="position: relative;left:-70px;">
                 <el-form-item class="el-wallet-style mt-40">
                     <input id="fileUpload1" type="file" style="display:none" @change="uploadFile1">
-                    <el-button class="choose-file-btn" @click="selectFile1">选择账户文件...</el-button>
+                    <el-button class="choose-file-btn" @click="selectFile1">{{$t('selectaccountfile')}}</el-button>
                 </el-form-item>
 
                 <el-form-item class="el-wallet-style mt-40">
                     <el-input class="el-wallet-input"
                               v-model="form.pwd"
                               type="password"
-                              placeholder="请输入账户密码"
+                              :placeholder="$t('pleaseenteryouraccountpassword')"
                               auto-complete="off"
                     ></el-input>
                 </el-form-item>
@@ -64,24 +64,19 @@
                               type="textarea"
                               :autosize="{ minRows: 3, maxRows: 3 }"
                               resize="none"
-                              placeholder="请输入助记词"
+                              :placeholder="$t('enterhelp')"
                     ></el-input>
                 </el-form-item>
             </div>
 
             <div v-show="hasWalletCom && form.decryptType==='4'">
-                <el-form-item class="el-wallet-style mt-40" label="选择文件：">
+                <el-form-item class="el-wallet-style mt-40" :label="$t('selectadocument')">
                     <input id="fileUpload2" type="file" style="display:none" @change="uploadFile2">
-                    <el-button class="choose-file-btn" @click="selectFile2">选择钱包文件...</el-button>
+                    <el-button class="choose-file-btn" @click="selectFile2">{{$t('Selectwalletfile')}}</el-button>
                 </el-form-item>
 
-                <el-form-item class="el-wallet-style mt-40" label="输入密码：">
-                    <el-input class="el-wallet-input"
-                              v-model="form.pwd"
-                              type="password"
-                              placeholder="请输入钱包密码"
-                              auto-complete="off"
-                    ></el-input>
+                <el-form-item class="el-wallet-style mt-40" :label="$t('enterPwd')">
+                    <el-input class="el-wallet-input"  v-model="form.pwd" type="password"  :placeholder="$t('enterWalletPwd')" auto-complete="off"></el-input>
                 </el-form-item>
             </div>
             <!--<div v-show="hasWalletCom && form.decryptType==='4'">-->
@@ -165,7 +160,7 @@
                             let promise = this.$Wallet.fromEncryptedWallet(this.form.fileContent, this.form.pwd)
                             this.$store.commit('setCryptPercent', {
                                     percent: true,
-                                    text: '正在解锁账户，请稍等...'
+                                    text: this.$t('inUnlockingAccount')
                                 }
                             )
                             promise.then((wallet) => {
@@ -235,7 +230,7 @@
                         }
                         this.$store.commit('setCryptPercent', {
                                 percent: true,
-                                text: '正在导入账户，请稍等...'
+                                text: this.$t('importingaccountpleasewait')
                             }
                         )
                         setTimeout(() => {
@@ -365,13 +360,13 @@
             decryptInfo() {
                 switch (this.form.decryptType) {
                     case '1':
-                        return '使用私钥导入账号到钱包'
+                        return this.$t('importaccounttowalletusingprivatekey')
                     case '2':
-                        return '使用您的密钥存储文件(UTC)导入账号到钱包'
+                        return this.$t('useyourkeystoragefileUTCtoimportaccounttowallet')
                     case '3':
-                        return '使用助记符短语导入账号到钱包'
+                        return this.$t('importaccounttowalletusingmnemonicphrases')
                     case '4':
-                        return '导入已有的钱包'
+                        return this.$t('importanexistingwallet')
                 }
             }
         },

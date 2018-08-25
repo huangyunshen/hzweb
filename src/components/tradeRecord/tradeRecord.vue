@@ -22,11 +22,11 @@
                     <!--@click.prevent="getTransaction(scope.row.txHash)">{{ scope.row.txHash }}</a>-->
                     <!--</template>-->
                     <!--</el-table-column>-->
-                    <el-table-column label="类型" :formatter="tradeType" width="200px"></el-table-column>
-                    <el-table-column label="时间" prop="time" sortable width="200px"></el-table-column>
-                    <el-table-column label="对方账号" :formatter="otherAccount" min-width="200px"></el-table-column>
-                    <el-table-column label="应用" :formatter="appName"></el-table-column>
-                    <el-table-column label="金额">
+                    <el-table-column :label="$t('typesof')" :formatter="tradeType" width="200px"></el-table-column>
+                    <el-table-column :label="$t('time')" prop="time" sortable width="200px"></el-table-column>
+                    <el-table-column :label="$t('otheraccounts')" :formatter="otherAccount" min-width="200px"></el-table-column>
+                    <el-table-column :label="$t('application')" :formatter="appName"></el-table-column>
+                    <el-table-column :label="$t('amount')">
                         <template slot-scope="scope">
                             <div class="amount-in" v-if="scope.row.txFrom.toLowerCase() != myAddr">{{"+ " + $web3.utils.fromWei(scope.row.txValue, 'ether') + " FOF"}}</div>
                             <div class="amount-out" v-if="scope.row.txFrom.toLowerCase() == myAddr">{{"- " + $web3.utils.fromWei(scope.row.txValue, 'ether') + " FOF"}}</div>
@@ -49,7 +49,7 @@
 
         <div v-show="showSwitch==='list'" class="tx-list">
             <div class="list-content">
-                <p class="title">交易信息</p>
+                <p class="title">{{$t('tradinginformation')}}</p>
                 <el-row v-for="(value,key) in transactionsData" :key="key">
                     <el-col :span="4">
                         <div>
@@ -64,7 +64,7 @@
                 </el-row>
             </div>
             <div v-show="showSwitch==='list'" class="return-back">
-                <el-button @click="showSwitch='table'">返回</el-button>
+                <el-button @click="showSwitch='table'">{{$t('return')}}</el-button>
             </div>
         </div>
     </div>
@@ -108,20 +108,20 @@
                 let fromAddr = row.txFrom.toLowerCase()
                 if (row.txToType === '0') {
                     if (this.myAddr === fromAddr) {
-                        return "转账-转出"
+                        return this.$t('transfertotransferout')
                     } else {
-                        return "转账-转入"
+                        return this.$t('transfertotransfer')
                     }
                 } else if (!row.txToType) {
-                    return "创建"
+                    return this.$t('create')
                 } else {
-                    return "下注"
+                    return this.$t('bet')
                 }
             },
             otherAccount(row) {
                 let fromAddr = row.txFrom.toLowerCase()
                 if (this.myAddr === fromAddr) {
-                    return row.txTo || "创建应用"
+                    return row.txTo || this.$t('createanapp')
                 } else {
                     return row.txFrom
                 }
@@ -130,11 +130,11 @@
                 let type = row.txToType
                 switch (type) {
                     case "1":
-                        return "龙虎斗";
+                        return this.$t('dragonandtigerfighting');
                     case "2":
-                        return "赛事竞猜";
+                        return this.$t('matchquiz');
                     case "3":
-                        return "百家乐";
+                        return this.$t('baccarat');
                     default:
                         return "-"
                 }
@@ -181,7 +181,6 @@
                         "pageSize": this.pageSize,
                         "pageNum": this.currentPage,
                     }).then((res) => {
-                        console.log(res)
                         if (res.data.code == 200) {
                             if (res.data.result.length) {
                                 this.transactionsList = []

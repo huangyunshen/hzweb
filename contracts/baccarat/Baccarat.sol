@@ -1,6 +1,20 @@
 pragma solidity ^0.4.0;
 
-contract Baccarat {
+library BetDataSets {
+    struct TeamBalance {
+        bool isFirst;      // 是否是第一次买
+        uint betCoin;    // 总额按百分比进入奖池的额度
+    }
+}
+
+contract BaccaratEvents {
+    event returnBetResult(bool _bool, address _addr, string _msg); // 返回是否下注成功
+    event returnSettleRes(uint[], uint[], uint[], uint[2]); // 返回最后的出牌结果
+}
+
+contract BaccaratLong is BaccaratEvents {}
+
+contract Baccarat is BaccaratLong {
     string public contractName;
     uint public gameType = 3;// 类型：应该为3 (龙虎斗1，竞猜2，百家乐3)
     address public creator = msg.sender; // 创建者的地址
@@ -35,39 +49,36 @@ contract Baccarat {
     * 点和 30
     */
     address [] bankerD;  // 保存选 庄对 的地址double  11
-    mapping(address => uint) bankerDMap; // 选 庄对 用户的下注金额 需要清空
+    mapping(address => BetDataSets.TeamBalance) bankerDMap; // 选 庄对 用户的下注金额 需要清空
     uint public bankerDCoins = 0; // 下注总币
 
     address [] playerD;  // 保存选 闲对 的地址  22
-    mapping(address => uint) playerDMap; // 选 闲对 用户的下注金额 需要清空
+    mapping(address => BetDataSets.TeamBalance) playerDMap; // 选 闲对 用户的下注金额 需要清空
     uint public playerDCoins = 0; // 下注总币
 
     address [] bankerM;  // 保存选 庄大 的地址more  10
-    mapping(address => uint) bankerMMap; // 选 庄大 用户的下注金额 需要清空
+    mapping(address => BetDataSets.TeamBalance) bankerMMap; // 选 庄大 用户的下注金额 需要清空
     uint public bankerMCoins = 0; // 下注总币
 
     address [] playerM;  // 保存选 闲大 的地址  20
-    mapping(address => uint) playerMMap; // 选 闲大 用户的下注金额 需要清空
+    mapping(address => BetDataSets.TeamBalance) playerMMap; // 选 闲大 用户的下注金额 需要清空
     uint public playerMCoins = 0; // 下注总币
 
     address [] bankerB;  // 保存选 庄天王 的地址biggest  12
-    mapping(address => uint) bankerBMap; // 选 庄天王 用户的下注金额 需要清空
+    mapping(address => BetDataSets.TeamBalance) bankerBMap; // 选 庄天王 用户的下注金额 需要清空
     uint public bankerBCoins = 0; // 下注总币
 
     address [] playerB;  // 保存选 闲天王 的地址  21
-    mapping(address => uint) playerBMap; // 选 闲天王 用户的下注金额 需要清空
+    mapping(address => BetDataSets.TeamBalance) playerBMap; // 选 闲天王 用户的下注金额 需要清空
     uint public playerBCoins = 0; // 下注总币
 
     address [] draw;     // 保存选 和 的地址 33
-    mapping(address => uint) drawMap; // 选 和 用户的下注金额 需要清空
+    mapping(address => BetDataSets.TeamBalance) drawMap; // 选 和 用户的下注金额 需要清空
     uint public drawCoins = 0; // 下注总币
 
     address [] pointDraw;// 保存选 点和 的地址  30
-    mapping(address => uint) pointDrawMap; // 选 点和 用户的下注金额 需要清空
+    mapping(address => BetDataSets.TeamBalance) pointDrawMap; // 选 点和 用户的下注金额 需要清空
     uint public pointDrawCoins = 0; // 下注总币
-
-    event returnBetResult(bool _bool, address _addr, string _msg); // 返回是否下注成功
-    event returnSettleRes(uint[], uint[], uint[], uint[2]); // 返回最后的出牌结果
 
     function deposit() public payable {}
 
@@ -100,43 +111,67 @@ contract Baccarat {
             historyTotalCoins += _coin;
             randomNum.push(_ran);
             if (_cho == 11) {
-                bankerD.push(_addr);
-                bankerDMap[_addr] = bankerDMap[_addr] + _coin;
+                if(!bankerDMap[_addr].isFirst){
+                    bankerD.push(_addr);
+                    bankerDMap[_addr].isFirst = true;
+                }
+                bankerDMap[_addr].betCoin += _coin;
                 bankerDCoins += _coin;
             }
             if (_cho == 22) {
-                playerD.push(_addr);
-                playerDMap[_addr] = playerDMap[_addr] + _coin;
+                if(!playerDMap[_addr].isFirst){
+                    playerD.push(_addr);
+                    playerDMap[_addr].isFirst = true;
+                }
+                playerDMap[_addr].betCoin += _coin;
                 playerDCoins += _coin;
             }
             if (_cho == 10) {
-                bankerM.push(_addr);
-                bankerMMap[_addr] = bankerMMap[_addr] + _coin;
+                if(!bankerMMap[_addr].isFirst){
+                    bankerM.push(_addr);
+                    bankerMMap[_addr].isFirst = true;
+                }
+                bankerMMap[_addr].betCoin += _coin;
                 bankerMCoins += _coin;
             }
             if (_cho == 20) {
-                playerM.push(_addr);
-                playerMMap[_addr] = playerMMap[_addr] + _coin;
+                if(!playerMMap[_addr].isFirst){
+                    playerM.push(_addr);
+                    playerMMap[_addr].isFirst = true;
+                }
+                playerMMap[_addr].betCoin += _coin;
                 playerMCoins += _coin;
             }
             if (_cho == 12) {
-                bankerB.push(_addr);
-                bankerBMap[_addr] = bankerBMap[_addr] + _coin;
+                if(!bankerBMap[_addr].isFirst){
+                    bankerB.push(_addr);
+                    bankerBMap[_addr].isFirst = true;
+                }
+                bankerBMap[_addr].betCoin += _coin;
                 bankerBCoins += _coin;
             }
             if (_cho == 21) {
-                playerB.push(_addr);
-                playerBMap[_addr] = playerBMap[_addr] + _coin;
+                if(!playerBMap[_addr].isFirst){
+                    playerB.push(_addr);
+                    playerBMap[_addr].isFirst = true;
+                }
+                playerBMap[_addr].betCoin += _coin;
                 playerBCoins += _coin;
             }
             if (_cho == 33) {
-                draw.push(_addr);
-                drawMap[_addr] = drawMap[_addr] + _coin;
+                if(!drawMap[_addr].isFirst){
+                    draw.push(_addr);
+                    drawMap[_addr].isFirst = true;
+                }
+                drawMap[_addr].betCoin += _coin;
                 drawCoins += _coin;
             }
             if (_cho == 30) {
-                pointDraw.push(_addr);
-                pointDrawMap[_addr] = pointDrawMap[_addr] + _coin;
+                if(!pointDrawMap[_addr].isFirst){
+                    pointDraw.push(_addr);
+                    pointDrawMap[_addr].isFirst = true;
+                }
+                pointDrawMap[_addr].betCoin += _coin;
                 pointDrawCoins += _coin;
             }
             emit returnBetResult(true, _addr, "下注成功");
@@ -152,7 +187,7 @@ contract Baccarat {
         reset();
     }
 
-    function getPokerResult(uint index) public returns (uint){
+    function getPokerResult(uint index) view private returns (uint){
         uint nNum = 0;
         for (uint i = 0; i < pokerList.length - 1; i++)
         {
@@ -167,7 +202,7 @@ contract Baccarat {
         return (pokerList[index] - nNum) % 52;
     }
 
-    function getPokerList() public {
+    function getPokerList() private {
         for (uint i = 0; i < 6; i++)
         {
             pokerList.push(getXorPerson(xorNum, 1 + i * 3, 3) % (52 * 8));
@@ -175,7 +210,7 @@ contract Baccarat {
     }
 
     // 结算赔钱  先闲后庄
-    function settleFun() public payable {
+    function settleFun() private {
         pokerNum = [2, 2];
 
         getPokerList();
@@ -335,59 +370,59 @@ contract Baccarat {
     * 根据不同结果进行赔付
     * @_res 最后结果
     */
-    function transferFun(uint _res) public payable {
+    function transferFun(uint _res) private {
         if (_res == 11) {//庄对
             for (uint i = 0; i < bankerD.length; i++) {
-                transferCoin(bankerD[i], bankerDMap[bankerD[i]] * 12);
-                bankerDMap[bankerD[i]] = 0;
+                transferCoin(bankerD[i], bankerDMap[bankerD[i]].betCoin * 12);
+                bankerDMap[bankerD[i]] = BetDataSets.TeamBalance(false, 0);
             }
         }
         if (_res == 22) {//闲对
             for (uint j = 0; j < playerD.length; j++) {
-                transferCoin(playerD[j], playerDMap[playerD[j]] * 12);
-                playerDMap[playerD[j]] = 0;
+                transferCoin(playerD[j], playerDMap[playerD[j]].betCoin * 12);
+                playerDMap[playerD[j]] = BetDataSets.TeamBalance(false, 0);
             }
         }
         if (_res == 10) {//庄大
             for (uint k = 0; k < bankerM.length; k++) {
-                transferCoin(bankerM[k], bankerMMap[bankerM[k]] * 2);
-                bankerMMap[bankerM[k]] = 0;
+                transferCoin(bankerM[k], bankerMMap[bankerM[k]].betCoin * 2);
+                bankerMMap[bankerM[k]] = BetDataSets.TeamBalance(false, 0);
             }
         }
         if (_res == 20) {//闲大
             for (uint l = 0; l < playerM.length; l++) {
-                transferCoin(playerM[l], playerMMap[playerM[l]] * 2);
-                playerMMap[playerM[l]] = 0;
+                transferCoin(playerM[l], playerMMap[playerM[l]].betCoin * 2);
+                playerMMap[playerM[l]] = BetDataSets.TeamBalance(false, 0);
             }
         }
         if (_res == 12) {//庄天王
             for (uint m = 0; m < bankerB.length; m++) {
-                transferCoin(bankerB[m], bankerBMap[bankerB[m]] * 3);
-                bankerBMap[bankerB[m]] = 0;
+                transferCoin(bankerB[m], bankerBMap[bankerB[m]].betCoin * 3);
+                bankerBMap[bankerB[m]] = BetDataSets.TeamBalance(false, 0);
             }
         }
         if (_res == 21) {//闲天王
             for (uint n = 0; n < playerB.length; n++) {
-                transferCoin(playerB[n], playerBMap[playerB[n]] * 3);
-                playerBMap[playerB[n]] = 0;
+                transferCoin(playerB[n], playerBMap[playerB[n]].betCoin * 3);
+                playerBMap[playerB[n]] = BetDataSets.TeamBalance(false, 0);
             }
         }
         if (_res == 33) {//和
             for (uint o = 0; o < draw.length; o++) {
-                transferCoin(draw[o], drawMap[draw[o]] * 9);
-                drawMap[draw[o]] = 0;
+                transferCoin(draw[o], drawMap[draw[o]].betCoin * 9);
+                drawMap[draw[o]] = BetDataSets.TeamBalance(false, 0);
             }
         }
         if (_res == 30) {//点和
             for (uint p = 0; p < pointDraw.length; p++) {
-                transferCoin(pointDraw[p], pointDrawMap[pointDraw[p]] * 33);
-                pointDrawMap[pointDraw[p]] = 0;
+                transferCoin(pointDraw[p], pointDrawMap[pointDraw[p]].betCoin * 33);
+                pointDrawMap[pointDraw[p]] = BetDataSets.TeamBalance(false, 0);
             }
         }
     }
 
     // 异或函数,得到结果随机数
-    function xorFun() public {
+    function xorFun() private {
         for (uint i = 0; i < randomNum.length; i++) {
             xorNum = xorNum ^ randomNum[i];
         }
@@ -395,7 +430,7 @@ contract Baccarat {
     }
 
     // 处理这个随机数,得到3个值
-    function getXorPerson(uint number, uint start, uint long) public returns (uint) {
+    function getXorPerson(uint number, uint start, uint long) pure private returns (uint) {
         return (number / (10 ** start)) % (10 ** long);
     }
 

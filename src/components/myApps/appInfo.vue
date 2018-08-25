@@ -8,30 +8,30 @@
             </el-col>
             <el-col :span="20" style="padding-top: 25px">
                 <el-form label-width="100px" style="width: 90%">
-                    <el-form-item label="应用类型">
+                    <el-form-item :label="$t('applicationtype')">
                         <el-input v-model="filterAppInfo.typeZh" readonly></el-input>
                     </el-form-item>
-                    <el-form-item label="应用地址">
+                    <el-form-item :label="$t('applicationaddress01')">
                         <el-input v-model="filterAppInfo.addr" readonly>
-                            <el-button slot="append">复制</el-button>
+                            <el-button slot="append">{{$t('copy')}}</el-button>
                         </el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button class="el-wallet-main-button" @click="goPlay" style="width: 100%;">进入游戏</el-button>
+                        <el-button class="el-wallet-main-button" @click="goPlay" style="width: 100%;">{{$t('gamestart')}}</el-button>
                         <a id="linkToApp" :href="filterAppInfo.addr" target="_blank"></a>
                     </el-form-item>
                 </el-form>
             </el-col>
         </el-row>
         <div class="tranc-header">
-            <p :class="{'header-active':tabActive==='1'}" @click="tabActive='1'">应用奖池</p>
+            <p :class="{'header-active':tabActive==='1'}" @click="tabActive='1'">{{$t('applicationofthepool')}}</p>
             <b></b>
-            <p :class="{'header-active':tabActive==='2'}" @click="tabActive='2'">收支记录</p>
+            <p :class="{'header-active':tabActive==='2'}" @click="tabActive='2'">{{$t('incomeandexpenditurerecord')}}</p>
         </div>
         <transition name="fof-fade">
             <div v-show="tabActive==='1'" class="tab-content">
                 <el-form ref="form" :model="form" label-position="left" label-width="150px">
-                    <el-form-item class="mt-40" label="奖池余额">
+                    <el-form-item class="mt-40" :label="$t('prizepoolbalance')">
                         <el-input
                                 readonly
                                 v-model="filterAppInfo.currentCoin"
@@ -40,20 +40,20 @@
                             <el-button slot="append" @click="getContractBalance">FOF</el-button>
                         </el-input>
                     </el-form-item>
-                    <el-form-item class="mt-40" label="奖池充值">
+                    <el-form-item class="mt-40" :label="$t('prizepoolrecharge')">
                         <el-input
                                 v-model="form.rechargeVal"
-                                placeholder="请输入充值金额"
+                                :placeholder="$t('entertherechargeamount')"
                         >
-                            <el-button slot="append" @click="recharge">充值</el-button>
+                            <el-button slot="append" @click="recharge">{{$t('recharge')}}</el-button>
                         </el-input>
                     </el-form-item>
-                    <el-form-item class="mt-40" label="奖池提现">
+                    <el-form-item class="mt-40" :label="$t('prizepoolwithdrawal')">
                         <el-input
                                 v-model="form.drawingVal"
-                                placeholder="请输入提现金额"
+                                :placeholder="$t('entertheamountofcash')"
                         >
-                            <el-button slot="append" @click="drawing">提现</el-button>
+                            <el-button slot="append" @click="drawing">{{$t('withdraw')}}</el-button>
                         </el-input>
                     </el-form-item>
                 </el-form>
@@ -71,12 +71,12 @@
                             :row-style="rowStyle"
                             :cell-style="{'border-bottom':'none'}"
                     >
-                        <el-table-column label="类型" :formatter="tradeType" width="100px"></el-table-column>
-                        <el-table-column label="时间" prop="time" sortable width="180px"></el-table-column>
-                        <el-table-column label="对方账号" :formatter="otherAccount" min-width="200px"></el-table-column>
-                        <el-table-column label="交易hash" prop="txHash" min-width="200px"></el-table-column>
+                        <el-table-column :label="$t('typesof')" :formatter="tradeType" width="100px"></el-table-column>
+                        <el-table-column :label="$t('time')" prop="time" sortable width="180px"></el-table-column>
+                        <el-table-column :label="$t('otheraccounts')" :formatter="otherAccount" min-width="200px"></el-table-column>
+                        <el-table-column :label="$t('transactionhash')" prop="txHash" min-width="200px"></el-table-column>
                         <!--<el-table-column label="应用" :formatter="appName"></el-table-column>-->
-                        <el-table-column label="金额">
+                        <el-table-column :label="$t('amount')">
                             <template slot-scope="scope">
                                 <div class="amount-in" v-if="scope.row.txFrom.toLowerCase() != myAddr">{{"+ " + $web3.utils.fromWei(scope.row.txValue, 'ether') + " FOF"}}</div>
                                 <div class="amount-out" v-if="scope.row.txFrom.toLowerCase() == myAddr">{{"- " + $web3.utils.fromWei(scope.row.txValue, 'ether') + " FOF"}}</div>
@@ -129,19 +129,23 @@
                 let type = this.appInfo.gameType
                 switch (type) {
                     case "1":
-                        result = this.appInfo.contractName || "龙虎斗"
-                        this.appInfo.addr = `/DragonTigerFight/?${this.appInfo.contractAddr}`
+                        result = this.appInfo.contractName || this.$t('dragonandtigerfighting')
+                        this.appInfo.addr = `/dtfight/?${this.appInfo.contractAddr}`
                         break
                     case "2":
-                        result = this.appInfo.contractName || "赛事竞猜"
+                        result = this.appInfo.contractName ||this.$t('matchquiz')
                         this.appInfo.addr = `/quiz/?${this.appInfo.contractAddr}`
                         break
                     case "3":
-                        result = this.appInfo.contractName || "百家乐"
+                        result = this.appInfo.contractName ||this.$t('baccarat') 
                         this.appInfo.addr = `/baccarat/?${this.appInfo.contractAddr}`
                         break
+                    case "4":
+                        result = this.appInfo.contractName ||this.$t('p11c5')
+                        this.appInfo.addr =  `/p11c5/?${this.appInfo.contractAddr}`
+                        break
                     default:
-                        result = '游戏'
+                        result =this.$t('game')
                         break
                 }
                 this.appInfo.typeZh = result
@@ -154,24 +158,23 @@
                 表格数据处理
             */
             tradeType(row) {
-                console.log(row)
                 let fromAddr = row.txFrom.toLowerCase()
                 if (row.txToType === '0') {
                     if (this.myAddr === fromAddr) {
-                        return "转账-转出"
+                        return this.$t('transfertotransferout')
                     } else {
-                        return "转账-转入"
+                        return this.$t('transfertotransfer')
                     }
                 } else if (!row.txToType) {
-                    return "创建"
+                    return this.$t('create')
                 } else {
-                    return "下注"
+                    return this.$t('bet')
                 }
             },
             otherAccount(row) {
                 let fromAddr = row.txFrom.toLowerCase()
                 if (this.myAddr === fromAddr) {
-                    return row.txTo || "创建应用"
+                    return row.txTo || this.$t('createanapp')
                 } else {
                     return row.txFrom
                 }
@@ -215,30 +218,30 @@
                 if(this.isDisabled){
                     this.$message({
                         type: 'error',
-                        message: "合约地址有误，请检查合约地址是否正确",
+                        message: this.$t('thecontractaddressisincorrectpleasecheckifthecontracaddressiscorrect'),
                     })
                     return
                 }
                 if (this.myContractInstance === null) {
-                    this.$message.error('请先选泽一个应用！')
+                    this.$message.error(this.$t('pleaseselectanappfirst'))
                     return
                 }
                 if (this.form.rechargeVal === undefined || this.form.rechargeVal.trim() === '') {
-                    this.$message.error('请输入充值金额！')
+                    this.$message.error(this.$t('pleaseentertherechargeamount'))
                     return
                 }
                 if (isNaN(Number(this.form.rechargeVal))) {
-                    this.$message.error('充值金额须为纯数字！')
+                    this.$message.error(this.$t('theamountofrechargemustbeapurenumber'))
                     return
                 }
-                this.$confirm('确认充值吗?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
+                this.$confirm(this.$t('confirmrecharge'), this.$t('prompt'), {
+                    confirmButtonText: this.$t('determine'),
+                    cancelButtonText: this.$t('cancel'),
                     type: 'warning'
                 }).then(() => {
                     this.$store.commit('setCryptPercent', {
                             percent: true,
-                            text: '正在充值...'
+                            text: this.$t('recharging')
                         }
                     )
                     this.$funs.unlockAccount().then((res) => {
@@ -286,8 +289,8 @@
                             }
                         )
                         if (receipt.transactionHash) {
-                            this.$alert(`交易hash为：${receipt.transactionHash}`, '充值成功', {
-                                confirmButtonText: '确定',
+                            this.$alert(`${this.$t('tradinghashis')}${receipt.transactionHash}`, this.$t('rechargesuccessful'), {
+                                confirmButtonText: this.$t('determine'),
                             })
                             this.getContractBalance()
                         }
@@ -300,36 +303,36 @@
                 if(this.isDisabled){
                     this.$message({
                         type: 'error',
-                        message: "合约地址有误，请检查合约地址是否正确",
+                        message:this.$t('contractaddressinerrorpleasechecktheaddressiscorrectcontract') ,
                     })
                     return
                 }
                 if (this.myContractInstance === null) {
-                    this.$message.error('请先选泽一个应用！')
+                    this.$message.error(this.$t('pleaseselectanapplicationfirst'))
                     return
                 }
 
                 if (this.appInfo.createAddr !== this.$store.state.address) {
-                    this.$message.error('不是应用创建者，不能提现！')
+                    this.$message.error(this.$t('notanappcreatorcantwithdrawcash'))
                     return
                 }
 
                 if (this.form.drawingVal === undefined || this.form.drawingVal === '') {
-                    this.$message.error('请输入提现金额！')
+                    this.$message.error(this.$t('pleaseentertheamountofcash'))
                     return
                 }
                 if (isNaN(Number(this.form.drawingVal))) {
-                    this.$message.error('提现金额须为纯数字！')
+                    this.$message.error(this.$t('thecashamountmustbeapurenumber'))
                     return
                 }
-                this.$confirm('确认提现吗?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
+                this.$confirm(this.$t('confirmwithdrawal'),this.$t('prompt'), {
+                    confirmButtonText:this.$t('determine'),
+                    cancelButtonText: this.$t('cancel'),
                     type: 'warning'
                 }).then(() => {
                     this.$store.commit('setCryptPercent', {
                             percent: true,
-                            text: '正在提现...'
+                            text: this.$t('extracting')
                         }
                     )
                     this.$funs.unlockAccount().then((res) => {
@@ -364,8 +367,8 @@
                                 text: ''
                             }
                         )
-                        this.$alert(`交易hash为：${receipt.transactionHash}`, '提现成功', {
-                            confirmButtonText: '确定',
+                        this.$alert(`${this.$t('tradinghashis')}${receipt.transactionHash}`, this.$t('cashwithdrawalsuccess'), {
+                            confirmButtonText: this.$t('determine'),
                         })
                         this.getContractBalance()
                     })
@@ -385,7 +388,7 @@
                 if(this.isDisabled){
                     this.$message({
                         type: 'error',
-                        message: "合约地址有误，请检查合约地址是否正确",
+                        message: this.$t('thecontractaddressisincorrectpleasecheckifthecontractaddressiscorrect'),
                     })
                     return
                 }
@@ -414,7 +417,7 @@
                                 this.tableData = []
                                 this.tableData = this.tableData.concat(res.data.result)
                             } else {
-                                this.$message.error("没有相关数据")
+                                this.$message.error(this.$t('norelevantdata'))
                             }
                         }
                     }).catch((error) => {
@@ -434,7 +437,7 @@
                         if (!data) {
                             this.$message({
                                 type: 'error',
-                                message: "合约地址有误，请检查合约地址是否正确",
+                                message: this.$t('thecontractaddressisincorrectpleasecheckifthecontractaddressiscorrect'),
                             })
                             this.isDisabled = true
                         } else {

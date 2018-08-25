@@ -7,8 +7,11 @@
                 <div class="wallet-header-light" :class="[walletSelect]"></div>
 
                 <div class="wallet-header tc">
-                    <span>
-                        {{title}}
+                    <span v-if="show">
+                        {{$t('importthewallet')}}
+                    </span>
+                    <span v-if="!show">
+                        {{$t('createWallet01')}}
                     </span>
                 </div>
 
@@ -22,12 +25,12 @@
         <div class="wallet-footer">
             <div class="footer-left">
                 <img class="logo-small" src="../../assets/images/firstScreen/logo_small.png">
-                <span>免费的开源客户端界面，用于生成FOF钱包等等。轻松安全地与FOF区块链互动。解锁钱包之前请仔细检查网址 www.fof.com</span>
+                <span>{{$t('freeopensourceclientinterfaceforgeneratingFOFwalletsandsooneasilyandsafelyinteractwiththeFOFblockchainpleasechecktheURLcarefullybeforeunlockingthewallet')}} www.fof.com</span>
             </div>
             <div class="footer-right">
-                <span>www.xxx.com</span>
-                <span>FOF团队</span>
-                <span>电子邮件支持：support@fof.com</span>
+                <span>www.FOF.com</span>
+                <span>{{$t('FOFteam')}}</span>
+                <span>{{$t('emailsupport')}}：support@fof.com</span>
                 <span>©2018 FOF，Inc</span>
             </div>
         </div>
@@ -47,12 +50,12 @@
             return {
                 isCreate: true,
                 walletSelect: 'wallet-create',
-                title: "导入钱包"
+                show:true
             }
         },
         methods: {
-            getTitle(data){
-                this.title = data
+            getTitle() {
+                this.show = !this.show
             },
         },
     }
@@ -88,12 +91,12 @@
                 border-width: 5px;
                 border-style: solid;
                 border-image-source: linear-gradient(151deg,
-                        #45cae6 0%,
-                        #3e99e2 10%,
-                        #3668de 29%,
-                        #3586e4 62%,
-                        #34a3e9 74%,
-                        #1a4fcd 100%
+                    #45cae6 0%,
+                    #3e99e2 10%,
+                    #3668de 29%,
+                    #3586e4 62%,
+                    #34a3e9 74%,
+                    #1a4fcd 100%
                 );
                 border-image-slice: 1;
                 position: relative;
@@ -193,27 +196,27 @@
     }
 
     /*@keyframes createWallet {*/
-        /*0% {*/
-            /*opacity: 1;*/
-        /*}*/
-        /*50% {*/
-            /*opacity: 0.2;*/
-        /*}*/
-        /*100% {*/
-            /*opacity: 1;*/
-        /*}*/
+    /*0% {*/
+    /*opacity: 1;*/
+    /*}*/
+    /*50% {*/
+    /*opacity: 0.2;*/
+    /*}*/
+    /*100% {*/
+    /*opacity: 1;*/
+    /*}*/
     /*}*/
 
     /*@keyframes importWallet {*/
-        /*0% {*/
-            /*opacity: 1;*/
-        /*}*/
-        /*50% {*/
-            /*opacity: 0.2;*/
-        /*}*/
-        /*100% {*/
-            /*opacity: 1;*/
-        /*}*/
+    /*0% {*/
+    /*opacity: 1;*/
+    /*}*/
+    /*50% {*/
+    /*opacity: 0.2;*/
+    /*}*/
+    /*100% {*/
+    /*opacity: 1;*/
+    /*}*/
     /*}*/
 
 </style>

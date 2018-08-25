@@ -9,7 +9,7 @@
                             label-position="right"
                             @submit.native.prevent>
 
-                            <el-form-item class="el-wallet-style" label="游戏名称">
+                            <el-form-item class="el-wallet-style" :label="$t('gamename')">
                                 <el-input
                                     auto-complete="off"
                                     v-model="configData.name"
@@ -18,8 +18,9 @@
                                 </el-input>
                             </el-form-item>
 
-                            <el-form-item class="el-wallet-style" label="赛事类型">
-                                <el-select v-model="configData.type" placeholder="请选择" style="width: 100%;" @change="setSession(configData.type)">
+                            <el-form-item class="el-wallet-style" :label="$t('typeofevent')">
+                                <el-select v-model="configData.type" :placeholder="$t('pleasechoose')"
+                                           style="width: 100%;" @change="setSession(configData.type)">
                                     <el-option
                                         v-for="item in types"
                                         :key="item"
@@ -29,8 +30,10 @@
                                 </el-select>
                             </el-form-item>
 
-                            <el-form-item class="el-wallet-style" label="比赛场次">
-                                <el-select v-model="configData.id" placeholder="请选择" style="width: 100%;" @change="setDefaultDeadline" no-data-text="请选择赛事类型">
+                            <el-form-item class="el-wallet-style" :label="$t('competition')">
+                                <el-select v-model="configData.id" :placeholder="$t('pleasechoose01')"
+                                           style="width: 100%;" @change="setDefaultDeadline"
+                                           :no-data-text="$t('pleasechoosethetypeofevent')">
                                     <el-option
                                         v-for="(item, key) in gameData"
                                         :key="key"
@@ -40,7 +43,7 @@
                                 </el-select>
                             </el-form-item>
 
-                            <el-form-item class="el-wallet-style" label="奖池金额">
+                            <el-form-item class="el-wallet-style" :label="$t('poolamount')">
                                 <el-input
                                     auto-complete="off"
                                     v-model="configData.recharge"
@@ -65,7 +68,7 @@
                                 </el-input>
                             </el-form-item>
 
-                            <el-form-item class="el-wallet-style" label="客队让球">
+                            <el-form-item class="el-wallet-style" :label="$t('thevisitingteammadetheball')">
                                 <el-input
                                     auto-complete="off"
                                     v-model="configData.vConcedePoints"
@@ -75,7 +78,7 @@
                                 </el-input>
                             </el-form-item>
 
-                            <el-form-item class="el-wallet-style" label="单注下注金额">
+                            <el-form-item class="el-wallet-style" :label="$t('amountofnoteundersinglenote')">
                                 <el-input
                                     auto-complete="off"
                                     v-model="configData.singleBetCoin"
@@ -83,12 +86,12 @@
                                 >
                                 </el-input>
                             </el-form-item>
-                            <el-form-item class="el-wallet-style" label="下注截止时间">
+                            <el-form-item class="el-wallet-style" :label="$t('betscutofftime')">
                                 <el-date-picker
                                     style="width: 100%;"
                                     v-model="configData.deadline"
                                     type="datetime"
-                                    placeholder="选择截止时间">
+                                    :placeholder="$t('cutofftime')">
                                 </el-date-picker>
                             </el-form-item>
                         </el-form>
@@ -100,7 +103,7 @@
                             label-position="right"
                             @submit.native.prevent>
 
-                            <el-form-item class="el-wallet-style" label="主胜赔率">
+                            <el-form-item class="el-wallet-style" :label="$t('mainwinningodds')">
                                 <el-input
                                     auto-complete="off"
                                     v-model="configData.oddsH"
@@ -109,7 +112,7 @@
                                 </el-input>
                             </el-form-item>
 
-                            <el-form-item class="el-wallet-style" label="平局赔率">
+                            <el-form-item class="el-wallet-style" :label="$t('oddsratio')">
                                 <el-input
                                     auto-complete="off"
                                     v-model="configData.oddsD"
@@ -118,7 +121,7 @@
                                 </el-input>
                             </el-form-item>
 
-                            <el-form-item class="el-wallet-style" label="客胜赔率">
+                            <el-form-item class="el-wallet-style" :label="$t('winningodds')">
                                 <el-input
                                     auto-complete="off"
                                     v-model="configData.oddsV"
@@ -150,189 +153,218 @@
 </template>
 
 <script>
-    import shijiebeiRule from "./shijiebeiRule" 
-    import contract from '../../../contracts/saishijingcai/playGame.json'
-    import sol from '../../../contracts/saishijingcai/playGame.sol'
+    import shijiebeiRule from "./shijiebeiRule";
+    import contract from "../../../contracts/saishijingcai/playGame.json";
+    import sol from "../../../contracts/saishijingcai/playGame.sol";
 
     export default {
         name: "shijiebeiConfig",
         components: {
-            shijiebeiRule,
+            shijiebeiRule
         },
         data() {
             return {
                 configData: {
-                    name: '赛事竞猜',
-                    type: '',
-                    recharge: '',
-                    deadline: '',
-                    icon: '',
+                    name: '',
+                    type: "",
+                    recharge: "",
+                    deadline: "",
+                    icon: "",
                     singleBetCoin: 1,
-                    oddsH: '',
-                    oddsD: '',
-                    oddsV: '',
+                    oddsH: "",
+                    oddsD: "",
+                    oddsV: "",
                     hConcedePoints: 0,
                     vConcedePoints: 0,
-                    id:""
+                    id: ""
                 },
                 types: {},
                 gameData: {},
-                totalData:{},
-            }
+                totalData: {}
+            };
         },
         methods: {
             setDefaultDeadline() {
-                this.configData.deadline = new Date( this.gameData[this.configData.id].gameTime)                
+                this.configData.deadline = new Date(
+                    this.gameData[this.configData.id].gameTime
+                );
             },
             setSession(type) {
-                this.configData.id = this.configData.deadline = ''
-                this.gameData = {}
-                this.gameData = this.totalData[type]
+                this.configData.id = this.configData.deadline = "";
+                this.gameData = {};
+                this.gameData = this.totalData[type];
             },
             deploy() {
-                let user = this.$store.state.address
+                let user = this.$store.state.address;
                 return new Promise((resolve, reject) => {
-                    let result = this.verifyData()
+                    let result = this.verifyData();
                     if (result.message) {
-                        reject(result)
-                        return
+                        reject(result);
+                        return;
                     }
                     let hTeam, vTeam, liveId;
-                    hTeam = this.gameData[this.configData.id].zhuTeam                    
-                    vTeam = this.gameData[this.configData.id].keTeam
-                    liveId = Number(this.gameData[this.configData.id].liveId)
+                    hTeam = this.gameData[this.configData.id].zhuTeam;
+                    vTeam = this.gameData[this.configData.id].keTeam;
+                    liveId = Number(this.gameData[this.configData.id].liveId);
                     try {
-                        this.$store.commit('setCryptPercent', {percent: true, text: '创建中···'})
-                        this.$funs.unlockAccount().then((res) => {
-                            let args = [
-                                String(this.configData.name) || "赛事竞猜",
-                                hTeam,
-                                vTeam,
-                                Number(this.configData.oddsH) * 100,
-                                Number(this.configData.oddsD) * 100,
-                                Number(this.configData.oddsV) * 100,
-                                Date.parse(new Date(this.configData.deadline)),
-                                Number(this.configData.singleBetCoin),
-                                Number(this.configData.hConcedePoints),
-                                Number(this.configData.vConcedePoints),
-                                Number(liveId),
-                            ];
-                            this.$funs.magrationContract(user, contract, sol, args)
-                                .then((contractIns) => {
-                                    this.$store.commit('setCryptPercent', {percent: true, text: '创建成功！正在充值···'})
-                                    this.$funs.rechargeToContract(contractIns, user, this.configData.recharge)
-                                        .then((data) => {
-                                            contractIns.contractAddressUrl = `/quiz/?${contractIns._address}`
-                                            resolve(contractIns)
-                                        }, (err) => {
-                                            console.log(err);
-                                        })
-                                }, (err) => {
-                                    console.log(err);
-                                })
-                        }).catch((reason) => {
-                            console.log(reason)
-                        })
+                        this.$store.commit("setCryptPercent", {
+                            percent: true,
+                            text: this.$t("creation")
+                        });
+                        this.$funs
+                            .unlockAccount()
+                            .then(res => {
+                                let args = [
+                                    String(this.configData.name.trim()) || this.$t("competitionguessing02"),
+                                    hTeam,
+                                    vTeam,
+                                    Number(this.configData.oddsH) * 100,
+                                    Number(this.configData.oddsD) * 100,
+                                    Number(this.configData.oddsV) * 100,
+                                    Date.parse(new Date(this.configData.deadline)),
+                                    Number(this.configData.singleBetCoin),
+                                    Number(this.configData.hConcedePoints),
+                                    Number(this.configData.vConcedePoints),
+                                    Number(liveId)
+                                ];
+                                this.$funs.magrationContract(user, contract, sol, args).then(
+                                    contractIns => {
+                                        this.$store.commit("setCryptPercent", {
+                                            percent: true,
+                                            text: this.$t("createsuccessrecharge02")
+                                        });
+                                        this.$funs
+                                            .rechargeToContract(
+                                                contractIns,
+                                                user,
+                                                this.configData.recharge
+                                            )
+                                            .then(
+                                                data => {
+                                                    contractIns.contractAddressUrl = `/quiz/?${contractIns._address}`;
+                                                    resolve(contractIns);
+                                                },
+                                                err => {
+                                                    console.log(err);
+                                                }
+                                            );
+                                    },
+                                    err => {
+                                        console.log(err);
+                                    }
+                                );
+                            })
+                            .catch(reason => {
+                                console.log(reason);
+                            });
                     } catch (err) {
-                        this.$message.error(err.message)
+                        this.$message.error(err.message);
                     }
-                })
+                });
             },
-            verifyData() {                
-                let balance = Number(this.$store.state.balance)
-                if (!this.configData.name) {
-                    return new Error('请输入游戏名称！');
-                }
+            verifyData() {
+                let balance = Number(this.$store.state.balance);
+                // if (!this.configData.name) {
+                //   return new Error(this.$t('entergamename'));
+                // }
                 if (!this.configData.type) {
-                    return new Error('请选择赛事类型！');
+                    return new Error(this.$t('pleasechoosethetypeofevent01'));
                 }
                 if (!this.configData.id && this.configData.id != 0) {
-                    return new Error('请选择比赛场次！');
+                    return new Error(this.$t('pleasechoosethegame'));
                 }
                 if (!this.$funs.validateFloatNum(this.configData.recharge)) {
-                    return new Error('请输入正确的奖池金额！');
+                    return new Error(this.$t('enterthecorrectamountofthepool'));
                 }
-                let reg = /^\d*.\d{0,9}$/g
+                let reg = /^\d*.\d{0,9}$/g;
                 if (!reg.test(this.configData.recharge)) {
-                    return new Error('奖池金额小数点后不能超过9位！');
+                    return new Error(this.$t('thesumofthesumscannotexceed9'));
                 }
-                if (balance < (Number(this.configData.recharge) + 1)) {
-                    return new Error('余额不足以支付奖池充值金额！');
+                if (balance < Number(this.configData.recharge) + 1) {
+                    return new Error(this.$t('balanceisnotenoughtopay01'));
                 }
                 if (
-                    (!this.$funs.validateIntNum(this.configData.hConcedePoints) && this.configData.hConcedePoints != 0)
-                    || (!this.$funs.validateIntNum(this.configData.vConcedePoints) && this.configData.vConcedePoints != 0)
+                    (!this.$funs.validateIntNum(this.configData.hConcedePoints) &&
+                        this.configData.hConcedePoints != 0) ||
+                    (!this.$funs.validateIntNum(this.configData.vConcedePoints) &&
+                        this.configData.vConcedePoints != 0)
                 ) {
-                    return new Error('请输入正整数的让球数！');
+                    return new Error(this.$t('inputpositiveintegerball'));
                 }
                 if (!this.$funs.validateIntNum(this.configData.singleBetCoin)) {
-                    return new Error('请输入正整数的单注下注金额！');
+                    return new Error(this.$t('inputpositiveintegersum'));
                 }
                 if (!this.configData.deadline) {
-                    return new Error('请选择下注截止时间！');
+                    return new Error(this.$t('choosethebetscutofftime'));
                 }
                 let now = new Date();
-                if (this.configData.deadline < now) {   
-                    return new Error('下注截止时间应在当前时间之后！');
+                if (this.configData.deadline < now) {
+                    return new Error(this.$t('afterthecurrenttimeofthedeadline'));
                 }
-                if (this.configData.deadline > new Date( this.gameData[this.configData.id].gameTime)) {   
-                    return new Error('下注截止时间应在比赛开始时间之前！');
+                if (
+                    this.configData.deadline >
+                    new Date(this.gameData[this.configData.id].gameTime)
+                ) {
+                    return new Error(this.$t('thedeadlineisbeforethestartofthegame'));
                 }
-                if (!this.$funs.validateFloatNum(this.configData.oddsH) || !this.$funs.validateFloatNum(this.configData.oddsD) || !this.$funs.validateFloatNum(this.configData.oddsV)) {
-                    return new Error('请输入正确的赔率！');
+                if (
+                    !this.$funs.validateFloatNum(this.configData.oddsH) ||
+                    !this.$funs.validateFloatNum(this.configData.oddsD) ||
+                    !this.$funs.validateFloatNum(this.configData.oddsV)
+                ) {
+                    return new Error(this.$t('entertherightodds'));
                 }
-                if (this.splitString(this.configData.oddsH, ".", 1).length > 2
-                    || this.splitString(this.configData.oddsD, ".", 1).length > 2
-                    || this.splitString(this.configData.oddsV, ".", 1).length > 2) {
-                    return new Error('赔率小数点后不能超过2位！');
+                if (
+                    this.splitString(this.configData.oddsH, ".", 1).length > 2 ||
+                    this.splitString(this.configData.oddsD, ".", 1).length > 2 ||
+                    this.splitString(this.configData.oddsV, ".", 1).length > 2
+                ) {
+                    return new Error(this.$t('nomorethan2bitsaftertheodds'));
                 }
-                return true
+                return true;
             },
             inputValue1() {
-                this.configData.vConcedePoints = 0
+                this.configData.vConcedePoints = 0;
             },
             inputValue2() {
-                this.configData.hConcedePoints = 0
+                this.configData.hConcedePoints = 0;
             },
             splitString(str, point, n) {
-                return String(str).split(point)[n] || ''
+                return String(str).split(point)[n] || "";
             }
         },
-        beforeMount() {
-            this.$axios.post('/api/getResults.php')
-            .then((res) => {
-                if(res.data.code == 200) {
-                    let result = res.data.result
-                    let len = result.length
-                    if(result.length) {
-                        this.types = {}
-                        this.totalData = {}
-                        for (let i = 0; i < len; i++) {
-                            if(result[i].type === "未开赛"){
-                                let name = result[i].name
-                                if(!this.types[name]) {
-                                    this.types[name] = name
-                                    this.totalData[name] = []
+        created() {
+            this.$axios
+                .post("/api/getResults.php")
+                .then(res => {
+                    if (res.data.code == 200) {
+                        let result = res.data.result;
+                        let len = result.length;
+                        if (result.length) {
+                            this.types = {};
+                            this.totalData = {};
+                            for (let i = 0; i < len; i++) {
+                                if (result[i].type === this.$t('notopening')) {
+                                    let name = result[i].name;
+                                    if (!this.types[name]) {
+                                        this.types[name] = name;
+                                        this.totalData[name] = [];
+                                    }
+                                    this.totalData[name].push(result[i]);
                                 }
-                                this.totalData[name].push(result[i])          
-                            }                  
+                            }
+                        } else {
+                            this.$message.error(this.$t('therearenogamesinprogressatthemoment'));
                         }
-                    } else {
-                        this.$message.error("目前没有进行中的比赛")
                     }
-                }
-                
-            }).catch((error) => {
-                this.$message.error(String(error))
-            })
+                })
+                .catch(error => {
+                    this.$message.error(String(error));
+                });
         },
-        mounted() {
-        }
-    }
+    };
 </script>
 
 <style lang="scss" scoped>
-
     @import "../../assets/scss/gameConfig";
-
 </style>

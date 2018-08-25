@@ -7,7 +7,7 @@
                     label-position="left"
                     @submit.native.prevent>
 
-                    <el-form-item class="el-wallet-style" label="设置游戏名称">
+                    <el-form-item class="el-wallet-style" :label="$t('settingthenameofthegame')">
                         <el-row>
                             <el-col :span="6">
                                 <el-input
@@ -25,7 +25,7 @@
                          label-position="left"
                          @submit.native.prevent>
 
-                    <el-form-item class="el-wallet-style" label="奖池充值金额">
+                    <el-form-item class="el-wallet-style" :label="$t('rechargeofthepool')">
                         <el-row>
                             <el-col :span="6">
                                 <el-input
@@ -43,7 +43,7 @@
                          label-position="left"
                          @submit.native.prevent>
 
-                    <el-form-item class="el-wallet-style" label="可选下注金额">
+                    <el-form-item class="el-wallet-style" :label="$t('optionalamount')">
                         <el-row>
                             <el-col :span="6">
                                 <el-input
@@ -95,7 +95,8 @@
 <script>
     import baccaratRule from "./baccaratRule"
     import contract from '../../../contracts/baccarat/baccarat.json'
-    import sol from '../../../contracts/baccarat/Baccarat.sol'
+    // import sol from '../../../contracts/baccarat/Baccarat.sol'
+    let sol = 'solidity'
 
     export default {
         name: "longhudouConfig",
@@ -105,7 +106,7 @@
         data() {
             return {
                 rechargeData: {
-                    name: "百家乐",
+                    name: "",
                     value: '100',
                     gasPrice: '41',
                     gas: '21000',
@@ -126,25 +127,30 @@
                         return
                     }
                     try {
-                        this.$store.commit('setCryptPercent', {percent: true, text: '创建中···'})
+                        this.$store.commit('setCryptPercent', {percent: true, text: this.$t('creation')})
                         this.$funs.unlockAccount().then((res) => {
                             let args = [
                                 Number(this.rechargeData.price1),
                                 Number(this.rechargeData.price2),
                                 Number(this.rechargeData.price3),
                                 Number(this.rechargeData.price4),
-                                String(this.rechargeData.name) || "百家乐",
+                                String(this.rechargeData.name) || this.$t('Baccarat02'),
                             ];
                             this.$web3.eth.estimateGas({data: contract.bytecode}).then((gas) => {
                                 gas = gas + 100000
                                 this.$funs.magrationContract(user, contract, sol, args, gas)
                                     .then((contractIns) => {
-                                        this.$store.commit('setCryptPercent', {percent: true, text: '创建成功！正在充值···'})
+                                        this.$store.commit('setCryptPercent', {
+                                            percent: true,
+                                            text: this.$t('createsuccessrecharge')
+                                        })
                                         this.$funs.rechargeToContract(contractIns, user, this.rechargeData.value)
                                             .then((data) => {
                                                 contractIns.contractAddressUrl = `/baccarat/?${contractIns._address}`
                                                 resolve(contractIns)
                                             })
+                                    }, err => {
+                                        reject(err)
                                     })
                             })
                         }).catch((reason) => {
@@ -158,14 +164,14 @@
             verifyData() {
                 let balance = Number(this.$store.state.balance)
                 if (isNaN(this.rechargeData.value) || this.rechargeData.value === '' || Number(this.rechargeData.value) === 0) {
-                    return new Error('请输入正确的充值金额！');
+                    return new Error(this.$t('pleaseenterthecorrectamountofrecharge'));
                 }
                 let reg = /^\d*.\d{0,9}$/g
                 if (!reg.test(this.rechargeData.value)) {
-                    return new Error('充值数额小数点后不能超过9位！');
+                    return new Error(this.$t('theamountoftherechargecannotexceed9bits'));
                 }
                 if (balance < (Number(this.rechargeData.value) + 1)) {
-                    return new Error('余额不足以支付充值金额！');
+                    return new Error(this.$t('creditisrunninglow'));
                 }
                 // if (isNaN(this.rechargeData.gasPrice)) {
                 //     return new Error('请输入正确的gasPrice！');
@@ -177,7 +183,7 @@
                     || isNaN(this.rechargeData.price2)
                     || isNaN(this.rechargeData.price3)
                     || isNaN(this.rechargeData.price4)) {
-                    return new Error('请设置正确的下注金额！');
+                    return new Error(this.$t('setthecorrectamountofthebet'));
                 }
                 if (this.rechargeData.price1.trim() === ''
                     || this.rechargeData.price2.trim() === ''
@@ -187,7 +193,7 @@
                     || Number(this.rechargeData.price2) === 0
                     || Number(this.rechargeData.price3) === 0
                     || Number(this.rechargeData.price4) === 0) {
-                    return new Error('下注金额不能为空和不能为0！');
+                    return new Error(this.$t('theamountofthebetcannotbeemptyandcannotbe0'));
                 }
                 return true
             }

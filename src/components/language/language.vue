@@ -14,23 +14,28 @@
         name: "language",
         data() {
             return {
-                value: 'zh-CN',
+                value: 'zhcn',
                 options: [
-                    {title: '中文', label: 'zh-CN'},
-                    {title: 'English', label: 'en-US'},
+                    {title: '中文-简体', label: 'zhcn'},
+                    {title: '中文-繁體', label: 'zhtw'},
+                    {title: 'English', label: 'en'},
                 ]
             }
         },
         methods: {
             changeLang(val) {
                 this.$i18n.locale = val;
+                localStorage.setItem('language', val)
             }
+        },
+        created() {
+            this.value = localStorage.getItem('language') || 'zhcn'
         }
     }
 </script>
 
 <style scoped lang="scss">
     .el-select{
-        width: 90px;
+        width: 100px;
     }
 </style>

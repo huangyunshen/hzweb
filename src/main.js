@@ -15,19 +15,19 @@ Vue.use(global)
 /*  i18n  */
 Vue.use(VueI18n);
 const i18n = new VueI18n({
-    locale:'zh-CN',
-    messages:{
-        'zh-CN':require('./common/lang/zh-CN'),
-        'zh-TW':require('./common/lang/zh-TW'),
-        'en-US':require('./common/lang/en-US'),
+    locale: localStorage.getItem('language') || 'zhcn',
+    messages: {
+        'zhcn': require('./common/lang/zh-CN'),
+        'zhtw': require('./common/lang/zh-TW'),
+        'en': require('./common/lang/en-US'),
     }
 })
 
 Vue.config.productionTip = false
 
 //单位过滤器
-Vue.filter('amountUnit',function (value) {
-    if(!value) return '0 FOF'
+Vue.filter('amountUnit', function (value) {
+    if (!value) return '0 FOF'
     return value.toString() + ' FOF'
 })
 

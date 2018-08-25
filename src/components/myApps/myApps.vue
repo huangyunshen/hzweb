@@ -68,7 +68,7 @@
                         this.$message.error(String(error))
                         let timer = setTimeout(() => {
                             clearTimeout(timer)
-                            this.$message.error('无法获取应用列表')
+                            this.$message.error(this.$t('unabletogetapplist'))
                         }, 3000)
                     })
                 }

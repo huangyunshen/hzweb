@@ -6,15 +6,15 @@
                     <ul class="list-padding">
                         <li>
                             <i class="list-icon2"></i>
-                            <span>账户地址</span>
+                            <span>{{$t('address')}}</span>
                         </li>
                         <li>
                             <i class="list-icon3"></i>
-                            <span>助记词</span>
+                            <span>{{$t('memorizingword')}}</span>
                         </li>
                         <li>
                             <i class="list-icon4"></i>
-                            <span>私钥</span>
+                            <span>{{$t('privatekey')}}</span>
                         </li>
                     </ul>
                 </div>
@@ -29,7 +29,7 @@
                                 <el-button slot="append" icon="el-icon-view" @click="showOrHideMnemo"></el-button>
                             </el-input>
                             <span v-show="!$store.state.mnemonic"
-                                  class="text-disabled no-select-text">{{warningInfo}}</span>
+                                  class="text-disabled no-select-text">{{ $t(warningInfo) }}</span>
                         </li>
                         <li style="padding-right: 25px">
                             <el-input v-show="privateKey" v-model="privateKey"
@@ -37,20 +37,20 @@
                                 <el-button slot="append" icon="el-icon-view" @click="showOrHidePriv"></el-button>
                             </el-input>
                             <span v-show="!privateKey"
-                                  class="text-disabled no-select-text">{{warningInfo}}</span>
+                                  class="text-disabled no-select-text">{{ $t(warningInfo) }}</span>
                         </li>
                     </ul>
                 </div>
             </div>
             <div class="qr-content">
                 <div class="qr-item">
-                    <p class="qr-title">账户地址</p>
+                    <p class="qr-title">{{$t('accountaddress')}}</p>
                     <div class="qr-body">
                         <vue-qr :text="$store.state.address || 'no address'" :margin="8"></vue-qr>
                     </div>
                 </div>
                 <div class="qr-item">
-                    <p class="qr-title">私钥</p>
+                    <p class="qr-title">{{$t('privatekey1')}}</p>
                     <div class="qr-body">
                         <vue-qr :text="privateKeyQr" :margin="8"></vue-qr>
                     </div>
@@ -61,57 +61,60 @@
 </template>
 
 <script>
-    import VueQr from 'vue-qr'
+import VueQr from "vue-qr";
 
-    export default {
-        name: "account-info",
-        data() {
-            return {
-                mnemonic: '',
-                warningInfo: '无相关信息',
-                passwordOrTextPriv: 'password',
-                passwordOrTextMnemo: 'password',
-                privateKey: '',
-                privateKeyQr: '无相关信息',
-            }
-        },
-        components: {
-            VueQr
-        },
-        watch: {
-            privateKey() {
-                if (this.passwordOrTextPriv === 'text')
-                    this.privateKeyQr = this.privateKey
-            }
-        },
-        methods: {
-            showOrHideMnemo() {
-                if (this.passwordOrTextMnemo === 'password') {
-                    this.passwordOrTextMnemo = 'text'
-                } else {
-                    this.passwordOrTextMnemo = 'password'
-                }
-            },
-            showOrHidePriv() {
-                if (this.passwordOrTextPriv === 'password') {
-                    this.passwordOrTextPriv = 'text'
-                    this.privateKeyQr = this.privateKey
-                } else {
-                    this.passwordOrTextPriv = 'password'
-                    this.privateKeyQr = this.warningInfo
-                }
-            },
-            getWallet() {
-                let wallet = this.$funs.getActiveAccount()
-                if (wallet.privateKey) {
-                    this.privateKey = wallet.privateKey.replace('0x', '')
-                }
-            }
-        },
-        mounted() {
-            this.getWallet()
-        }
+export default {
+  name: "account-info",
+  data() {
+    return {
+      mnemonic: "",
+      warningInfo: "nothing",
+      passwordOrTextPriv: "password",
+      passwordOrTextMnemo: "password",
+      privateKey: "",
+      privateKeyQr: ''
+    };
+  },
+  components: {
+    VueQr
+  },
+  watch: {
+    privateKey() {
+      if (this.passwordOrTextPriv === "text") {
+        this.privateKeyQr = this.privateKey;
+      } else {
+        this.privateKeyQr = this.$t(this.warningInfo)
+      }
     }
+  },
+  methods: {
+    showOrHideMnemo() {
+      if (this.passwordOrTextMnemo === "password") {
+        this.passwordOrTextMnemo = "text";
+      } else {
+        this.passwordOrTextMnemo = "password";
+      }
+    },
+    showOrHidePriv() {
+      if (this.passwordOrTextPriv === "password") {
+        this.passwordOrTextPriv = "text";
+        this.privateKeyQr = this.privateKey;
+      } else {
+        this.passwordOrTextPriv = "password";
+        this.privateKeyQr = this.$t(this.warningInfo)
+      }
+    },
+    getWallet() {
+      let wallet = this.$funs.getActiveAccount();
+      if (wallet.privateKey) {
+        this.privateKey = wallet.privateKey.replace("0x", "");
+      }
+    }
+  },
+  mounted() {
+    this.getWallet();
+  }
+};
 </script>
 
 <style scoped lang="scss">

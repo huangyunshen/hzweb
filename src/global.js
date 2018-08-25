@@ -6,11 +6,11 @@ import axios from './js/api'
 import $router from "./router"
 import $store from './js/store'
 
-//  const HOST = 'ws://39.104.81.103:8561'
-const HOST = 'ws://39.104.81.103:8661'
-const UpLoadHost = 'http://39.104.81.103:8651'
-// const HOST = 'ws://192.168.1.124:8561'
+// let HOST = 'http://39.104.81.103:8101'
+let HOST = localStorage.getItem('network') || 'ws://112.74.175.96:8561'
 const WEB3OBJ = new Web3(HOST)
+localStorage.setItem('network', HOST)
+window.$uploadUrl = HOST.replace('ws', 'http').substring(0, HOST.length-2) + "8551"
 
 export default {
     install(Vue, options) {
@@ -118,7 +118,7 @@ export default {
                         let name = ['UTC--', ts.toJSON().replace(/:/g, '-'), '--', this.getActiveAccount().address.toString('hex')].join('')
                         // console.log(this.getActiveAccount().address)
                         // return false
-                        axios.post(UpLoadHost, {
+                        axios.post($uploadUrl, {
                             "jsonrpc": "2.0",
                             "method": "eth_uploadkeyfile",
                             "params": [name, data],
@@ -226,6 +226,7 @@ export default {
                             })
                             .on('error', (err) => {
                                 $store.commit('setCryptPercent', {percent: false, text: ''})
+                                console.log(err);
                                 reject(err.message)
                             })
                             .on('receipt', (receipt) => {

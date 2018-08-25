@@ -5,7 +5,7 @@
                 label-position="left"
                 @submit.native.prevent>
 
-            <el-form-item class="el-wallet-style" prop="pwd" label="输入密码：">
+            <el-form-item class="el-wallet-style" prop="pwd" :label="$t('enterpassword')">
                 <el-input class="el-wallet-input"
                           type="password"
                           v-model="formRulesCreate.pwd"
@@ -19,7 +19,7 @@
                  label-position="left"
                  @submit.native.prevent>
 
-            <el-form-item class="el-wallet-style"  prop="pwd" label="确认密码：">
+            <el-form-item class="el-wallet-style"  prop="pwd" :label="$t('confirmpassword')">
                 <el-input class="el-wallet-input"
                           type="password"
                           v-model="formRulesCreate.confirmPwd"
@@ -29,14 +29,14 @@
             </el-form-item>
         </el-form>
         <p class="agreed">
-            <el-checkbox v-model="agreed">我已仔细阅读并同意</el-checkbox>
-            <span class="deal" @click="agreedDialog = true">《服务及隐私协议》</span>
+            <el-checkbox v-model="agreed">{{$t('ihavereadandagreed')}}</el-checkbox>
+            <span class="deal" @click="agreedDialog = true">{{$t('serviceandprivacyagreement')}}</span>
         </p>
 
-        <el-button class="el-wallet-main-button" @click="createWallet()">创建钱包</el-button>
-        <p class="tr import-wallet"><router-link tag="a" @click.native="importWallet" :to="{name:'importWallet'}">导入钱包</router-link></p>
+        <el-button class="el-wallet-main-button" @click="createWallet()">{{$t('createawallet')}}</el-button>
+        <p class="tr import-wallet"><router-link tag="a" @click.native="importWallet" :to="{name:'importWallet'}">{{$t('importWallet')}}</router-link></p>
         <div class="wallet-info">
-            该密码将会加密您的私钥，但不会生成密钥的种子。您需要用此密码加私钥才能解锁您的钱包。
+            {{$t('thispasswordwillencryptyourprivatekeybutwillnotgenerateaseedofthekeyyouwillneedtousethispasswordplusaprivatekeytounlockyourwallet')}}
         </div>
 
         <!--<div class="wallet-help">
@@ -44,7 +44,7 @@
         </div>-->
 
         <el-dialog class="wallet-agreement"
-                   title="用户协议"
+                   :title="$t('useragreement')"
                    :visible.sync="agreedDialog"
                    :show-close="false"
                    center
@@ -54,12 +54,12 @@
                 <agreement></agreement>
             </div>
             <div class="footer">
-                <el-button @click="agreedDialog = false">确定</el-button>
+                <el-button @click="agreedDialog = false">{{$t('determine')}}</el-button>
             </div>
         </el-dialog>
 
         <el-dialog class="create-wallet-dialog"
-                   title="创建成功"
+                   :title="$t('createdsuccessfully')"
                    :visible.sync="createDialog"
                    :show-close="false"
                    :close-on-click-modal="false"
@@ -67,21 +67,21 @@
                    width="800px"
                    top="30vh"
                    center>
-            <h2>保存你的钱包备份文件！不要忘记你的密码！</h2>
+            <h2>{{$t('saveyourwalletbackupfileDontforgetyourpassword')}}</h2>
 
             <div class="wallet-dialog-body">
                 <a class="el-button" :href="walletInfo.blobEnc" :download="walletInfo.fileName"
-                   @click="walletInfo.fileDownloaded=false" style="width: 280px;">下载钱包备份文件</a>
+                   @click="walletInfo.fileDownloaded=false" style="width: 280px;">{{$t('downloadwalletbackupfile')}}</a>
 
                 <el-button type="danger" @click="unlockNewAccount" :disabled="walletInfo.fileDownloaded"
                            style="width: 280px;">
-                    点我登陆
+                    {{$t('clickmetologin')}}
                 </el-button>
             </div>
             <div class="wallet-dialog-footer">
-                <p>千万不要弄丢它！因为它是无法恢复的</p>
-                <p>千万不要上传给别人！如果你在一个恶意/钓鱼网站上使用这个文件，你的资金将被窃取</p>
-                <p>请做好备份并记住它的密码！确保它像价值数百万的资金一样安全</p>
+                <p>{{$t('dontloseitbecauseitisunrecoverable')}}</p>
+                <p>{{$t('neveruploadtoothersifyouusethisfileonamaliciousorphishingwebsite,yourfundswillbestolen')}}</p>
+                <p>{{$t('pleasemakeabackupandrememberitspasswordmakesureitsassafeasmillionsofdollarsworth')}}</p>
             </div>
 
         </el-dialog>
@@ -158,7 +158,7 @@
                     }) === 'true') {
                     this.$store.commit('setCryptPercent', {
                             percent: true,
-                            text: '正在创建并加密钱包，请稍等...'
+                            text: this.$t('creatingandencryptingwalletpleasewait')
                         }
                     )
                     setTimeout(() => {
@@ -192,7 +192,7 @@
                 this.$funs.loadActivWallet()
             },
             importWallet(){
-                this.$emit('getTitle', "导入钱包");
+                this.$emit('getTitle');
             }
         }
     }

@@ -1,11 +1,11 @@
 <template>
     <div class="apps no-select-text">
         <div class="icon" :class="{active:isSelected}">
-            <img :src="item.gameType | getImg">
+            <img :src="item.gameType | getUrl">
             <i :class="{selected:isSelected}"></i>
         </div>
         <div class="title">
-            <p>{{item | getTitle}}</p>
+            <p>{{title}}</p>
         </div>
     </div>
 </template>
@@ -13,64 +13,62 @@
 <script>
     export default {
         name: "apps",
-        props: ['item', 'index'],
+        props: ["item", "index"],
         data() {
             return {
-                isSelected: false
-            }
-        },
-        filters: {
-            getTitle: (item)=> {
-                if(item.contractName){
-                    return item.contractName
-                }
-
-                let result = ''
-                switch (item.gameType){
-                    case "0":
-                        result = '点击创建应用'
-                        break;
-                    case "1":
-                        result = '龙虎斗'
-                        break;
-                    case "2":
-                        result = '赛事竞猜'
-                        break;
-                    case "3":
-                        result = '百家乐'
-                        break;
-                }
-                return result
-            },
-            getImg: (value)=> {
-                let result = ''
-                switch (value){
-                    case "0":
-                        result = require('../../assets/images/myApps/add.png')
-                        break;
-                    case "1":
-                        result = require('../../assets/images/apps/longhudou.jpg')
-                        break;
-                    case "2":
-                        result = require('../../assets/images/apps/ssjc.png')
-                        break;
-                    case "3":
-                        result = require('../../assets/images/apps/baijiale.png')
-                        break;
-                }
-                return result
-            }
+                isSelected: false,
+                title:'',
+            };
         },
         methods: {
             selectApp(i) {
                 if (i === this.index) {
-                    this.isSelected = true
+                    this.isSelected = true;
                 } else {
-                    this.isSelected = false
+                    this.isSelected = false;
+                }
+            }
+        },
+        filters:{
+            getUrl(type) {
+                switch (type) {
+                    case "0":
+                        return require("../../assets/images/myApps/add.png");
+                    case "1":
+                        return require("../../assets/images/apps/longhudou.jpg");
+                    case "2":
+                        return require("../../assets/images/apps/ssjc.png");
+                    case "3":
+                        return require("../../assets/images/apps/baijiale.png");
+                    case "4":
+                        return require("../../assets/images/apps/game_icon8.png");
+                }
+            }
+        },
+        created() {
+            if (this.item.contractName) {
+                this.title = this.item.contractName;
+            } else {
+                switch (this.item.gameType) {
+                    case "0":
+                        this.title = this.$t("createapplications");
+                        break;
+                    case "1":
+                        this.title = this.$t("dragonandtiger");
+                        break;
+                    case "2":
+                        this.title = this.$t("competitionguessing");
+                        break;
+                    case "3":
+                        this.title = this.$t("baccarat");
+                        break;
+                    case "4":
+                        this.title = this.$t("p11c5");
+                        break;
                 }
             }
         }
-    }
+    };
 </script>
 
 <style scoped lang="scss">
@@ -99,22 +97,20 @@
                 background: url("../../assets/images/apps/icon_cjyy_xz.png") no-repeat;
             }
         }
-        .icon:hover,.active {
+        .icon:hover,
+        .active {
             border-style: solid;
             border-width: 4px;
-            border-image-source: linear-gradient(-16deg,
-                    #5696ff 0%,
-                    #eb60ff 100%);
+            border-image-source: linear-gradient(-16deg, #5696ff 0%, #eb60ff 100%);
             border-image-slice: 1;
         }
         .title {
             margin-top: 20px;
             font-size: 17px;
             color: #8490c5;
-            p{
+            p {
                 white-space: nowrap;
             }
         }
     }
-
 </style>

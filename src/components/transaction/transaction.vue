@@ -2,10 +2,10 @@
     <div class="transaction">
         <div class="tranc-content">
             <el-steps :active="Number(steps)" align-center class="tranc-header">
-                <el-step title="交易内容"></el-step>
-                <el-step title="签名信息"></el-step>
-                <el-step title="确认交易"></el-step>
-                <el-step title="交易完成"></el-step>
+                <el-step :title="$t('transactioncontent')"></el-step>
+                <el-step :title="$t('signatureinformation')"></el-step>
+                <el-step :title="$t('confirmtransaction')"></el-step>
+                <el-step :title="$t('transactioncomplete')"></el-step>
             </el-steps>
             <div class="middle-line">
                 <p></p>
@@ -15,14 +15,14 @@
                 <div class="step-1" v-show="steps==='1'">
                     <div class="step-1-body">
                         <el-form ref="form" :model="form" label-position="left" label-width="150px">
-                            <el-form-item class="mt-40" label="对方账户">
+                            <el-form-item class="mt-40" :label="$t('otheraccounts')">
                                 <el-input
                                     v-model="form.to"
                                 ></el-input>
                             </el-form-item>
-                            <el-form-item class="mt-40" label="转账金额">
+                            <el-form-item class="mt-40" :label="$t('transferamount')">
                                 <el-input
-                                    placeholder="金额"
+                                    :placeholder="$t('amount')"
                                     v-model="form.value">
                                     <template slot="append">FOF</template>
                                 </el-input>
@@ -42,7 +42,7 @@
                     <div class="step-2-content">
                         <div class="sined-textarea">
                             <el-form label-position="top">
-                                <el-form-item label="未生效交易" class="el-wallet-style">
+                                <el-form-item :label="$t('inactivetransaction')" class="el-wallet-style">
                                     <el-input
                                         type="textarea"
                                         resize="none"
@@ -53,7 +53,7 @@
                         </div>
                         <div class="sined-textarea">
                             <el-form label-position="top">
-                                <el-form-item label="签名交易">
+                                <el-form-item :label="$t('signaturetransaction')">
                                     <el-input
                                         type="textarea"
                                         resize="none"
@@ -116,11 +116,11 @@
                             </li>
                         </ul>
                         <div class="tc">
-                            你将发送
+                            {{$t('youwillsend')}}
                             <span>{{ form.value | amountUnit}}</span>
-                            到地址
+                            {{$t('toaddress')}}
                             <span>{{ form.to }}</span>
-                            <span>，请确认</span>
+                            <span>{{$t('pleaseconfirm')}}</span>
                         </div>
                     </div>
                 </div>
@@ -130,7 +130,7 @@
                 <div class="step-4" v-show="steps==='4'">
                     <div class="step-4-body">
                         <el-form label-position="top">
-                            <el-form-item label="交易Hash" class="el-wallet-style">
+                            <el-form-item :label="$t('transactionhash')" class="el-wallet-style">
                                 <el-input
                                     readonly
                                     :value="transactionHash"></el-input>
@@ -146,20 +146,20 @@
         </div>
         <div class="trade-btn">
             <div class="step-btn" v-show="steps==='1'">
-                <el-button @click="typePwd">生成交易</el-button>
+                <el-button @click="typePwd">{{$t('generatetransaction')}}</el-button>
             </div>
             <div class="step-btn" v-show="steps==='2'">
                 <el-row :gutter="40">
-                    <el-button class="abandon" @click="steps = '1'">上一步</el-button>
-                    <el-button @click="emitTransaction">确认签名</el-button>
+                    <el-button class="abandon" @click="steps = '1'">{{$t('previous')}}</el-button>
+                    <el-button @click="emitTransaction">{{$t('confirmsignature')}}</el-button>
                 </el-row>
             </div>
             <div class="step-btn" v-show="steps==='3'">
-                <el-button class="abandon" @click="abandon">放弃</el-button>
-                <el-button @click="confirmTransaction">发送交易</el-button>
+                <el-button class="abandon" @click="abandon">{{$t('giveup')}}</el-button>
+                <el-button @click="confirmTransaction">{{$t('sendtransaction')}}</el-button>
             </div>
             <div class="step-btn" v-show="steps==='4'">
-                <el-button @click="finished">完成</el-button>
+                <el-button @click="finished">{{$t('carryout')}}</el-button>
             </div>
         </div>
     </div>
@@ -273,7 +273,7 @@
             confirmTransaction() {
                 this.$store.commit('setCryptPercent', {
                         percent: true,
-                        text: '正在发送交易，请稍等...'
+                        text:this.$t('sendingatransactionpleasewait') 
                     }
                 )
                 this.$web3.eth.sendSignedTransaction(this.transactionSign)

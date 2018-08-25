@@ -6,26 +6,26 @@
                     <router-link tag="li" :to="{name:'assetManage'}" @click.native="selectAnItem('1')"
                                  class="pass-enter1" :class="{active:itemSelected==='1'}">
                         <i class="nav-icon1" :class="{'nav-icon1-active':itemSelected==='1'}"></i>
-                        <span>资产管理</span>
+                        <span>{{$t('assetmanagement')}}</span>
                     </router-link>
                     <router-link tag="li" :to="{name:'myApps'}" @click.native="selectAnItem('2')"
                                  class="pass-enter2" :class="{active:itemSelected==='2'}">
                         <i class="nav-icon2" :class="{'nav-icon2-active':itemSelected==='2'}"></i>
-                        <span>我的应用</span>
+                        <span>{{$t('myapplication')}}</span>
                     </router-link>
                     <router-link tag="li" :to="{name:'applications'}" @click.native="selectAnItem('3')"
                                  class="pass-enter3" :class="{active:itemSelected==='3'}">
                         <i class="nav-icon3" :class="{'nav-icon3-active':itemSelected==='3'}"></i>
-                        <span>应用中心</span>
+                        <span>{{$t('applicationcenter')}}</span>
                     </router-link>
                     <router-link tag="li" :to="{name:'voteMain'}" @click.native="selectAnItem('5')"
                                  class="pass-enter4" :class="{active:itemSelected==='5'}">
                         <i class="nav-icon4" :class="{'nav-icon3-active':itemSelected==='5'}"></i>
-                        <span>DPOS投票</span>
+                        <span>DPOS{{$t('vote')}}</span>
                     </router-link>
-                    <li @click="openUrl('/blockQuery/#/blocksList')" class="pass-enter5">
+                    <li @click="openUrl('/blockquery/#/blocksList')" class="pass-enter5">
                         <i class="nav-icon5"></i>
-                        <span>区块查询</span>
+                        <span>{{$t('blockquery')}}</span>
                     </li>
                     <!--<router-link tag="li" :to="{name:'createInterval'}" @click.native="selectAnItem('5')"-->
                                  <!--class="pass-enter5" :class="{active:itemSelected==='5'}">-->
@@ -38,26 +38,27 @@
 
         <div class="container">
             <header class="header">
+                <network></network>
                 <language></language>
-                <el-button size="mini" @click="exitWallet">退出</el-button>
-                <el-button size="mini" @click="dialog = true">导入账户</el-button>
-                <el-button size="mini" @click="lockOut">锁定</el-button>
+                <el-button size="mini" @click="exitWallet">{{$t('dropout')}}</el-button>
+                <el-button size="mini" @click="dialog = true">{{$t('importaccount')}}</el-button>
+                <el-button size="mini" @click="lockOut">{{$t('locking')}}</el-button>
             </header>
             <div class="account-nav">
                 <div class="tranc-balance">
                     <!--<i></i>-->
-                    账户余额 : {{$store.state.balance | amountUnit}}
-                    <b class="el-icon-refresh" title="点击刷新余额" @click="$funs.getBalance()"></b>
+                    {{$t('accountbalance')}}{{$store.state.balance | amountUnit}}
+                    <b class="el-icon-refresh" :title="$t('refresh')" @click="$funs.getBalance()"></b>
                     &nbsp;
                     &nbsp;
                     <span v-if="showVoteBalance">
-                          投票总额：{{ $store.state.voteFof | amountUnit}}
+                          {{$t('totalvote')}}{{ $store.state.voteFof | amountUnit}}
                     </span>
                 </div>
                 <div class="tranc-address">
 
                     <div class="account-style">
-                        账户地址 :
+                        {{$t('accountaddress001')}}
                         <el-select v-model="activeAccount" @change="changeAccount">
                             <el-option
                                     v-for="(item,index) in accounts"
@@ -67,13 +68,13 @@
                             >
                                 <span class="fl">{{ item }}</span>
                                 <el-button type="primary" class="deleteMe fr" size="mini"
-                                           @click.stop="showRemoveAcc(item)" v-if="accounts.length > 1">移除
+                                           @click.stop="showRemoveAcc(item)" v-if="accounts.length > 1">{{$t('remove')}}
                                 </el-button>
                                 <!--<el-button type="primary" class="selectMe fr">选择</el-button>-->
                             </el-option>
                         </el-select>
                     </div>
-                    <el-button size="mini" @click="getMore">更多</el-button>
+                    <el-button size="mini" @click="getMore">{{$t('more')}}</el-button>
                 </div>
             </div>
             <main class="content" :class="{border : isBorder}">
@@ -85,7 +86,7 @@
 
         <div class="create-wallet">
             <el-dialog class="wallet-agreement"
-                       title="导入账户"
+                       :title="$t('importaccount')"
                        :visible.sync="dialog"
                        center
                        width="1000px">
@@ -93,14 +94,14 @@
                     <unlock-account ref="importAcc" hasWallet="hasWallet"></unlock-account>
                 </div>
                 <div class="footer">
-                    <el-button @click="importAcc" v-show="importing">导入到钱包</el-button>
-                    <a @click="createNewAcc" v-show="importing">创建新账户</a>
+                    <el-button @click="importAcc" v-show="importing">{{$t('importtowallet')}}</el-button>
+                    <a @click="createNewAcc" v-show="importing">{{$t('createnew')}}</a>
                     <span v-if="!importing"
                           style="line-height: 40px; font-size: 20px; animation: toggleShowHide 2s linear infinite;">{{runingText}} . . . </span>
                 </div>
             </el-dialog>
             <el-dialog class="wallet-agreement personal-info"
-                       title="个人信息"
+                       :title="$t('personalinformation')"
                        :visible.sync="personalDialog"
                        center
                        width="1200px">
@@ -110,48 +111,48 @@
             </el-dialog>
 
             <el-dialog class="create-wallet-dialog"
-                       title="警告！"
+                       :title="$t('caveat')"
                        :visible.sync="deleteModal"
                        width="600px"
                        top="20vh"
                        center>
 
                 <div class="del-warning">
-                    您正在删除:
+                    {{$t('deleting')}}
                     <p>{{accTODelete}}</p>
-                    账户余额：
+                    {{$t('balance001')}}
                     <p>{{delAccBalance | amountUnit}}</p>
-                    确认删除请验证钱包密码：
+                    {{$t('verifypassword')}}
                 </div>
-                <el-input v-model="pwd" type="password" placeholder="请输入钱包密码"></el-input>
+                <el-input v-model="pwd" type="password" :placeholder="$t('Password0001')"></el-input>
                 <div class="mt-40 tc">
-                    <el-button type="primary" @click="removeAcc" v-show="deleting">确定</el-button>
+                    <el-button type="primary" @click="removeAcc" v-show="deleting">{{$t('ensure001')}}</el-button>
                     <span v-if="!deleting"
-                          style="line-height: 40px; font-size: 20px; animation: toggleShowHide 2s linear infinite;">正在移除 . . . </span>
+                          style="line-height: 40px; font-size: 20px; animation: toggleShowHide 2s linear infinite;">{{$t('deleting001')}} </span>
                 </div>
             </el-dialog>
 
             <el-dialog class="create-wallet-dialog exit-wallet"
-                       title="请备份钱包文件"
+                       :title="$t('walletbackup')"
                        :visible.sync="exitDialog"
                        width="800px"
                        top="30vh"
                        center>
-                <h2>退出前请保存你的钱包备份文件！退出后可以使用此<span class="important-content">备份文件+当前钱包密码</span>重新导入该钱包！</h2>
+                <h2>{{$t('saveandexiting')}}<span class="important-content">{{$t('backupandpassword')}}</span>{{$t('reimport')}}</h2>
 
                 <div class="wallet-dialog-body">
                     <a class="el-button" :href="walletInfo.blobEnc" :download="walletInfo.fileName"
-                       @click="walletInfo.fileDownloaded=false" style="width: 280px;">下载钱包备份文件</a>
+                       @click="walletInfo.fileDownloaded=false" style="width: 280px;">{{$t('downloadbackup')}}</a>
 
                     <el-button type="danger" @click.native="reloadView" :disabled="walletInfo.fileDownloaded"
                                style="width: 280px;">
-                        点我退出
+                        {{$t('clicktoexit')}}
                     </el-button>
                 </div>
                 <div class="wallet-dialog-footer">
-                    <p>千万不要弄丢它！因为它是无法恢复的</p>
-                    <p>千万不要上传给别人！如果你在一个恶意/钓鱼网站上使用这个文件，你的资金将被窃取</p>
-                    <p>请做好备份并记住它的密码！确保它像价值数百万的资金一样安全</p>
+                    <p>{{$t('dontlose')}}</p>
+                    <p>{{$t('neverupload ')}}</p>
+                    <p>{{$t('makebackup')}}</p>
                 </div>
 
             </el-dialog>
@@ -160,6 +161,7 @@
 </template>
 
 <script>
+    import network from '../Network/Network'
     import language from '../language/language'
     import unlockAccount from '../wallet/unlockAccount'
     import accountInfo from '../accountInfo/accountInfo'
@@ -169,13 +171,14 @@
         components: {
             language,
             unlockAccount,
-            accountInfo
+            accountInfo,
+            network
         },
         data() {
             return {
                 itemSelected: '1',
-                accounts: ['切换账户'],
-                activeAccount: '切换账户',
+                accounts: [],
+                activeAccount: '',
                 dialog: false,
                 personalDialog: false,
                 isBorder: true,
@@ -185,7 +188,7 @@
                 delAccBalance: 0,
                 importing: true,
                 deleting: true,
-                runingText: '正在导入',
+                runingText: '',
                 exitDialog: false,
                 walletInfo: {
                     fileName: '',
@@ -241,7 +244,7 @@
                     this.activeAccount = newAcc.address
                     this.changeAccount()
 
-                    this.runingText = "正在导入"
+                    this.runingText =this.$t('importing')
                     this.importing = false
                     setTimeout(() => {
                         wallet.save(wallet.myPwd)
@@ -263,7 +266,7 @@
                 this.activeAccount = newAcc.address
                 this.changeAccount()
 
-                this.runingText = "正在创建"
+                this.runingText = this.$t('creating')
                 this.importing = false
                 setTimeout(() => {
                     wallet.save(wallet.myPwd)
@@ -360,6 +363,7 @@
             }
         },
         mounted() {
+	    this.runingText = this.$t('importing')
             switch (this.$route.name) {
                 case 'accountInfo':
                     this.itemSelected = '1'

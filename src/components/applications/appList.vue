@@ -1,12 +1,12 @@
 <template>
     <div class="app-list">
         <div class="btn-list">
-            <el-button size="mini" class="mini" :class="{active:searchType === 0}" @click="filter(0)">全部</el-button>
-            <el-button size="mini" class="mini" :class="{active:searchType === 1}" @click="filter(1)">棋牌</el-button>
-            <el-button size="mini" class="mini" :class="{active:searchType === 2}" @click="filter(2)">竞猜</el-button>
-            <el-button size="mini" class="mini" :class="{active:searchType === 3}" @click="filter(3)" disabled>博彩</el-button>
+            <el-button size="mini" class="mini" :class="{active:searchType === 0}" @click="filter(0)">{{$t('all')}}</el-button>
+            <el-button size="mini" class="mini" :class="{active:searchType === 1}" @click="filter(1)">{{$t('chess')}}</el-button>
+            <el-button size="mini" class="mini" :class="{active:searchType === 2}" @click="filter(2)">{{$t('guessingcompetition')}}</el-button>
+            <el-button size="mini" class="mini" :class="{active:searchType === 3}" @click="filter(3)">{{$t('gambling')}}</el-button>
             <div class="search-app">
-                <el-input placeholder="输入应用地址或者创建人地址" v-model="searchAddr" @keyup.enter.native="search">
+                <el-input :placeholder="$t('entraddress')" v-model="searchAddr" @keyup.enter.native="search">
                     <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
                 </el-input>
             </div>
@@ -27,19 +27,19 @@
                             <el-col :span="19">
                                 <ul class="info-list">
                                     <li>
-                                        <span class="label">创建时间：</span>
+                                        <span class="label">{{$t('creationtime')}}</span>
                                         <span class="data">{{ item.creationTime }}</span>
                                     </li>
                                     <li>
-                                        <span class="label">创建人地址：</span>
+                                        <span class="label">{{$t('createaddr')}}</span>
                                         <span class="data">{{ item.createAddr }}</span>
                                     </li>
                                     <li>
-                                        <span class="label">应用地址：</span>
+                                        <span class="label">{{$t('contractAddr')}}</span>
                                         <span class="data">{{ item.contractAddr }}</span>
                                     </li>
                                     <li class="current">
-                                        <span class="label">奖金池余额：</span>
+                                        <span class="label">{{$t('poolbalance01')}}</span>
                                         <span class="data">{{ item.currentCoin | amountUnit}}</span>
                                     </li>
                                 </ul>
@@ -92,9 +92,9 @@
                 if(this.$web3.utils.isAddress(this.searchAddr)) {    
                     this.getData() 
                 } else if(this.searchAddr.trim() === '') {
-                    this.$message.error('请输入创建者地址或合约地址')
+                    this.$message.error(this.$t('enteraddress01'))
                 } else {                    
-                    this.$message.error('地址错误')
+                    this.$message.error(this.$t('invalidaddress02'))
                 }
             },
             /**
@@ -129,7 +129,7 @@
                             }
                             this.totalNum = Number(res.data.dataCount)
                         } else {
-                            this.$message.error('查询结果为0')
+                            this.$message.error(this.$t('theresultis0'))
                         }
                     }
                 }).catch((error) => {
@@ -139,11 +139,13 @@
             getUrl(item) {
                 switch (item.gameType) {
                     case "1":
-                        return `/DragonTigerFight/?${item.contractAddr}`
+                        return `/dtfight/?${item.contractAddr}`
                     case "2":
                         return `/quiz/?${item.contractAddr}`
                     case "3":
                         return `/baccarat/?${item.contractAddr}`
+                    case "4":
+                        return `/p11c5/?${item.contractAddr}`
                 }
             }
         },

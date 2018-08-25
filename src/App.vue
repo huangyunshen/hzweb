@@ -6,7 +6,7 @@
          @click.capture="isActive($event)"
     >
 
-        <img src="./assets/images/logo.png" class="logoImg"></img>
+        <img src="./assets/images/logo.png" class="logoImg"/>
         <transition name="fof-fade">
             <router-view name="default" @lockOut="lockOutApp"></router-view>
         </transition>
@@ -24,8 +24,8 @@
 
                 <el-input v-model="pwd" type="password"></el-input>
                 <div class="mt-40 tc">
-                    <el-button type="primary" @click="unlockWallet" v-show="unlocking">确定</el-button>
-                    <span v-if="!unlocking" style="line-height: 40px; font-size: 20px; animation: toggleShowHide 2s linear infinite;">正在解锁 . . . </span>
+                    <el-button type="primary" @click="unlockWallet" v-show="unlocking">{{$t('sure')}}</el-button>
+                    <span v-if="!unlocking" style="line-height: 40px; font-size: 20px; animation: toggleShowHide 2s linear infinite;">{{$t('unlocking')}} </span>
                 </div>
             </el-dialog>
         </div>

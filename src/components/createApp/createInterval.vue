@@ -1,14 +1,14 @@
 <template>
     <div>
         <el-form label-position="top" label-width="80px">
-            <el-form-item label="当前账户地址">
+            <el-form-item :label="$t('accountaddress01')">
                 <el-input v-model="from" readonly></el-input>
             </el-form-item>
-            <el-form-item label="定时器合约地址">
+            <el-form-item :label="$t('timer')">
                 <el-input v-model="intervalAddr"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="deploy">点击部署定时器合约</el-button>
+                <el-button type="primary" @click="deploy">{{$t('timercontract')}}</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -47,7 +47,7 @@
                                 .on('receipt', (receipt) => {
                                 })
                                 .then((newContractInstance) => {
-                                    this.$message.success('创建成功')
+                                    this.$message.success(this.$t('createsuccess01'))
                                     console.log(newContractInstance.options.address)
                                     this.intervalAddr = newContractInstance.options.address
                                 })

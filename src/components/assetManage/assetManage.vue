@@ -1,9 +1,9 @@
 <template>
     <div class="asset-manage">
         <div class="tranc-header no-select-text">
-            <p :class="{'header-active':choose==='1'}" @click="choose='1'"><span>交易记录</span></p>
+            <p :class="{'header-active':choose==='1'}" @click="choose='1'"><span>{{$t('transactionrecord')}}</span></p>
             <b></b>
-            <p :class="{'header-active':choose==='2'}" @click="choose='2'"><span>对外转账</span></p>
+            <p :class="{'header-active':choose==='2'}" @click="choose='2'"><span>{{$t('foreigntransfer')}}</span></p>
         </div>
         <transition name="fof-fade">
             <div v-show="choose==='1'" class="asset-content" style="padding: 20px; box-sizing: border-box;">

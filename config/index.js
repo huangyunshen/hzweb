@@ -11,17 +11,17 @@ module.exports = {
         assetsSubDirectory: 'static',
         assetsPublicPath: '/',
         proxyTable: {
-            '/url': {  //使用"/url"来代替"http://120.79.88.105"
-                target: 'http://39.104.81.103', //源地址
+            '/url': {  //使用"/url"来代替"
+                target: 'http://47.75.103.95', //源地址
                 changeOrigin: true, //改变源
                 pathRewrite: {
-                    '^/url': 'http://39.104.81.103' //路径重写
+                    '^/url': 'http://47.75.103.95' //路径重写
                 }
             }
         },
 
         // Various Dev Server settings
-        host: 'localhost', // can be overwritten by process.env.HOST
+        host: '0.0.0.0', // can be overwritten by process.env.HOST
         // host: '192.168.1.102', // can be overwritten by process.env.HOST
         port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
         autoOpenBrowser: true,

@@ -5,14 +5,15 @@
             <div class="game-body-background">
                 <div class="game-body">
                     <span class="chips"
-                          v-for="n in animateChips.number"
+                          v-for="(n, key) in animateChips.number"
                           ref="chipsItem"
                           v-show="animateChips.isShow"
                           :style="{transition: '1s ease-in-out',transitionDelay: n*100 + 'ms'}"
                           data-bool="true"
                           :class="{bottom1: animateChips.isOne,
                           bottom2: animateChips.isTwo,bottom3: animateChips.isThree,
-                          bottom4: animateChips.isFour,top: animateChips.isOther}"></span>
+                          bottom4: animateChips.isFour,top: animateChips.isOther}"
+                          :key="key"></span>
                     <transition name="fof-fade">
                         <div class="poker-box left" :class="{'get-poker-result': showPokerResult}"
                              :style="{display: pokerIsShow}">
@@ -28,21 +29,21 @@
                         </div>
                     </transition>
                     <div class="pool-balance">
-                        奖池余额：{{ contractBalance }} FOF
+                        {{$t('poolbalance')}}：{{ contractBalance }} FOF
                     </div>
                     <div class="pool-balance" style="left: 20px;right: auto">
-                        我的余额：{{ Number($store.state.balance).toFixed(4) }} FOF
+                        {{$t('mybalance')}}：{{ Number($store.state.balance).toFixed(4) }} FOF
                     </div>
                     <div class="game-talbe">
-                        <p class="time-remaining" v-if="!showReadTime">剩余下注时间 <span>{{countDown}}</span> 秒</p>
-                        <p class="time-remaining" v-if="showReadTime">准备时间 <span>{{readTimeNum}}</span> 秒</p>
+                        <p class="time-remaining" v-if="!showReadTime">{{$t('remaindertime')}} <span>{{countDown}}</span> 秒</p>
+                        <p class="time-remaining" v-if="showReadTime">{{$t('readytime')}} <span>{{readTimeNum}}</span> 秒</p>
                         <div class="selectable">
                             <div class="item-1">
                                 <p>
                                     <i class="table-unit">
-                                        <i>总{{betCoin[1]}}</i>
+                                        <i>{{$t('total')}}{{betCoin[1]}}</i>
                                         <img src="../../assets/images/longhudou/dragon.png">
-                                        <div>2倍</div>
+                                        <div>{{$t('double')}}</div>
                                     </i>
                                 </p>
                                 <p>
@@ -55,9 +56,9 @@
                             <div class="item-2">
                                 <p>
                                     <i class="table-unit">
-                                        <i>总{{betCoin[3]}}</i>
+                                        <i>{{$t('total1')}}{{betCoin[3]}}</i>
                                         <img src="../../assets/images/longhudou/with.png">
-                                        <div>8倍</div>
+                                        <div>{{$t('octuple')}}</div>
                                     </i>
                                 </p>
                                 <p>
@@ -71,9 +72,9 @@
                             <div class="item-3">
                                 <p>
                                     <i class="table-unit">
-                                        <i>总{{betCoin[2]}}</i>
+                                        <i>{{$t('total2')}}{{betCoin[2]}}</i>
                                         <img src="../../assets/images/longhudou/tiger.png">
-                                        <div>2倍</div>
+                                        <div>{{$t('double2')}}</div>
                                     </i>
                                 </p>
                                 <p>
@@ -108,7 +109,7 @@
                             </div>
                         </div>
                         <div class="input-item" @click="selectAnItem(false)">
-                            <p>下注金额</p>
+                            <p>{{$t('betsmoney')}}</p>
                             <p>
                                 <input maxlength="15" v-model="moneyNum" autocomplete="off">
                             </p>
@@ -159,7 +160,7 @@
                     <transition name="fof-fade-2">
                         <div class="modal" v-show="confirm.flag">
                             <div class="modal-loading-confirm">
-                                <p class="modal-confirm-text tc">确认下注 <span>{{ confirm.text }}</span> FOF</p>
+                                <p class="modal-confirm-text tc">{{$t('confirmthebet')}} <span>{{ confirm.text }}</span> FOF</p>
                                 <p class="modal-confirm-btn">
                                     <button type="button" class="btn cancel" @click="confirm.flag = false"></button>
                                     <button type="button" class="btn confirm" @click="confirmBet(betSign)"></button>
@@ -171,7 +172,7 @@
             </div>
             <div class="game-record">
                 <div class="game-result-history">
-                    <div class="game-history-title">历史出牌结果</div>
+                    <div class="game-history-title">{{$t('historical')}}</div>
                     <p class="game-history-line"></p>
                     <div class="game-result-content" ref="gameResult">
                         <span v-for="(item,index) in resultList"
@@ -181,14 +182,14 @@
                     </div>
                 </div>
                 <div class="game-pour-history">
-                    <div class="game-history-title">下注记录</div>
+                    <div class="game-history-title">{{$t('noterecording')}}</div>
                     <p class="game-history-line"></p>
                     <div class="game-pour-content">
                         <el-row class="game-pour-title">
-                            <el-col :span="6">下注对象</el-col>
-                            <el-col :span="6">下注金额</el-col>
-                            <el-col :span="6">输赢金额</el-col>
-                            <el-col :span="6">出牌结果</el-col>
+                            <el-col :span="6">{{$t('bets')}}</el-col>
+                            <el-col :span="6">{{$t('betsmoney1')}}</el-col>
+                            <el-col :span="6">{{$t('winandlose')}}</el-col>
+                            <el-col :span="6">{{$t('outofcards')}}</el-col>
                         </el-row>
                         <div class="game-pour-body">
                             <el-row v-for="(item,index) in betHistory"
@@ -215,9 +216,9 @@
                 </div>
             </div>
         </div>
-        <el-button class="exit show-source" type="button" @click="showSource">智能合约源码</el-button>
+        <el-button class="exit show-source" type="button" @click="showSource">{{$t('code')}}</el-button>
         <div class="create-wallet">
-            <el-dialog title="智能合约源码"
+            <el-dialog :title="this.$t('code1')"
                        :modal="false"
                        class="create-wallet-dialog app-detail-font"
                        :visible.sync="showSourceVisible">
@@ -230,660 +231,742 @@
 </template>
 
 <script>
+import playGameContract from "../../../contracts/longhudou/playGame.json";
+import axios from "axios";
 
-    import playGameContract from '../../../contracts/longhudou/playGame.json'
-    import axios from 'axios'
-
-    export default {
-        name: "app-detail",
-        data() {
-            return {
-                promptPwd: '',
-                showResult: false,
-                showSourceVisible: false,
-                isSelected: null,
-                amountArr: [1, 5, 10],
-                resultList: [],
-                amount1: ['0'],
-                amount2: ['0'],
-                amount3: ['0'],
-                betCoin: [0, 0, 0, 0],
-                choosed: null, // 龙虎合选中的标识
-                betZh: '',
-                moneyNum: 0,
-                countDown: 0,
-                getCoinsTimer: null,
-                dragonNum: '0',
-                tigerNum: '0',
-                myContractInstance: null,// 智能合约对象
-                ContractAddr: '',
-                contractSource: '',
-                settleTime: '',
-                getSettleResTimer: null, //获取下注结果的定时器
-                prevBet: [0], //保存上一局下注的操作
-                betHistory: [], // 当前玩家这一局下注的历史记录
-                betArr: {
-                    long: 0,
-                    hu: 0,
-                    he: 0
-                }, // 当前局下注金额对象
-                contractBalance: '', // 合约余额
-                resultBalance: 0, // 本局输赢金额
-                loading: { // 模态框
-                    flag: false,
-                    text: ''
-                },
-                confirm: { // 确认框
-                    flag: false,
-                    text: '',
-                },
-                betSign: '', // 下注的对象
-                // 下注钱币飞舞动画
-                animateChips: {
-                    number: [],
-                    isShow: false,
-                    isOne: false,
-                    isTwo: false,
-                    isThree: false,
-                    isFour: false,
-                    isOther: false,
-                    isBet: false
-                },
-                showPokerResult: false,// 桌子上的牌翻转
-                readTimeNum: 4,
-                showReadTime: false,
-                showReady: 1,
-                pokerIsShow: 'block',
-                timerOverTime: null
-            }
-        },
-        filters: {
-            getBetResHis: function (value) {
-                let res = ""
-                switch (value) {
-                    case '0':
-                        res = "龙"
-                        break
-                    case '1':
-                        res = "虎"
-                        break
-                    case '2':
-                        res = "和"
-                        break
-                    default:
-                        res = "-"
-                }
-                return res
-            }
-        },
-        methods: {
-            // 显示合约源码
-            showSource() {
-                let url = window.location.href.split('?')[1]
-                this.$axios.post('/api/requestContract.php', {
-                    "createAddr": "",
-                    "contractAddr": url,
-                    "pageSize": 200,
-                    "pageNum": 1,
-                }).then((res) => {
-                    if (res.status === 200) {
-                        this.showSourceVisible = true
-                        if (res.data.length > 0) {
-                            this.$web3.eth.getTransaction(res.data[0].txHash).then((data) => {
-                                this.contractSource = this.$web3.utils.hexToUtf8(data.datasourcecode)
-                            })
-                        } else {
-                            this.$message.error('未查询到相关信息！')
-                        }
-                    }
-                }).catch((error) => {
-                    this.$message.error(String(error))
-                })
-            },
-            selectAnItem(i) {
-                if (i === false) {
-                    this.isSelected = null
-                    // this.moneyNum = 0
-                } else {
-                    this.isSelected = i
-                    this.moneyNum = this.amountArr[i]
-                }
-            },
-            /**
-             * 连接合约下注
-             */
-            contactContract() {
-                this.myContractInstance = new this.$web3.eth.Contract(playGameContract.abi, this.ContractAddr)
-                this.myContractInstance.methods.getResultHistory().call().then((data) => {
-                    this.resultList = data
-                })
-            },
-            bet(sign) {
-                // this.choosed = sign
-                switch (sign) {
-                    case 'dragon':
-                        this.betZh = '0'
-                        break
-                    case 'tiger':
-                        this.betZh = '1'
-                        break
-                    case 'leopard':
-                        this.betZh = '2'
-                        break
-                    default:
-                        return false
-                }
-            },
-            // 开启监控
-            settlement() {
-                if (this.countDown === 1) {
-                    this.showSourceVisible = false
-                    this.confirm.flag = false
-                    this.loading = {flag: true, text: '正在发牌···'}
-                    this.showResult = false
-                    this.countDown = 0
-                    this.timerOverTime = setTimeout(() => {
-                        clearTimeout(this.timerOverTime)
-                        this.loading = {flag: false, text: ''}
-                        this.$message({
-                            duration: 0,
-                            type: 'error',
-                            message: '发牌超时！请联系管理员！'
-                        })
-                        clearInterval(this.getCoinsTimer)
-                        let thisTimer = setTimeout(() => {
-                            clearTimeout(thisTimer)
-                            window.location.reload()
-                        }, 3000)
-                    }, 60000)
-                }
-                this.myContractInstance.methods.getBlockTime().call().then((arr) => {
-                    let nowTime = arr[0].toString(10)
-                    if (this.settleTime !== nowTime) { // 说明结算了
-                        //结算逻辑
-                        clearTimeout(this.timerOverTime)
-                        this.settleTime = nowTime
-                        this.resultBalance = 0
-                        this.dragonNum = Number(arr[4][0].toString(10))
-                        this.tigerNum = Number(arr[4][1].toString(10))
-                        let result = ''
-                        if ((this.dragonNum + 1) % 13 > (this.tigerNum + 1) % 13) {
-                            result = '0'
-                        } else if ((this.dragonNum % 13 + 1) < (this.tigerNum + 1) % 13) {
-                            result = '1'
-                        } else {
-                            result = '2'
-                        }
-                        this.confirm.flag = false
-                        this.loading = {flag: false, text: ''}
-                        this.showPokerResult = true
-                        this.pokerIsShow = 'block'
-                        let showResultTimer = setTimeout(() => {
-                            clearTimeout(showResultTimer)
-                            this.showPokerResult = false
-                            this.pokerIsShow = 'none'
-                            this.showResult = true // 显示结果弹窗
-                        }, 2000)
-                        if (this.prevBet.length > 1) {
-                            if (this.betHistory.length === 0) {
-                                return
-                            }
-                            for (let i = this.betHistory.length - 1; i >= this.betHistory.length - this.prevBet[0]; i--) {
-                                if (this.betHistory[i].flag === result) {
-                                    this.betHistory[i].win = '+' + (result === '2' ? this.betHistory[i].coin * 8 : this.betHistory[i].coin)
-                                    this.resultBalance += (result === '2' ? Number(this.betHistory[i].coin) * 8 : Number(this.betHistory[i].coin))
-                                } else {
-                                    this.betHistory[i].win = '-' + this.betHistory[i].coin
-                                    this.resultBalance -= Number(this.betHistory[i].coin)
-                                }
-                                this.betHistory[i].result = result
-                            }
-
-                            this.prevBet.length = 0
-                            this.prevBet[0] = 0
-                            this.betArr.long = 0
-                            this.betArr.hu = 0
-                            this.betArr.he = 0
-                            this.animateChips.number.length = 0
-                            this.animateChips.isShow = false
-                            this.animateChips.isOne = false
-                            this.animateChips.isTwo = false
-                            this.animateChips.isThree = false
-                            this.animateChips.isFour = false
-                            this.animateChips.isOther = false
-                        } else {
-                            this.resultBalance = 0
-                        }
-                        this.myContractInstance.methods.getResultHistory().call().then((data) => {
-                            this.resultList = data
-                        })
-                        //结算完
-                        let timer = setTimeout(() => {
-                            clearTimeout(timer)
-                            this.myContractInstance.methods.getCurrentBalance().call().then((coins) => {
-                                this.contractBalance = this.$web3.utils.fromWei(coins, 'ether')
-                            })
-                            this.$funs.getBalance()
-                            this.showResult = false // 显示结果弹窗
-                            this.showReady = 2
-                        }, 6000)
-                    }
-                    if (this.showReady === 2) {
-                        this.showReadTime = true
-                        this.loading = {flag: false, text: ''}
-                        this.readTimeNum--
-                        this.pokerIsShow = 'block'
-                        let readTimer = setTimeout(() => {
-                            clearTimeout(readTimer)
-                            this.showReady = 1
-                            this.getTimerTime()
-                        }, 3000)
-                    }
-                })
-            },
-            confirmBet(sign) {
-                this.confirm.flag = false
-                this.bet(sign)
-                let user = this.$store.state.address
-                let params = {
-                    addr: user,
-                    cho: this.betZh,
-                    ran: parseInt(Math.random() * (10 ** 12)),
-                    coin: this.$web3.utils.toWei(this.moneyNum, 'ether'),
-                }
-                try {
-                    this.loading = {flag: true, text: '正在下注···'}
-                    this.$funs.unlockAccount().then((res, err) => {
-                        if (res) {
-                            this.betFun(user, params)
-                        } else {
-                            this.loading = {flag: false, text: ''}
-                            this.$message.error(String(err))
-                        }
-                    }).catch((reason) => {
-                        this.loading = {flag: false, text: ''}
-                        this.$message.error(String(reason))
-                    })
-                } catch (err) {
-                    this.loading = {flag: false, text: ''}
-                    this.$message.error(String(err))
-                }
-            },
-            /**
-             * 下注动画
-             * **** 左上
-             * left: 260px;
-             * top: 175px;
-             * **** 右上
-             * left: 335px;
-             * top: 175px;
-             * **** 左下
-             * left: 260px;
-             * top: 235px;
-             * **** 右下
-             * left: 335px;
-             * top: 235px;
-             * 矩形：75 * 60
-             * 右移一次加： 450 - 260 = 190
-             *
-             * sign: 龙虎和
-             * coin: 金额
-             * isOther: 是不是其他人下注
-             */
-            betAnimate(sign, coin, isOther) {
-                this.animateChips.isOther = false
-                this.animateChips.isOne = false
-                this.animateChips.isTwo = false
-                this.animateChips.isThree = false
-                this.animateChips.isFour = false
-                // left: 260px;
-                // top: 175px;
-                let money = Number(coin)
-                this.amountArr = this.amountArr.sort((a, b) => {
-                    return a - b
-                })
-                if (money < this.amountArr[1]) {
-                    for (let i = 0; i < 3; i++) {
-                        this.animateChips.number.push(i)
-                    }
-                    if (money === Number(this.amountArr[0])) {
-                        this.animateChips.isOne = true
-                    } else {
-                        this.animateChips.isFour = true
-                    }
-                } else if (money >= this.amountArr[2]) {
-                    for (let i = 0; i < 8; i++) {
-                        this.animateChips.number.push(i)
-                    }
-                    if (money === Number(this.amountArr[2])) {
-                        this.animateChips.isThree = true
-                    } else {
-                        this.animateChips.isFour = true
-                    }
-                } else {
-                    for (let i = 0; i < 5; i++) {
-                        this.animateChips.number.push(i)
-                    }
-                    if (money === Number(this.amountArr[1])) {
-                        this.animateChips.isTwo = true
-                    } else {
-                        this.animateChips.isFour = true
-                    }
-                }
-                if (isOther) {
-                    this.animateChips.isOther = true
-                }
-                this.animateChips.isShow = true
-                let left = 0
-                switch (sign) {
-                    case 'dragon':
-                        left = 260
-                        break
-                    case 'leopard':
-                        left = 260 + 190
-                        break
-                    case 'tiger':
-                        left = 260 + 190 * 2
-                        break
-                }
-                let timer = setTimeout(() => {
-                    clearTimeout(timer)
-                    this.$nextTick(() => {
-                        if (this.$refs.chipsItem !== undefined) {
-                            this.$refs.chipsItem.forEach((item) => {
-                                if (item.getAttribute('data-bool') === "true") {
-                                    item.style.left = `${left + this.randomFun(75)}px`
-                                    item.style.top = `${175 + this.randomFun(60)}px`
-                                    item.setAttribute("data-bool", "false")
-                                }
-                            })
-                        }
-                    })
-                }, 1)
-                let timer2 = setTimeout(() => {
-                    clearTimeout(timer2)
-                    this.animateChips.isBet = false
-                }, 1000)
-            },
-            randomFun(range) {
-                return Number((Math.random() * range).toFixed(0))
-            },
-            /**
-             * 下注
-             */
-            callContract(sign) {
-                this.chargeLegality((bool) => {
-                    if (bool) {
-                        if (this.$store.state.balance < 1) {
-                            this.$message.error('余额不足，不能下注！')
-                            return false
-                        }
-                        if (!this.$funs.validateFloatNum(this.moneyNum)) {
-                            this.$message.error('下注金额只能为正数！')
-                            return false
-                        }
-                        if (this.$store.state.balance < Number(this.moneyNum)) {
-                            this.$message.error('您的余额小于下注金额，下注失败！')
-                            return false
-                        }
-                        this.betSign = sign
-                        this.confirm.flag = true
-                        this.confirm.text = this.moneyNum
-                    }
-                })
-            },
-            betFun(user, params) {
-                if (this.countDown < 5) {
-                    this.$message.error('下注失败！剩余时间小于5s不能下注！')
-                    return
-                }
-                this.animateChips.isBet = true
-                this.myContractInstance.methods.sendBetInfo(params.addr, params.cho, params.ran, params.coin)
-                    .send({
-                        from: user,
-                        value: params.coin,
-                        gas: 1000000,
-                        txType: 0,
-                    })
-                    .on('error', (err) => {
-                        this.loading = {flag: false, text: ''}
-                        this.$message.error(String(err))
-                    })
-                    .on('receipt', (receipt) => {
-                    })
-            },
-            // 获取服务器定时器时间
-            getTimerTime() {
-                axios.get('http://39.104.81.103:8089')
-                    .then((res) => {
-                        this.countDown = res.data
-                        this.showReadTime = false
-                        this.readTimeNum = 4
-                    })
-                    .catch(() => {
-                        this.$message.error('节点异常，无法获取时间')
-                        clearInterval(this.getCoinsTimer)
-                    })
-            },
-            /**
-             * 获取路由地址，得到合约地址
-             */
-            getContractAddr() {
-                let url = window.location.href.split('?')
-                this.ContractAddr = url[1]
-                if (this.ContractAddr === undefined
-                    || this.ContractAddr === "null"
-                    || this.ContractAddr === "") {
-                    if (sessionStorage.getItem('userContract') === undefined) {
-                        this.$message.error('无效地址，请先创建合约或输入有效地址！')
-                        let timer = setTimeout(() => {
-                            clearTimeout(timer)
-                            this.$router.replace({name: 'accountInfo'})
-                        }, 2000)
-                        return false
-                    }
-                    this.ContractAddr = sessionStorage.getItem('userContract')
-                    return true
-                }
-                if (!this.$web3.utils.isAddress(this.ContractAddr)) {
-                    this.$message.error('无效地址，请先创建合约或输入有效地址！')
-                    return false
-                }
-                return true
-            }
-            ,
-            /**
-             * 判断合约地址是否合法
-             */
-            chargeLegality(callback) {
-                let arr = []
-                try {
-                    this.myContractInstance.methods.getPrice().call().then((data) => {
-                        arr = data
-                        if (arr.length === 0) {
-                            this.$message({
-                                type: 'error',
-                                message: "合约地址有误，请检查合约地址是否正确",
-                            })
-                            callback(false)
-                        }
-                        this.amountArr = []
-                        this.amountArr.push(arr[0])
-                        this.amountArr.push(arr[1])
-                        this.amountArr.push(arr[2])
-
-                        this.amount1 = arr[0].toString().split('')
-                        this.amount2 = arr[1].toString().split('')
-                        this.amount3 = arr[2].toString().split('')
-
-                        callback(true)
-                    })
-                } catch (err) {
-                    this.$message({
-                        type: 'error',
-                        message: String(err),
-                    })
-                    callback(false)
-                }
-            }
-            ,
-            exit() {
-                this.$router.replace({name: 'applications'})
-            }
-            ,
-            scrollToBottom() {
-                this.$nextTick(() => {
-                    let div = this.$refs.gameResult
-                    div.scrollTop = div.scrollHeight
-                })
-            }
-            ,
-            /**
-             * 监听下注结果
-             */
-            watchBet() {
-                // 监听是否下注失败
-                this.myContractInstance.events
-                    .returnBetResult()
-                    .on('data', (event) => {
-                        this.loading = {flag: false, text: ''}
-                        if (event.returnValues) {
-                            if (event.returnValues._bool) {
-                                switch (this.betZh) {
-                                    case "0":
-                                        this.betArr.long += Number(this.moneyNum)
-                                        break
-                                    case "1":
-                                        this.betArr.hu += Number(this.moneyNum)
-                                        break
-                                    case "2":
-                                        this.betArr.he += Number(this.moneyNum)
-                                        break
-                                    default:
-                                        break
-                                }
-                                this.prevBet[0]++
-                                this.prevBet[1] = this.betZh
-                                this.prevBet[2] = this.moneyNum
-                                this.betHistory.push({
-                                    flag: this.prevBet[1],
-                                    coin: this.prevBet[2],
-                                    win: '',
-                                    result: ''
-                                })
-                                this.$message.success('下注成功！请等待出牌结果！')
-                                this.betAnimate(this.betSign, this.moneyNum)
-                            } else {
-                                this.$message.error('下注失败！本局已封盘（奖池金额不够）')
-                            }
-                        }
-                    })
-                    .on('error', (err) => {
-                        this.loading = {flag: false, text: ''}
-                        if (err) {
-                            this.$message.error('下注失败！')
-                        }
-                    })
-            }
-        },
-        mounted() {
-            if (this.getContractAddr()) {
-                this.contactContract()
-                this.chargeLegality((bool) => {
-                    if (bool) {
-                        //获取当前时间
-                        this.getTimerTime()
-                        //定时器
-                        this.getCoinsTimer = setInterval(() => {
-                            // this.getCoinsTimer = setTimeout(() => {
-                            // 实时获取下注币数
-                            if (this.countDown > 5 && this.countDown % 6 === 0) {
-                                axios.get('http://39.104.81.103:8089')
-                                    .then((res) => {
-                                        this.countDown = res.data <= 0 ? 0 : res.data
-                                    })
-                                    .catch(() => {
-                                        this.$message.error('节点异常，无法获取时间')
-                                        clearInterval(this.getCoinsTimer)
-                                    })
-                            }
-                            this.myContractInstance.methods.getTotalCoins().call()
-                                .then((arr) => {
-                                    let result = []
-                                    for (let key in arr) {
-                                        result[key] = Number(this.$web3.utils.fromWei(arr[key], 'ether'))
-                                    }
-                                    if (!this.animateChips.isBet) {
-                                        if (result[1] !== 0 || result[2] !== 0 || result[3] !== 0) {
-                                            if (this.betCoin[0] === 0 && this.betCoin[1] === 0 && this.betCoin[2] === 0) {
-                                                if (result[1] !== 0) {
-                                                    setTimeout(() => {
-                                                        this.betAnimate('dragon', result[1] - this.betCoin[1], true)
-                                                    }, 100)
-                                                }
-                                                if (result[2] !== 0) {
-                                                    setTimeout(() => {
-                                                        this.betAnimate('tiger', result[2] - this.betCoin[2], true)
-                                                    }, 200)
-                                                }
-                                                if (result[3] !== 0) {
-                                                    setTimeout(() => {
-                                                        this.betAnimate('leopard', result[3] - this.betCoin[3], true)
-                                                    }, 300)
-                                                }
-                                            } else {
-                                                if (JSON.stringify(result) !== JSON.stringify(this.betCoin)) {
-                                                    if (this.betCoin[1] !== result[1]) {
-                                                        this.betAnimate('dragon', result[1] - this.betCoin[1], true)
-                                                    }
-                                                    if (this.betCoin[2] !== result[2]) {
-                                                        this.betAnimate('tiger', result[2] - this.betCoin[2], true)
-                                                    }
-                                                    if (this.betCoin[3] !== result[3]) {
-                                                        this.betAnimate('leopard', result[3] - this.betCoin[3], true)
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    this.betCoin.length = 0
-                                    this.betCoin = result
-                                })
-                            //倒计时
-                            if (this.countDown <= 5) {
-                                this.settlement()
-                            }
-                            if (this.countDown > 1) {
-                                this.countDown--
-                            }
-                            if (this.countDown < 0) {
-                                this.countDown++
-                            }
-                            this.myContractInstance.methods.getCurrentBalance().call().then((coins) => {
-                                this.contractBalance = this.$web3.utils.fromWei(coins, 'ether')
-                            })
-                        }, 1000)
-                        this.myContractInstance.methods.getBlockTime().call().then((arr) => {
-                            this.settleTime = arr[0]
-                        })
-                        this.watchBet()
-                    }
-                })
-            }
-            this.$funs.getBalance()
-        },
-        deactivated() {
-            clearInterval(this.getCoinsTimer)
-        },
-        beforeDestroy() {
-            clearInterval(this.getCoinsTimer)
-        },
-        watch: {
-            'resultList': 'scrollToBottom',
-        },
+export default {
+  name: "app-detail",
+  data() {
+    return {
+      promptPwd: "",
+      showResult: false,
+      showSourceVisible: false,
+      isSelected: null,
+      amountArr: [1, 5, 10],
+      resultList: [],
+      amount1: ["0"],
+      amount2: ["0"],
+      amount3: ["0"],
+      betCoin: [0, 0, 0, 0],
+      choosed: null, // 龙虎合选中的标识
+      betZh: "",
+      moneyNum: 0,
+      countDown: 0,
+      getCoinsTimer: null,
+      dragonNum: "0",
+      tigerNum: "0",
+      myContractInstance: null, // 智能合约对象
+      ContractAddr: "",
+      contractSource: "",
+      settleTime: "",
+      getSettleResTimer: null, //获取下注结果的定时器
+      prevBet: [0], //保存上一局下注的操作
+      betHistory: [], // 当前玩家这一局下注的历史记录
+      betArr: {
+        long: 0,
+        hu: 0,
+        he: 0
+      }, // 当前局下注金额对象
+      contractBalance: "", // 合约余额
+      resultBalance: 0, // 本局输赢金额
+      loading: {
+        // 模态框
+        flag: false,
+        text: ""
+      },
+      confirm: {
+        // 确认框
+        flag: false,
+        text: ""
+      },
+      betSign: "", // 下注的对象
+      // 下注钱币飞舞动画
+      animateChips: {
+        number: [],
+        isShow: false,
+        isOne: false,
+        isTwo: false,
+        isThree: false,
+        isFour: false,
+        isOther: false,
+        isBet: false
+      },
+      showPokerResult: false, // 桌子上的牌翻转
+      readTimeNum: 4,
+      showReadTime: false,
+      showReady: 1,
+      pokerIsShow: "block",
+      timerOverTime: null
+    };
+  },
+  filters: {
+    getBetResHis: function(value) {
+      let res = "";
+      switch (value) {
+        case "0":
+          res = this.$t("dragon");
+          break;
+        case "1":
+          res = this.$t("tiger");
+          break;
+        case "2":
+          res = this.$t("draw");
+          break;
+        default:
+          res = "-";
+      }
+      return res;
     }
+  },
+  methods: {
+    // 显示合约源码
+    showSource() {
+      let url = window.location.href.split("?")[1];
+      this.$axios
+        .post("/api/requestContract.php", {
+          createAddr: "",
+          contractAddr: url,
+          pageSize: 200,
+          pageNum: 1
+        })
+        .then(res => {
+          if (res.status === 200) {
+            this.showSourceVisible = true;
+            if (res.data.length > 0) {
+              this.$web3.eth.getTransaction(res.data[0].txHash).then(data => {
+                this.contractSource = this.$web3.utils.hexToUtf8(
+                  data.datasourcecode
+                );
+              });
+            } else {
+              this.$message.error(this.$t("nonqueryinformation"));
+            }
+          }
+        })
+        .catch(error => {
+          this.$message.error(String(error));
+        });
+    },
+    selectAnItem(i) {
+      if (i === false) {
+        this.isSelected = null;
+        // this.moneyNum = 0
+      } else {
+        this.isSelected = i;
+        this.moneyNum = this.amountArr[i];
+      }
+    },
+    /**
+     * 连接合约下注
+     */
+    contactContract() {
+      this.myContractInstance = new this.$web3.eth.Contract(
+        playGameContract.abi,
+        this.ContractAddr
+      );
+      this.myContractInstance.methods
+        .getResultHistory()
+        .call()
+        .then(data => {
+          this.resultList = data;
+        });
+    },
+    bet(sign) {
+      // this.choosed = sign
+      switch (sign) {
+        case "dragon":
+          this.betZh = "0";
+          break;
+        case "tiger":
+          this.betZh = "1";
+          break;
+        case "leopard":
+          this.betZh = "2";
+          break;
+        default:
+          return false;
+      }
+    },
+    // 开启监控
+    settlement() {
+      if (this.countDown === 1) {
+        this.showSourceVisible = false;
+        this.confirm.flag = false;
+        this.loading = { flag: true, text:this. $t("beingacard") };
+        this.showResult = false;
+        this.countDown = 0;
+        this.timerOverTime = setTimeout(() => {
+          clearTimeout(this.timerOverTime);
+          this.loading = { flag: false, text: "" };
+          this.$message({
+            duration: 0,
+            type: "error",
+            message: this.$t("dealovertimecontactadministrator")
+          });
+          clearInterval(this.getCoinsTimer);
+          let thisTimer = setTimeout(() => {
+            clearTimeout(thisTimer);
+            window.location.reload();
+          }, 3000);
+        }, 60000);
+      }
+      this.myContractInstance.methods
+        .getBlockTime()
+        .call()
+        .then(arr => {
+          let nowTime = arr[0].toString(10);
+          if (this.settleTime !== nowTime) {
+            // 说明结算了
+            //结算逻辑
+            clearTimeout(this.timerOverTime);
+            this.settleTime = nowTime;
+            this.resultBalance = 0;
+            this.dragonNum = Number(arr[4][0].toString(10));
+            this.tigerNum = Number(arr[4][1].toString(10));
+            let result = "";
+            if ((this.dragonNum + 1) % 13 > (this.tigerNum + 1) % 13) {
+              result = "0";
+            } else if (this.dragonNum % 13 + 1 < (this.tigerNum + 1) % 13) {
+              result = "1";
+            } else {
+              result = "2";
+            }
+            this.confirm.flag = false;
+            this.loading = { flag: false, text: "" };
+            this.showPokerResult = true;
+            this.pokerIsShow = "block";
+            let showResultTimer = setTimeout(() => {
+              clearTimeout(showResultTimer);
+              this.showPokerResult = false;
+              this.pokerIsShow = "none";
+              this.showResult = true; // 显示结果弹窗
+            }, 2000);
+            if (this.prevBet.length > 1) {
+              if (this.betHistory.length === 0) {
+                return;
+              }
+              for (
+                let i = this.betHistory.length - 1;
+                i >= this.betHistory.length - this.prevBet[0];
+                i--
+              ) {
+                if (this.betHistory[i].flag === result) {
+                  this.betHistory[i].win =
+                    "+" +
+                    (result === "2"
+                      ? this.betHistory[i].coin * 8
+                      : this.betHistory[i].coin);
+                  this.resultBalance +=
+                    result === "2"
+                      ? Number(this.betHistory[i].coin) * 8
+                      : Number(this.betHistory[i].coin);
+                } else {
+                  this.betHistory[i].win = "-" + this.betHistory[i].coin;
+                  this.resultBalance -= Number(this.betHistory[i].coin);
+                }
+                this.betHistory[i].result = result;
+              }
+
+              this.prevBet.length = 0;
+              this.prevBet[0] = 0;
+              this.betArr.long = 0;
+              this.betArr.hu = 0;
+              this.betArr.he = 0;
+              this.animateChips.number.length = 0;
+              this.animateChips.isShow = false;
+              this.animateChips.isOne = false;
+              this.animateChips.isTwo = false;
+              this.animateChips.isThree = false;
+              this.animateChips.isFour = false;
+              this.animateChips.isOther = false;
+            } else {
+              this.resultBalance = 0;
+            }
+            this.myContractInstance.methods
+              .getResultHistory()
+              .call()
+              .then(data => {
+                this.resultList = data;
+              });
+            //结算完
+            let timer = setTimeout(() => {
+              clearTimeout(timer);
+              this.myContractInstance.methods
+                .getCurrentBalance()
+                .call()
+                .then(coins => {
+                  this.contractBalance = this.$web3.utils.fromWei(
+                    coins,
+                    "ether"
+                  );
+                });
+              this.$funs.getBalance();
+              this.showResult = false; // 显示结果弹窗
+              this.showReady = 2;
+            }, 6000);
+          }
+          if (this.showReady === 2) {
+            this.showReadTime = true;
+            this.loading = { flag: false, text: "" };
+            this.readTimeNum--;
+            this.pokerIsShow = "block";
+            let readTimer = setTimeout(() => {
+              clearTimeout(readTimer);
+              this.showReady = 1;
+              this.getTimerTime();
+            }, 3000);
+          }
+        });
+    },
+    confirmBet(sign) {
+      this.confirm.flag = false;
+      this.bet(sign);
+      let user = this.$store.state.address;
+      let params = {
+        addr: user,
+        cho: this.betZh,
+        ran: parseInt(Math.random() * 10 ** 12),
+        coin: this.$web3.utils.toWei(this.moneyNum, "ether")
+      };
+      try {
+        this.loading = { flag: true, text:this. $t("beingbetting") };
+        this.$funs
+          .unlockAccount()
+          .then((res, err) => {
+            if (res) {
+              this.betFun(user, params);
+            } else {
+              this.loading = { flag: false, text: "" };
+              this.$message.error(String(err));
+            }
+          })
+          .catch(reason => {
+            this.loading = { flag: false, text: "" };
+            this.$message.error(String(reason));
+          });
+      } catch (err) {
+        this.loading = { flag: false, text: "" };
+        this.$message.error(String(err));
+      }
+    },
+    /**
+     * 下注动画
+     * **** 左上
+     * left: 260px;
+     * top: 175px;
+     * **** 右上
+     * left: 335px;
+     * top: 175px;
+     * **** 左下
+     * left: 260px;
+     * top: 235px;
+     * **** 右下
+     * left: 335px;
+     * top: 235px;
+     * 矩形：75 * 60
+     * 右移一次加： 450 - 260 = 190
+     *
+     * sign: 龙虎和
+     * coin: 金额
+     * isOther: 是不是其他人下注
+     */
+    betAnimate(sign, coin, isOther) {
+      this.animateChips.isOther = false;
+      this.animateChips.isOne = false;
+      this.animateChips.isTwo = false;
+      this.animateChips.isThree = false;
+      this.animateChips.isFour = false;
+      // left: 260px;
+      // top: 175px;
+      let money = Number(coin);
+      this.amountArr = this.amountArr.sort((a, b) => {
+        return a - b;
+      });
+      if (money < this.amountArr[1]) {
+        for (let i = 0; i < 3; i++) {
+          this.animateChips.number.push(i);
+        }
+        if (money === Number(this.amountArr[0])) {
+          this.animateChips.isOne = true;
+        } else {
+          this.animateChips.isFour = true;
+        }
+      } else if (money >= this.amountArr[2]) {
+        for (let i = 0; i < 8; i++) {
+          this.animateChips.number.push(i);
+        }
+        if (money === Number(this.amountArr[2])) {
+          this.animateChips.isThree = true;
+        } else {
+          this.animateChips.isFour = true;
+        }
+      } else {
+        for (let i = 0; i < 5; i++) {
+          this.animateChips.number.push(i);
+        }
+        if (money === Number(this.amountArr[1])) {
+          this.animateChips.isTwo = true;
+        } else {
+          this.animateChips.isFour = true;
+        }
+      }
+      if (isOther) {
+        this.animateChips.isOther = true;
+      }
+      this.animateChips.isShow = true;
+      let left = 0;
+      switch (sign) {
+        case "dragon":
+          left = 260;
+          break;
+        case "leopard":
+          left = 260 + 190;
+          break;
+        case "tiger":
+          left = 260 + 190 * 2;
+          break;
+      }
+      let timer = setTimeout(() => {
+        clearTimeout(timer);
+        this.$nextTick(() => {
+          if (this.$refs.chipsItem !== undefined) {
+            this.$refs.chipsItem.forEach(item => {
+              if (item.getAttribute("data-bool") === "true") {
+                item.style.left = `${left + this.randomFun(75)}px`;
+                item.style.top = `${175 + this.randomFun(60)}px`;
+                item.setAttribute("data-bool", "false");
+              }
+            });
+          }
+        });
+      }, 1);
+      let timer2 = setTimeout(() => {
+        clearTimeout(timer2);
+        this.animateChips.isBet = false;
+      }, 1000);
+    },
+    randomFun(range) {
+      return Number((Math.random() * range).toFixed(0));
+    },
+    /**
+     * 下注
+     */
+    callContract(sign) {
+      this.chargeLegality(bool => {
+        if (bool) {
+          if (this.$store.state.balance < 1) {
+            this.$message.error(this.$t("notsufficientfunds"));
+            return false;
+          }
+          if (!this.$funs.validateFloatNum(this.moneyNum)) {
+            this.$message.error(this.$t("positivenumber"));
+            return false;
+          }
+          if (this.$store.state.balance < Number(this.moneyNum)) {
+            this.$message.error(this.$t("notsufficientfunds1"));
+            return false;
+          }
+          this.betSign = sign;
+          this.confirm.flag = true;
+          this.confirm.text = this.moneyNum;
+        }
+      });
+    },
+    betFun(user, params) {
+      if (this.countDown < 5) {
+        this.$message.error(this.$t("lackoftime"));
+        return;
+      }
+      this.animateChips.isBet = true;
+      this.myContractInstance.methods
+        .sendBetInfo(params.addr, params.cho, params.ran, params.coin)
+        .send({
+          from: user,
+          value: params.coin,
+          gas: 1000000,
+          txType: 0
+        })
+        .on("error", err => {
+          this.loading = { flag: false, text: "" };
+          this.$message.error(String(err));
+        })
+        .on("receipt", receipt => {});
+    },
+    // 获取服务器定时器时间
+    getTimerTime() {
+      axios
+        .get("http://39.104.81.103:8089")
+        .then(res => {
+          this.countDown = res.data;
+          this.showReadTime = false;
+          this.readTimeNum = 4;
+        })
+        .catch(() => {
+          this.$message.error(this.$t("nodeexception"));
+          clearInterval(this.getCoinsTimer);
+        });
+    },
+    /**
+     * 获取路由地址，得到合约地址
+     */
+    getContractAddr() {
+      let url = window.location.href.split("?");
+      this.ContractAddr = url[1];
+      if (
+        this.ContractAddr === undefined ||
+        this.ContractAddr === "null" ||
+        this.ContractAddr === ""
+      ) {
+        if (sessionStorage.getItem("userContract") === undefined) {
+          this.$message.error(this.$t("invalidaddress"));
+          let timer = setTimeout(() => {
+            clearTimeout(timer);
+            this.$router.replace({ name: "accountInfo" });
+          }, 2000);
+          return false;
+        }
+        this.ContractAddr = sessionStorage.getItem("userContract");
+        return true;
+      }
+      if (!this.$web3.utils.isAddress(this.ContractAddr)) {
+        this.$message.error(this.$t("invalidaddress01"));
+        return false;
+      }
+      return true;
+    },
+    /**
+     * 判断合约地址是否合法
+     */
+    chargeLegality(callback) {
+      let arr = [];
+      try {
+        this.myContractInstance.methods
+          .getPrice()
+          .call()
+          .then(data => {
+            arr = data;
+            if (arr.length === 0) {
+              this.$message({
+                type: "error",
+                message:this. $t("contractaddressiswrong")
+              });
+              callback(false);
+            }
+            this.amountArr = [];
+            this.amountArr.push(arr[0]);
+            this.amountArr.push(arr[1]);
+            this.amountArr.push(arr[2]);
+
+            this.amount1 = arr[0].toString().split("");
+            this.amount2 = arr[1].toString().split("");
+            this.amount3 = arr[2].toString().split("");
+
+            callback(true);
+          });
+      } catch (err) {
+        this.$message({
+          type: "error",
+          message: String(err)
+        });
+        callback(false);
+      }
+    },
+    exit() {
+      this.$router.replace({ name: "applications" });
+    },
+    scrollToBottom() {
+      this.$nextTick(() => {
+        let div = this.$refs.gameResult;
+        div.scrollTop = div.scrollHeight;
+      });
+    },
+    /**
+     * 监听下注结果
+     */
+    watchBet() {
+      // 监听是否下注失败
+      this.myContractInstance.events
+        .returnBetResult()
+        .on("data", event => {
+          this.loading = { flag: false, text: "" };
+          if (event.returnValues) {
+            if (event.returnValues._bool) {
+              switch (this.betZh) {
+                case "0":
+                  this.betArr.long += Number(this.moneyNum);
+                  break;
+                case "1":
+                  this.betArr.hu += Number(this.moneyNum);
+                  break;
+                case "2":
+                  this.betArr.he += Number(this.moneyNum);
+                  break;
+                default:
+                  break;
+              }
+              this.prevBet[0]++;
+              this.prevBet[1] = this.betZh;
+              this.prevBet[2] = this.moneyNum;
+              this.betHistory.push({
+                flag: this.prevBet[1],
+                coin: this.prevBet[2],
+                win: "",
+                result: ""
+              });
+              this.$message.success(this.$t("betissuccessful"));
+              this.betAnimate(this.betSign, this.moneyNum);
+            } else {
+              this.$message.error(this.$t("thebetfailed"));
+            }
+          }
+        })
+        .on("error", err => {
+          this.loading = { flag: false, text: "" };
+          if (err) {
+            this.$message.error(this.$t("thebetfailed1"));
+          }
+        });
+    }
+  },
+  mounted() {
+    if (this.getContractAddr()) {
+      this.contactContract();
+      this.chargeLegality(bool => {
+        if (bool) {
+          //获取当前时间
+          this.getTimerTime();
+          //定时器
+          this.getCoinsTimer = setInterval(() => {
+            // this.getCoinsTimer = setTimeout(() => {
+            // 实时获取下注币数
+            if (this.countDown > 5 && this.countDown % 6 === 0) {
+              axios
+                .get("http://39.104.81.103:8089")
+                .then(res => {
+                  this.countDown = res.data <= 0 ? 0 : res.data;
+                })
+                .catch(() => {
+                  this.$message.error(this.$t("nodeexception01"));
+                  clearInterval(this.getCoinsTimer);
+                });
+            }
+            this.myContractInstance.methods
+              .getTotalCoins()
+              .call()
+              .then(arr => {
+                let result = [];
+                for (let key in arr) {
+                  result[key] = Number(
+                    this.$web3.utils.fromWei(arr[key], "ether")
+                  );
+                }
+                if (!this.animateChips.isBet) {
+                  if (result[1] !== 0 || result[2] !== 0 || result[3] !== 0) {
+                    if (
+                      this.betCoin[0] === 0 &&
+                      this.betCoin[1] === 0 &&
+                      this.betCoin[2] === 0
+                    ) {
+                      if (result[1] !== 0) {
+                        setTimeout(() => {
+                          this.betAnimate(
+                            "dragon",
+                            result[1] - this.betCoin[1],
+                            true
+                          );
+                        }, 100);
+                      }
+                      if (result[2] !== 0) {
+                        setTimeout(() => {
+                          this.betAnimate(
+                            "tiger",
+                            result[2] - this.betCoin[2],
+                            true
+                          );
+                        }, 200);
+                      }
+                      if (result[3] !== 0) {
+                        setTimeout(() => {
+                          this.betAnimate(
+                            "leopard",
+                            result[3] - this.betCoin[3],
+                            true
+                          );
+                        }, 300);
+                      }
+                    } else {
+                      if (
+                        JSON.stringify(result) !== JSON.stringify(this.betCoin)
+                      ) {
+                        if (this.betCoin[1] !== result[1]) {
+                          this.betAnimate(
+                            "dragon",
+                            result[1] - this.betCoin[1],
+                            true
+                          );
+                        }
+                        if (this.betCoin[2] !== result[2]) {
+                          this.betAnimate(
+                            "tiger",
+                            result[2] - this.betCoin[2],
+                            true
+                          );
+                        }
+                        if (this.betCoin[3] !== result[3]) {
+                          this.betAnimate(
+                            "leopard",
+                            result[3] - this.betCoin[3],
+                            true
+                          );
+                        }
+                      }
+                    }
+                  }
+                }
+                this.betCoin.length = 0;
+                this.betCoin = result;
+              });
+            //倒计时
+            if (this.countDown <= 5) {
+              this.settlement();
+            }
+            if (this.countDown > 1) {
+              this.countDown--;
+            }
+            if (this.countDown < 0) {
+              this.countDown++;
+            }
+            this.myContractInstance.methods
+              .getCurrentBalance()
+              .call()
+              .then(coins => {
+                this.contractBalance = this.$web3.utils.fromWei(coins, "ether");
+              });
+          }, 1000);
+          this.myContractInstance.methods
+            .getBlockTime()
+            .call()
+            .then(arr => {
+              this.settleTime = arr[0];
+            });
+          this.watchBet();
+        }
+      });
+    }
+    this.$funs.getBalance();
+  },
+  deactivated() {
+    clearInterval(this.getCoinsTimer);
+  },
+  beforeDestroy() {
+    clearInterval(this.getCoinsTimer);
+  },
+  watch: {
+    resultList: "scrollToBottom"
+  }
+};
 </script>
 
 <style lang="scss" type="text/scss" scoped>
-    @import "../../assets/scss/appDetail";
+@import "../../assets/scss/appDetail";
 </style>

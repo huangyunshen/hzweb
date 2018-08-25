@@ -7,7 +7,7 @@
                     label-position="left"
                     @submit.native.prevent>
 
-                    <el-form-item class="el-wallet-style" label="设置游戏名称">
+                    <el-form-item class="el-wallet-style" :label="$t('settingthenameofthegame01')">
                         <el-row>
                             <el-col :span="6">
                                 <el-input
@@ -25,7 +25,7 @@
                          label-position="left"
                          @submit.native.prevent>
 
-                    <el-form-item class="el-wallet-style" label="奖池充值金额">
+                    <el-form-item class="el-wallet-style" :label="$t('rechargeofthepool01')">
                         <el-row>
                             <el-col :span="6">
                                 <el-input
@@ -43,7 +43,7 @@
                          label-position="left"
                          @submit.native.prevent>
 
-                    <el-form-item class="el-wallet-style" label="可选下注金额">
+                    <el-form-item class="el-wallet-style" :label="$t('optionalamount01')">
                         <el-row>
                             <el-col :span="6">
                                 <el-input
@@ -106,7 +106,7 @@
         data() {
             return {
                 rechargeData: {
-                    name: "龙虎斗",
+                    name: "",
                     value: '100',
                     gasPrice: '41',
                     gas: '21000',
@@ -127,21 +127,24 @@
                         return
                     }
                     try {
-                        this.$store.commit('setCryptPercent', {percent: true, text: '创建中···'})
+                        this.$store.commit('setCryptPercent', {percent: true, text: this.$t('creation')})
                         this.$funs.unlockAccount().then((res) => {
                             let args = [
                                 Number(this.rechargeData.price1),
                                 Number(this.rechargeData.price2),
                                 Number(this.rechargeData.price3),
                                 Number(this.rechargeData.price4),
-                                String(this.rechargeData.name) || "龙虎斗",
+                                String(this.rechargeData.name) || this.$t('dragonandtigercombat'),
                             ];
-                            this.$funs.magrationContract( user, contract, sol, args)
+                            this.$funs.magrationContract(user, contract, sol, args)
                                 .then((contractIns) => {
-                                    this.$store.commit('setCryptPercent', {percent: true, text: '创建成功！正在充值···'})
+                                    this.$store.commit('setCryptPercent', {
+                                        percent: true,
+                                        text: this.$t('createsuccessrecharge')
+                                    })
                                     this.$funs.rechargeToContract(contractIns, user, this.rechargeData.value)
                                         .then((data) => {
-                                            contractIns.contractAddressUrl = `/DragonTigerFight/?${contractIns._address}`
+                                            contractIns.contractAddressUrl = `/dtfight/?${contractIns._address}`
                                             resolve(contractIns)
                                         })
                                 })
@@ -156,14 +159,14 @@
             verifyData() {
                 let balance = Number(this.$store.state.balance)
                 if (isNaN(this.rechargeData.value) || this.rechargeData.value === '' || Number(this.rechargeData.value) === 0) {
-                    return new Error('请输入正确的充值金额！');
+                    return new Error(this.$t('enterthecorrectamountofrecharge'));
                 }
                 let reg = /^\d*.\d{0,9}$/g
                 if (!reg.test(this.rechargeData.value)) {
-                    return new Error('充值数额小数点后不能超过9位！');
+                    return new Error(this.$t('theamountoftherechargecannotexceed9bitsafteradecimalpoint'));
                 }
                 if (balance < (Number(this.rechargeData.value) + 1)) {
-                    return new Error('余额不足以支付充值金额！');
+                    return new Error(this.$t('balanceisnotenoughtopay'));
                 }
                 // if (isNaN(this.rechargeData.gasPrice)) {
                 //     return new Error('请输入正确的gasPrice！');
@@ -175,7 +178,7 @@
                     || isNaN(this.rechargeData.price2)
                     || isNaN(this.rechargeData.price3)
                     || isNaN(this.rechargeData.price4)) {
-                    return new Error('请设置正确的下注金额！');
+                    return new Error(this.$t('setthecorrectamountofthebet01'));
                 }
                 if (this.rechargeData.price1.trim() === ''
                     || this.rechargeData.price2.trim() === ''
@@ -185,13 +188,13 @@
                     || Number(this.rechargeData.price2) === 0
                     || Number(this.rechargeData.price3) === 0
                     || Number(this.rechargeData.price4) === 0) {
-                    return new Error('下注金额不能为空和不能为0！');
+                    return new Error(this.$t('theamountofthebetcannotbeemptyandcannotbe0'));
                 }
                 if (this.rechargeData.price1.length > 2
                     || this.rechargeData.price2.length > 2
                     || this.rechargeData.price3.length > 2
                     || this.rechargeData.price4.length > 2) {
-                    return new Error('每个下注金额不能大于99！');
+                    return new Error(this.$t('eachbetcannotbemorethan99'));
                 }
                 return true
             }

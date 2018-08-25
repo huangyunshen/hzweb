@@ -1,24 +1,24 @@
 <template>
     <div class="create-app">
         <div class="create-header no-select-text">
-            <p :class="{'header-active':steps===1}">用户协议</p>
+            <p :class="{'header-active':steps===1}">{{$t('userprotocol')}}</p>
             <span></span>
-            <p :class="{'header-active':steps===2}">选择类型</p>
+            <p :class="{'header-active':steps===2}">{{$t('selectiontype')}}</p>
             <span></span>
-            <p :class="{'header-active':steps===3}">配置应用</p>
+            <p :class="{'header-active':steps===3}">{{$t('configurationapplication')}}</p>
             <span></span>
-            <p :class="{'header-active':steps===4}">创建成功</p>
+            <p :class="{'header-active':steps===4}">{{$t('createsuccess')}}</p>
         </div>
 
         <div class="create-body">
             <!--step-1-->
             <transition name="fof-fade">
                 <div class="step-1" v-show="steps===1">
-                    <div class="header">用户协议</div>
+                    <div class="header">{{$t('userprotocol01')}}</div>
                     <div class="body">
                         <agreement></agreement>
                         <p class="tc" style="margin: 20px;">
-                            <el-checkbox v-model="checked">同意以上协议</el-checkbox>
+                            <el-checkbox v-model="checked">{{$t('agreeagreement')}}</el-checkbox>
                         </p>
                     </div>
                 </div>
@@ -26,7 +26,7 @@
             <!--step-2-->
             <transition name="fof-fade">
                 <div class="step-2" v-show="steps===2">
-                    <div class="header">选择你想要创建的游戏</div>
+                    <div class="header">{{$t('choosethegame')}}</div>
                     <div class="body">
                         <el-row>
                             <el-col :span="4" v-for="(item,index) in appList" :key="index">
@@ -43,11 +43,12 @@
             <!--step3-->
             <transition name="fof-fade">
                 <div class="step-3" v-show="steps===3">
-                    <div class="header">请配置相关参数</div>
+                    <div class="header">{{$t('configurerelated')}}</div>
                     <div class="body">
                         <longhudou-config ref="contractConfig" v-if="selected === '1'"></longhudou-config>
                         <shijiebei-config ref="contractConfig" v-if="selected === '2'"></shijiebei-config>
                         <baccarat-config ref="contractConfig" v-if="selected === '3'"></baccarat-config>
+                        <p11c5-config ref="contractConfig" v-if="selected === '4'"></p11c5-config>
                     </div>
                 </div>
             </transition>
@@ -57,7 +58,7 @@
                     <div class="body">
                         <div class="finishe-icon">
                             <i></i>
-                            <p>创建成功</p>
+                            <p>{{$t('createsuccess01')}}</p>
                         </div>
                         <div class="finishe-address">
                             <el-form
@@ -65,7 +66,7 @@
                                 label-position="left"
                                 @submit.native.prevent>
 
-                                <el-form-item class="el-wallet-style" label="应用地址">
+                                <el-form-item class="el-wallet-style" :label="$t('applicationaddress')">
                                     <el-row>
                                         <el-col :span="20">
                                             <el-input id="appAddress"
@@ -75,7 +76,7 @@
                                             ></el-input>
                                         </el-col>
                                         <el-col :span="4">
-                                            <el-button @click="copyAddress">复制</el-button>
+                                            <el-button @click="copyAddress">{{$t('copy')}}</el-button>
                                         </el-col>
                                     </el-row>
                                 </el-form-item>
@@ -86,9 +87,10 @@
             </transition>
         </div>
         <div class="create-footer">
-            <el-button @click="preStep" v-show="steps===2 || steps===3">上一步
+            <el-button @click="preStep" v-show="steps===2 || steps===3">{{$t('last')}}
             </el-button>
-            <el-button @click="nextStep" :disabled="!checked">{{btnVal}}</el-button>
+            <el-button @click="nextStep" v-if="steps !== 4" :disabled="!checked">{{$t('nextstep')}}</el-button>
+            <el-button @click="nextStep" v-if="steps === 4">{{$t('complete')}}</el-button>
             <a id="linkToApp" :href="contractAddressUrl" target="_blank"></a>
         </div>
     </div>
@@ -100,6 +102,7 @@
     import longhudouConfig from '../gameConfig/longhudouConfig'
     import shijiebeiConfig from '../gameConfig/shijiebeiConfig'
     import baccaratConfig from '../gameConfig/baccaratConfig'
+    import p11c5Config from '../gameConfig/p11c5Config'
 
     export default {
         name: "create-app",
@@ -109,37 +112,13 @@
             longhudouConfig,
             shijiebeiConfig,
             baccaratConfig,
+            p11c5Config,
         },
         data() {
             return {
                 steps: 1,
                 selected: '',
-                appList: [{
-                    contractAddr: "0xfe56582a999c5dae6ba4cc9ea84e9f1842e5fb39",
-                    createAddr: "0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5",
-                    currentCoin: "1000000000000.00000000",
-                    historyCoin: null,
-                    id: "93",
-                    time: "2018-05-23 02:25:30",
-                    gameType: "1"
-                }, {
-                    contractAddr: "0xfe56582a999c5dae6ba4cc9ea84e9f1842e5fb39",
-                    createAddr: "0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5",
-                    currentCoin: "1000000000000.00000000",
-                    historyCoin: null,
-                    id: "93",
-                    time: "2018-05-23 02:25:30",
-                    gameType: "2"
-                }, {
-                    contractAddr: "0xfe56582a999c5dae6ba4cc9ea84e9f1842e5fb39",
-                    createAddr: "0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5",
-                    currentCoin: "1000000000000.00000000",
-                    historyCoin: null,
-                    id: "93",
-                    time: "2018-05-23 02:25:30",
-                    gameType: "3"
-                }],
-                btnVal: "下一步",
+                appList: [{ gameType: "1"}, { gameType: "2" }, { gameType: "3" }, { gameType: "4" }],
                 contractAddress: '',
                 contractAddressUrl: '',// 可以访问的地址
                 checked: true,//同意协议
@@ -167,7 +146,7 @@
                     }
 
                     if (this.steps === 2) {
-                        if(this.selected === ''){
+                        if (this.selected === '') {
                             this.$message({
                                 message: this.$msg.mustSelectAnApp,
                                 type: 'error'
@@ -179,29 +158,27 @@
                     }
 
                     if (this.steps === 3) {
-                        this.$refs.contractConfig.deploy().then( contractIns => {
-                            if(contractIns.contractAddressUrl) {
+                        this.$refs.contractConfig.deploy().then(contractIns => {
+                            if (contractIns.contractAddressUrl) {
                                 this.contractAddress = contractIns._address
-                                this.contractAddressUrl = contractIns.contractAddressUrl
+                                this.contractAddressUrl = location.origin + contractIns.contractAddressUrl
                                 this.steps++
-                                this.btnVal = '完成'
                             } else {
                                 this.$store.commit('setCryptPercent', {percent: false, text: ''})
-                                this.$message.error('请在配置组件配置跳转路径')
+                                this.$message.error(this.$t('skip'))
                             }
-                        }).catch((err)=>{
+                        }).catch((err) => {
                             this.$store.commit('setCryptPercent', {percent: false, text: ''})
-                            if(err.message)
-                            this.$message.error(err.message)
-                            else 
-                            this.$message.error(err)
+                            if (err.message)
+                                this.$message.error(err.message)
+                            else
+                                this.$message.error(err)
                         })
                     }
                 } else {
                     let a = document.getElementById('linkToApp')
                     a.click()
                     this.steps = 1
-                    this.btnVal = "下一步"
                     this.selectAnApp("", -1)
                 }
             },
@@ -211,34 +188,6 @@
                     this.$refs.funcs[c].selectApp(index)
                 }
             },
-            /**
-             * 充值
-             */
-            // sendMsgToServer() {
-            //     this.$axios.get('/api/requestContract.php')
-            //         .then((res) => {
-            //             if (res.status === 200) {
-            //                 let obj = {
-            //                     contractAddr: "0xfe56582a999c5dae6ba4cc9ea84e9f1842e5fb39",
-            //                     createAddr: "0x8ddb5f0b47a027cea553c58734389dd4ed7ff7f5",
-            //                     currentCoin: "1000000000000.00000000",
-            //                     historyCoin: null,
-            //                     id: "93",
-            //                     time: "2018-05-23 02:25:30",
-            //                     type: "1"
-            //                 }
-            //                 this.appList = [obj]
-            //                 // this.appList = res.data
-            //             }
-            //         })
-            //         .catch((error) => {
-            //             this.$message.error(String(error))
-            //             let timer = setTimeout(() => {
-            //                 clearTimeout(timer)
-            //                 this.$message.error('无法获取应用列表')
-            //             }, 3000)
-            //         })
-            // },
             copyAddress() {
                 let input = document.getElementById('appAddress')
                 input.select()
