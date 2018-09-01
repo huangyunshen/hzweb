@@ -118,7 +118,7 @@
             return {
                 steps: 1,
                 selected: '',
-                appList: [{ gameType: "1"}, { gameType: "2" }, { gameType: "3" }, { gameType: "4" }],
+                appList: [{ gameType: "1"}, { gameType: "2" }, { gameType: "3" }],
                 contractAddress: '',
                 contractAddressUrl: '',// 可以访问的地址
                 checked: true,//同意协议

@@ -96,7 +96,7 @@
                     }
                     try {
                         this.$store.commit('setCryptPercent', {percent: true, text:this.$t('creation')})
-                        this.$funs.unlockAccount().then((res) => {
+                        // this.$funs.unlockAccount().then((res) => {
                             let args = [
                                 Number(this.limit),
                                 String(this.name) || this.$t('p11c5'),
@@ -113,9 +113,9 @@
                                             })
                                     })
                             })
-                        }).catch((reason) => {
-                            reject(reason)
-                        })
+                        // }).catch((reason) => {
+                        //     reject(reason)
+                        // })
                     } catch (err) {
                         reject(err)
                     }

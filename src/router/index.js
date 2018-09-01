@@ -15,9 +15,6 @@ import myApps from '@/components/myApps/myApps'
 import appInfo from '@/components/myApps/appInfo'
 import assetManage from '@/components/assetManage/assetManage'
 import voteMain from '@/components/dposVote/voteMain'
-// import createInterval from '@/components/createApp/createInterval'
-
-import appDetail from '@/components/applications/appDetail'
 
 Vue.use(Router)
 
@@ -94,17 +91,7 @@ export default new Router({
                     name: 'voteMain',
                     component: voteMain
                 }
-                // {
-                //     path: 'createInterval',
-                //     name: 'createInterval',
-                //     component: createInterval
-                // }
             ]
         },
-        {
-            path: '/appDetail',
-            name: 'appDetail',
-            component: appDetail
-        }
     ]
 })

@@ -3,7 +3,7 @@ import axios from 'axios'
 const PRODUCT = location.origin
 const LOCAL = '/url'
 
-axios.defaults.baseURL = PRODUCT
+axios.defaults.baseURL = LOCAL
 
 // 设置请求头
 axios.defaults.headers.post['Content-Type'] = 'application/json'

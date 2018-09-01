@@ -6,10 +6,11 @@ contract instanceTemplate {
     address public creator;
     uint public creationTime;
     uint public historyTotalCoins;
+	uint public latestBetTime;
     
 
-    function getPublicData() public constant returns (string, uint, address, uint, uint){
-        return (contractName, gameType, creator, creationTime, historyTotalCoins);
+    function getPublicData() public constant returns (string, uint, address, uint, uint, uint){
+        return (contractName, gameType, creator, creationTime, historyTotalCoins, latestBetTime);
     }
 
     //gameType==2, 获取基本信息

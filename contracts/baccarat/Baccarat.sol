@@ -8,7 +8,7 @@ library BetDataSets {
 }
 
 contract BaccaratEvents {
-    event returnBetResult(bool _bool, address _addr, string _msg); // 返回是否下注成功
+    event returnBetResult(bool _bool, address _addr, string _msg, uint betTime); // 返回是否下注成功
     event returnSettleRes(uint[], uint[], uint[], uint[2]); // 返回最后的出牌结果
 }
 
@@ -20,6 +20,8 @@ contract Baccarat is BaccaratLong {
     address public creator = msg.sender; // 创建者的地址
     uint public creationTime;
     uint public historyTotalCoins = 0; // 历史下注总额
+    uint defaultTimt = 0;
+    uint public latestBetTime = defaultTimt;
 
     uint [] private priceArr; // 下注额度1,5,10,20
 
@@ -83,8 +85,8 @@ contract Baccarat is BaccaratLong {
     function deposit() public payable {}
 
     // 获取公共数据
-    function getPublicData() public constant returns (string, uint, address, uint, uint){
-        return (contractName, gameType, creator, creationTime, historyTotalCoins);
+    function getPublicData() public constant returns (string, uint, address, uint, uint, uint){
+        return (contractName, gameType, creator, creationTime, historyTotalCoins, latestBetTime);
     }
 
     constructor(uint _price1, uint _price2, uint _price3, uint _price4, string _name) public{
@@ -106,7 +108,7 @@ contract Baccarat is BaccaratLong {
         if (getCurrentBalance() / 66 < totalCoins) {
             totalCoins -= _coin;
             transferCoin(_addr, _coin);
-            emit returnBetResult(false, _addr, "下注失败");
+            emit returnBetResult(false, _addr, "下注失败", now);
         } else {
             historyTotalCoins += _coin;
             randomNum.push(_ran);
@@ -174,14 +176,22 @@ contract Baccarat is BaccaratLong {
                 pointDrawMap[_addr].betCoin += _coin;
                 pointDrawCoins += _coin;
             }
-            emit returnBetResult(true, _addr, "下注成功");
+            if(latestBetTime == defaultTimt) {
+                latestBetTime = now;
+            }
+            emit returnBetResult(true, _addr, "下注成功", latestBetTime);
         }
+    }
+    
+    modifier isSettleTime() {
+        require(now > (latestBetTime + 58));
+        _;
     }
 
     /**
     * 结算函数
     */
-    function getResult() public {
+    function getResult() isSettleTime public {
         xorFun();
         settleFun();
         reset();
@@ -490,5 +500,6 @@ contract Baccarat is BaccaratLong {
         pointDraw.length = 0;
         pointDrawCoins = 0;
         pokerList.length = 0;
+        latestBetTime = defaultTimt;
     }
 }

@@ -239,55 +239,36 @@
                     cancelButtonText: this.$t('cancel'),
                     type: 'warning'
                 }).then(() => {
-                    this.$store.commit('setCryptPercent', {
-                            percent: true,
-                            text: this.$t('recharging')
-                        }
-                    )
-                    this.$funs.unlockAccount().then((res) => {
-                        this.rechargefun(this.$store.state.address)
-                    }).catch((reason) => {
-                        console.log(reason);
-                        this.$store.commit('setCryptPercent', {
-                                percent: false,
-                                text: ''
-                            }
-                        )
-                    })
-                }).catch((error) => {
-                    if (error !== 'cancel') {
-                        this.$store.commit('setCryptPercent', {
-                                percent: false,
-                                text: ''
-                            }
-                        )
-                        this.$message.error(String(error))
-                    }
+                    this.$store.commit('setCryptPercent', {percent: true,text: this.$t('recharging')})
+
+                    this.rechargefun(this.$store.state.address)
                 })
+                //     .catch((error) => {
+                //     if (error !== 'cancel') {
+                //         this.$store.commit('setCryptPercent', {
+                //                 percent: false,
+                //                 text: ''
+                //             }
+                //         )
+                //         this.$message.error(String(error))
+                //     }
+                // })
             },
             rechargefun(user) {
                 this.myContractInstance.methods.deposit()
                     .send({
                         from: user,
                         value: this.$web3.utils.toWei(this.form.rechargeVal, 'ether'),
-                        gasPrice: this.$store.state.gasPrice * Math.pow(10, 9),
-                        gas: 100000,
+                        gas: 450000,
                         txType: 0
                     })
                     .on('error', (err) => {
-                        this.$store.commit('setCryptPercent', {
-                                percent: false,
-                                text: ''
-                            }
-                        )
+                        this.$store.commit('setCryptPercent', {percent: false, text: ''})
                         this.$message.error(String(err))
                     })
                     .on('receipt', (receipt) => {
-                        this.$store.commit('setCryptPercent', {
-                                percent: false,
-                                text: ''
-                            }
-                        )
+                        this.$store.commit('setCryptPercent', {percent: false, text: ''})
+
                         if (receipt.transactionHash) {
                             this.$alert(`${this.$t('tradinghashis')}${receipt.transactionHash}`, this.$t('rechargesuccessful'), {
                                 confirmButtonText: this.$t('determine'),
@@ -312,7 +293,7 @@
                     return
                 }
 
-                if (this.appInfo.createAddr !== this.$store.state.address) {
+                if (this.appInfo.createAddr !== this.$store.state.address.toUpperCase()) {
                     this.$message.error(this.$t('notanappcreatorcantwithdrawcash'))
                     return
                 }
@@ -330,43 +311,30 @@
                     cancelButtonText: this.$t('cancel'),
                     type: 'warning'
                 }).then(() => {
-                    this.$store.commit('setCryptPercent', {
-                            percent: true,
-                            text: this.$t('extracting')
-                        }
-                    )
-                    this.$funs.unlockAccount().then((res) => {
-                        this.drawingFun(this.$store.state.address)
-                    }).catch((reason) => {
-                        console.log(reason)
-                    })
-                }).catch((error) => {
-                    if (error !== 'cancel') {
-                        this.$message.error(String(error))
-                    }
+                    this.$store.commit('setCryptPercent', {percent: true, text: this.$t('extracting')})
+
+                    this.drawingFun(this.$store.state.address)
                 })
+                //     .catch((error) => {
+                //     if (error !== 'cancel') {
+                //         this.$message.error(String(error))
+                //     }
+                // })
             },
             drawingFun(user) {
                 this.myContractInstance.methods.drawings(this.$web3.utils.toWei(this.form.drawingVal))
                     .send({
                         from: user,
-                        gas: 100000,
+                        gas: 450000,
                         txType: 0,
                     })
                     .on('error', (err) => {
-                        this.$store.commit('setCryptPercent', {
-                                percent: false,
-                                text: ''
-                            }
-                        )
+                        this.$store.commit('setCryptPercent', {percent: false, text: ''})
                         this.$message.error(String(err))
                     })
                     .on('receipt', (receipt) => {
-                        this.$store.commit('setCryptPercent', {
-                                percent: false,
-                                text: ''
-                            }
-                        )
+                        this.$store.commit('setCryptPercent', {percent: false, text: ''})
+
                         this.$alert(`${this.$t('tradinghashis')}${receipt.transactionHash}`, this.$t('cashwithdrawalsuccess'), {
                             confirmButtonText: this.$t('determine'),
                         })

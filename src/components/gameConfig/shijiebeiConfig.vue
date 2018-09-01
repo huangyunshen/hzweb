@@ -58,7 +58,7 @@
                             label-width="150px"
                             label-position="right"
                             @submit.native.prevent>
-                            <el-form-item class="el-wallet-style" label="主队让球">
+                            <el-form-item class="el-wallet-style" :label="$t('letball')">
                                 <el-input
                                     auto-complete="off"
                                     v-model="configData.hConcedePoints"
@@ -154,8 +154,8 @@
 
 <script>
     import shijiebeiRule from "./shijiebeiRule";
-    import contract from "../../../contracts/saishijingcai/playGame.json";
-    import sol from "../../../contracts/saishijingcai/playGame.sol";
+    import contract from "../../../contracts/quiz/quiz.json";
+    import sol from "../../../contracts/quiz/quiz.sol";
 
     export default {
         name: "shijiebeiConfig",
@@ -171,9 +171,9 @@
                     deadline: "",
                     icon: "",
                     singleBetCoin: 1,
-                    oddsH: "",
-                    oddsD: "",
-                    oddsV: "",
+                    oddsH: "1.1",
+                    oddsD: "1.1",
+                    oddsV: "1.1",
                     hConcedePoints: 0,
                     vConcedePoints: 0,
                     id: ""
@@ -211,52 +211,50 @@
                             percent: true,
                             text: this.$t("creation")
                         });
-                        this.$funs
-                            .unlockAccount()
-                            .then(res => {
-                                let args = [
-                                    String(this.configData.name.trim()) || this.$t("competitionguessing02"),
-                                    hTeam,
-                                    vTeam,
-                                    Number(this.configData.oddsH) * 100,
-                                    Number(this.configData.oddsD) * 100,
-                                    Number(this.configData.oddsV) * 100,
-                                    Date.parse(new Date(this.configData.deadline)),
-                                    Number(this.configData.singleBetCoin),
-                                    Number(this.configData.hConcedePoints),
-                                    Number(this.configData.vConcedePoints),
-                                    Number(liveId)
-                                ];
-                                this.$funs.magrationContract(user, contract, sol, args).then(
-                                    contractIns => {
-                                        this.$store.commit("setCryptPercent", {
-                                            percent: true,
-                                            text: this.$t("createsuccessrecharge02")
-                                        });
-                                        this.$funs
-                                            .rechargeToContract(
-                                                contractIns,
-                                                user,
-                                                this.configData.recharge
-                                            )
-                                            .then(
-                                                data => {
-                                                    contractIns.contractAddressUrl = `/quiz/?${contractIns._address}`;
-                                                    resolve(contractIns);
-                                                },
-                                                err => {
-                                                    console.log(err);
-                                                }
-                                            );
-                                    },
-                                    err => {
-                                        console.log(err);
-                                    }
-                                );
-                            })
-                            .catch(reason => {
-                                console.log(reason);
-                            });
+                        // this.$funs.unlockAccount().then(res => {
+                        let args = [
+                            String(this.configData.name.trim()) || this.$t("competitionguessing02"),
+                            hTeam,
+                            vTeam,
+                            Number(this.configData.oddsH) * 100,
+                            Number(this.configData.oddsD) * 100,
+                            Number(this.configData.oddsV) * 100,
+                            Date.parse(new Date(this.configData.deadline)),
+                            Number(this.configData.singleBetCoin),
+                            Number(this.configData.hConcedePoints),
+                            Number(this.configData.vConcedePoints),
+                            Number(liveId)
+                        ];
+                        this.$funs.magrationContract(user, contract, sol, args).then(
+                            contractIns => {
+                                this.$store.commit("setCryptPercent", {
+                                    percent: true,
+                                    text: this.$t("createsuccessrecharge02")
+                                });
+                                this.$funs
+                                    .rechargeToContract(
+                                        contractIns,
+                                        user,
+                                        this.configData.recharge
+                                    )
+                                    .then(
+                                        data => {
+                                            contractIns.contractAddressUrl = `/quiz/?${contractIns._address}`;
+                                            resolve(contractIns);
+                                        },
+                                        err => {
+                                            console.log(err);
+                                        }
+                                    );
+                            },
+                            err => {
+                                console.log(err);
+                            }
+                        );
+                        // })
+                        // .catch(reason => {
+                        //     console.log(reason);
+                        // });
                     } catch (err) {
                         this.$message.error(err.message);
                     }
@@ -321,6 +319,15 @@
                 ) {
                     return new Error(this.$t('nomorethan2bitsaftertheodds'));
                 }
+
+                let max = this.getTheMin(this.configData.oddsH, this.configData.oddsD, this.configData.oddsV)
+                max = max * this.configData.singleBetCoin * 10
+                max = Math.ceil(max)
+                if (Number(this.configData.recharge) < max) {
+                    return new Error(this.$t('amountTooLittle') + max + this.$t('bei'));
+                }
+
+
                 return true;
             },
             inputValue1() {
@@ -331,6 +338,13 @@
             },
             splitString(str, point, n) {
                 return String(str).split(point)[n] || "";
+            },
+            getTheMin() {
+                let arr = Array.prototype.slice.apply(arguments);
+                arr.sort((a, b) => {
+                    return b - a;
+                })
+                return Number(arr[0]);
             }
         },
         created() {

@@ -128,7 +128,7 @@
                     }
                     try {
                         this.$store.commit('setCryptPercent', {percent: true, text: this.$t('creation')})
-                        this.$funs.unlockAccount().then((res) => {
+                        // this.$funs.unlockAccount().then((res) => {
                             let args = [
                                 Number(this.rechargeData.price1),
                                 Number(this.rechargeData.price2),
@@ -153,9 +153,9 @@
                                         reject(err)
                                     })
                             })
-                        }).catch((reason) => {
-                            reject(reason)
-                        })
+                        // }).catch((reason) => {
+                        //     reject(reason)
+                        // })
                     } catch (err) {
                         reject(err)
                     }
@@ -195,7 +195,20 @@
                     || Number(this.rechargeData.price4) === 0) {
                     return new Error(this.$t('theamountofthebetcannotbeemptyandcannotbe0'));
                 }
+                let min = this.getTheMin(this.rechargeData.price1, this.rechargeData.price2, this.rechargeData.price3, this.rechargeData.price4)
+                min = min * 32 * 10
+                if (Number(this.rechargeData.value) < min) {
+                    return new Error(this.$t('amountTooLittle') + min + this.$t('bei'));
+                }
+
                 return true
+            },
+            getTheMin() {
+                let arr = Array.prototype.slice.apply(arguments);
+                arr.sort( (a, b) => {
+                    return a - b;
+                })
+                return Number(arr[0]);
             }
         }
     }

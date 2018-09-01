@@ -271,6 +271,9 @@ textarea:read-only {
 .el-message-box {
     background-color: #1F1A42;
     border: solid 1px #524c91;
+    p {
+        word-break: break-word;
+    }
     button:first-child {
         background: #372e65;
         color: #fff;

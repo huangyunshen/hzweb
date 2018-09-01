@@ -17,13 +17,20 @@
                 oldNet:'',
                 network: '',
                 netList: [
-                    {title: 'Network1', url: 'ws://39.108.159.230:8561'},
-                    {title: 'Network2', url: 'ws://120.79.182.14:8561'},
-                    {title: 'Network3', url: 'ws://39.108.231.134:8561'},
-                    {title: 'Network4', url: 'ws://112.74.175.96:8561'},
-                    {title: 'Network5', url: 'ws://39.108.93.202:8561'},
-                    {title: 'Network6', url: 'ws://47.106.160.141:8561'},
-                    {title: 'Network7', url: 'ws://120.78.157.63:8561'},
+                    {title: 'A1', url: 'ws://39.108.159.230:8581'},
+                    {title: 'A2', url: 'ws://39.108.159.230:8582'},
+                    {title: 'B1', url: 'ws://120.79.182.14:8581'},
+                    {title: 'B2', url: 'ws://120.79.182.14:8582'},
+                    {title: 'C1', url: 'ws://39.108.231.134:8581'},
+                    {title: 'C2', url: 'ws://39.108.231.134:8582'},
+                    {title: 'D1', url: 'ws://112.74.175.96:8581'},
+                    {title: 'D2', url: 'ws://112.74.175.96:8582'},
+                    {title: 'E1', url: 'ws://39.108.93.202:8581'},
+                    {title: 'E2', url: 'ws://39.108.93.202:8582'},
+                    {title: 'F1', url: 'ws://47.106.160.141:8581'},
+                    {title: 'F2', url: 'ws://47.106.160.141:8582'},
+                    {title: 'G1', url: 'ws://120.78.157.63:8581'},
+                    {title: 'G2', url: 'ws://120.78.157.63:8582'},
                 ]
             }
         },
@@ -53,7 +60,6 @@
                                             this.oldNet = net
                                             this.$store.commit('setCryptPercent', {percent: false, text: ''})
                                             localStorage.setItem('network', net)
-                                            $uploadUrl = net.replace('ws', 'http').substring(0, net.length-2) + "8551"
                                         }
                                     })
                                 }, 7000)
@@ -63,7 +69,6 @@
                                 this.oldNet = net
                                 this.$store.commit('setCryptPercent', {percent: false, text: ''})
                                 localStorage.setItem('network', net)
-                                $uploadUrl = net.replace('ws', 'http').substring(0, net.length-2) + "8551"
                             }
                         })
                     }, 500)

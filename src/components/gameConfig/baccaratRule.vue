@@ -1,29 +1,27 @@
 <template>
     <div class="rule-content">
-        <h3 class="tc">百家乐游戏说明</h3>
-
-        <h4>规则：</h4>
-        <p>1、纸牌点数不区分花色由A到K，每张牌只算个位数（即10只算个位为0），J、Q、K代表的3张人形牌点数计算为0，其余牌按照各自点数计算。</p>
-        <p>2、游戏开始时，从“闲”家起以交替形式一次一张地发，每家发两张牌，闲家先开牌。 </p>
-        <p>3、玩家可选择投注项目进行投注。</p>
-
-        <h4>赔率：</h4>
-        <p>1、下注庄家或闲家时，当庄或闲赢时，赔率为1赔1。</p>
-        <p>2、下注和局（即最终点数一样者）赔率为1赔8。 </p>
-        <p>3、下注点和，赔率为1赔32。</p>
-        <p>4、下注“庄对”（闲对）时，1赔11。</p>
-        <p>5、下注“庄天王”（闲天王）时，1赔2。</p>
-
-        <h4>牌面点数产生规则：</h4>
-        <p>1、牌面点数产生规则。</p>
-        <p>2、在合约里把所有玩家账户自动产生的随机数异或合并成一个最终随机数。</p>
-        <p>3、再抽取最终随机数中的一部分作为生死百家乐的牌面。</p>
-        <p>4、合约最后把生死百家乐的牌面点数返回玩家界面作为出牌结果。</p>
-        <p>5、整个过程无法进行人工干预。</p>
-
-        <h4>钱包规则：</h4>
-        <p>1、钱包规则。</p>
-        <p>2、玩家下注总额不能超过奖池金额的1/32。</p>
+        <h3 class="tc">{{$t('BaccaratDescription')}}</h3>
+<br/>
+        <h4>{{$t('BaccaratRule')}}</h4>
+        <p>{{$t('BaccaratRule1')}}</p>
+        <p>{{$t('BaccaratRule2')}} </p>
+        <p>{{$t('BaccaratRule3')}}</p>
+<br/>
+        <h4>{{$t('BaccaratOdds')}}</h4>
+        <p>{{$t('BaccaratOdds1')}}</p>
+        <p>{{$t('BaccaratOdds2')}}</p>
+        <p>{{$t('BaccaratOdds3')}}</p>
+        <p>{{$t('BaccaratOdds4')}}</p>
+        <p>{{$t('BaccaratOdds5')}}</p>
+<br/>
+        <h4>{{$t('BaccaratOpenOdds')}}</h4>       
+        <p>{{$t('BaccaratOpenOdds1')}}</p>
+        <p>{{$t('BaccaratOpenOdds2')}}</p>
+        <p>{{$t('BaccaratOpenOdds3')}}</p>
+        <p>{{$t('BaccaratOpenOdds4')}}</p>
+<br/>
+        <h4>{{$t('BaccaratWalletRules')}}</h4>
+        <p>{{$t('BaccaratWalletRules1')}}</p>
     </div>
 </template>
 
@@ -32,7 +30,6 @@
         name: "baccaratRule"
     }
 </script>
-
 <style lang="scss" scoped>
     @import "../../assets/scss/gameConfig";
 </style>

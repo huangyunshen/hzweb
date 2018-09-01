@@ -27,11 +27,6 @@
                         <i class="nav-icon5"></i>
                         <span>{{$t('blockquery')}}</span>
                     </li>
-                    <!--<router-link tag="li" :to="{name:'createInterval'}" @click.native="selectAnItem('5')"-->
-                                 <!--class="pass-enter5" :class="{active:itemSelected==='5'}">-->
-                        <!--<i class="nav-icon5" :class="{'nav-icon3-active':itemSelected==='5'}"></i>-->
-                        <!--<span>部署</span>-->
-                    <!--</router-link>-->
                 </ul>
             </nav>
         </div>

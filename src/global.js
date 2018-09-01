@@ -7,10 +7,9 @@ import $router from "./router"
 import $store from './js/store'
 
 // let HOST = 'http://39.104.81.103:8101'
-let HOST = localStorage.getItem('network') || 'ws://112.74.175.96:8561'
+let HOST = localStorage.getItem('network') || 'ws://112.74.175.96:8581'
 const WEB3OBJ = new Web3(HOST)
 localStorage.setItem('network', HOST)
-window.$uploadUrl = HOST.replace('ws', 'http').substring(0, HOST.length-2) + "8551"
 
 export default {
     install(Vue, options) {
@@ -96,77 +95,73 @@ export default {
             /**
              * 截取当前活动账户的私钥最后9位为密码
              */
-            getActiveAccountPwd() {
-                let privateKey = this.getActiveAccount().privateKey
-                return privateKey.substring(privateKey.length - 16)
-            },
+            // getActiveAccountPwd() {
+            //     let privateKey = this.getActiveAccount().privateKey
+            //     return privateKey.substring(privateKey.length - 16)
+            // },
             /**
              * 得到KeyStore文件的字符串
              */
-            getKeyStore() {
-                let privateKey = this.getActiveAccount().privateKey
-                let myWallet = new Wallet(privateKey)
-                return myWallet.encrypt(this.getActiveAccountPwd())
-            },
+            // getKeyStore() {
+            //     let privateKey = this.getActiveAccount().privateKey
+            //     let myWallet = new Wallet(privateKey)
+            //     return myWallet.encrypt(this.getActiveAccountPwd())
+            // },
             /**
              * 上传KeyStore
              */
-            uploadKeyStore() {
-                return new Promise((resolve, reject) => {
-                    this.getKeyStore().then((data) => {
-                        let ts = new Date()
-                        let name = ['UTC--', ts.toJSON().replace(/:/g, '-'), '--', this.getActiveAccount().address.toString('hex')].join('')
-                        // console.log(this.getActiveAccount().address)
-                        // return false
-                        axios.post($uploadUrl, {
-                            "jsonrpc": "2.0",
-                            "method": "eth_uploadkeyfile",
-                            "params": [name, data],
-                            "id": 1
-                        }).then((res) => {
-                            if (res.status === 200) {
-                                if (res.data.id === 1) {
-                                    // this.unlockAccount()
-                                    resolve(true)
-                                }
-                            }
-                        }).catch((error) => {
-                            console.log(error)
-                        })
-                    })
-                })
-            },
+            // uploadKeyStore() {
+            //     return new Promise((resolve, reject) => {
+            //         this.getKeyStore().then((data) => {
+            //             let ts = new Date()
+            //             let name = ['UTC--', ts.toJSON().replace(/:/g, '-'), '--', this.getActiveAccount().address.toString('hex')].join('')
+            //             // console.log(this.getActiveAccount().address)
+            //             // return false
+            //             axios.post($uploadUrl, {
+            //                 "jsonrpc": "2.0",
+            //                 "method": "eth_uploadkeyfile",
+            //                 "params": [name, data],
+            //                 "id": 1
+            //             }).then((res) => {
+            //                 if (res.status === 200) {
+            //                     if (res.data.id === 1) {
+            //                         resolve(true)
+            //                     }
+            //                 }
+            //             }).catch((error) => {
+            //                 console.log(error)
+            //             })
+            //         })
+            //     })
+            // },
             /**
              * 解锁
              */
-            unlockAccount() {
-                return new Promise((resolve, reject) => {
-                    WEB3OBJ.eth.personal.unlockAccount(this.getActiveAccount().address, this.getActiveAccountPwd(), (error, res) => {
-                        // WEB3OBJ.eth.personal.unlockAccount(this.getActiveAccount().address, 'hz123456', (error, res) => {
-                        // Returned error: no key for given address or file             没有keystore
-                        // Returned error: could not decrypt key with given passphrase  密码错误
-                        if (error) {
-                            // 没有keystore
-                            if (error.message.indexOf('file') !== -1) {
-                                this.uploadKeyStore().then((flag) => {
-                                    if (flag) {
-                                        WEB3OBJ.eth.personal.unlockAccount(this.getActiveAccount().address, this.getActiveAccountPwd(), (err, data) => {
-                                            resolve(err)
-                                            reject(data)
-                                        })
-                                    }
-                                })
-                            } else {
-                                // 密码错误
-                                reject(error.message)
-                            }
-                        }
-                        if (res) {
-                            resolve(res)
-                        }
-                    })
-                })
-            },
+            // unlockAccount() {
+            //     return new Promise((resolve, reject) => {
+            //         WEB3OBJ.eth.personal.unlockAccount(this.getActiveAccount().address, this.getActiveAccountPwd(), (error, res) => {
+            //             if (error) {
+            //                 // 没有keystore
+            //                 if (error.message.indexOf('file') !== -1) {
+            //                     this.uploadKeyStore().then((flag) => {
+            //                         if (flag) {
+            //                             WEB3OBJ.eth.personal.unlockAccount(this.getActiveAccount().address, this.getActiveAccountPwd(), (err, data) => {
+            //                                 resolve(err)
+            //                                 reject(data)
+            //                             })
+            //                         }
+            //                     })
+            //                 } else {
+            //                     // 密码错误
+            //                     reject(error.message)
+            //                 }
+            //             }
+            //             if (res) {
+            //                 resolve(res)
+            //             }
+            //         })
+            //     })
+            // },
             getAddress() {
                 let addr = this.getActiveAccount().address
                 if (WEB3OBJ.utils.isAddress(addr)) {
@@ -260,6 +255,8 @@ export default {
             getVoteFof() {
                 WEB3OBJ.eth.getVoteBalance(this.getActiveAccount().address).then((b) => {
                     $store.commit('setVoteFof', WEB3OBJ.utils.fromWei(b, "ether"))
+                }, err => {
+                    console.log(err);
                 })
             }
         }
